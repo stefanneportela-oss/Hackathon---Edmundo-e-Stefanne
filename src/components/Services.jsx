@@ -110,13 +110,9 @@ export default function Services() {
                 className="flex transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
                 style={{ transform: `translateX(-${page * (100 / visible)}%)` }}
               >
-                {services.map((s) =>
-                  s.featured ? (
-                    <FeaturedCard key={s.id} service={s} visible={visible} />
-                  ) : (
-                    <StandardCard key={s.id} service={s} visible={visible} />
-                  )
-                )}
+                {services.map((s) => (
+                  <ServiceCard key={s.id} service={s} visible={visible} />
+                ))}
               </div>
             </div>
 
@@ -152,22 +148,28 @@ export default function Services() {
    CARDS
    ============================================================ */
 
-// Neon-gradient border + ambient glow wrapper. Basis driven by visible count.
-// `active` forces the hover visual permanently (used by the featured card so
-// it always reads as the "hover" state, per the reference).
-function CardShell({ children, visible, active = false, className = "" }) {
+/**
+ * ServiceCard — a single card with two states (one component, no variants):
+ *
+ *  DEFAULT (rest): dark surface showing title, separator, copy and the
+ *                  circular action button. No image.
+ *  HOVER:          a 3D-tech banner image cross-fades in over the card, with
+ *                  an icon (top-left) and an overlay headline (bottom). The
+ *                  neon border + ambient glow intensify.
+ *
+ * Basis (width) is driven by how many cards are visible in the track.
+ */
+function ServiceCard({ service, visible }) {
   return (
     <div
       className="shrink-0 px-2.5"
       style={{ flex: `0 0 ${100 / visible}%`, maxWidth: `${100 / visible}%` }}
     >
       <div className="group relative h-full min-h-[400px]">
-        {/* Neon gradient border (masked) */}
+        {/* Neon gradient border (masked) — brightens on hover */}
         <div
           aria-hidden
-          className={`pointer-events-none absolute inset-0 rounded-3xl p-px transition-opacity duration-300 group-hover:opacity-100 ${
-            active ? "opacity-100" : "opacity-70"
-          }`}
+          className="pointer-events-none absolute inset-0 rounded-3xl p-px opacity-70 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background:
               "linear-gradient(150deg, rgba(0,102,255,0.9) 0%, rgba(0,102,255,0.25) 38%, rgba(255,255,255,0.06) 55%, rgba(0,102,255,0.25) 72%, rgba(0,102,255,0.9) 100%)",
@@ -177,94 +179,67 @@ function CardShell({ children, visible, active = false, className = "" }) {
             maskComposite: "exclude",
           }}
         />
-        {/* Ambient glow — intensifies on hover (always on for the active card) */}
+        {/* Ambient glow — appears on hover */}
         <div
           aria-hidden
-          className={`pointer-events-none absolute -inset-1 rounded-[28px] blur-xl transition-opacity duration-300 group-hover:opacity-100 ${
-            active ? "opacity-100" : "opacity-0"
-          }`}
+          className="pointer-events-none absolute -inset-1 rounded-[28px] opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"
           style={{ background: "rgba(0,102,255,0.18)" }}
         />
-        <div
-          className={`relative flex h-full flex-col rounded-3xl bg-[#0D0D0D] ${className}`}
-        >
-          {children}
+
+        <div className="relative flex h-full flex-col overflow-hidden rounded-3xl bg-[#0D0D0D]">
+          {/* ---- DEFAULT content ---- */}
+          <div className="flex flex-1 flex-col p-6">
+            <h3 className="font-display text-xl font-bold leading-snug text-white transition-colors duration-300 group-hover:text-primary">
+              {service.title}
+            </h3>
+
+            <Separator className="mt-5" />
+
+            <p className="mt-5 flex-1 text-sm leading-relaxed text-muted">
+              {service.desc}
+            </p>
+
+            {/* Circular action button (bottom-left) */}
+            <div>
+              <button
+                aria-label={`Saber mais sobre ${service.title}`}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-[0_0_22px_-4px_rgba(0,102,255,0.9)] active:scale-95"
+              >
+                <GridIcon />
+              </button>
+            </div>
+          </div>
+
+          {/* ---- HOVER banner (revealed on hover) ---- */}
+          <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100">
+            <img
+              src={service.banner}
+              alt=""
+              loading="lazy"
+              draggable={false}
+              className="h-full w-full scale-105 object-cover transition-transform duration-700 ease-out group-hover:scale-100"
+            />
+            {/* Legibility + blue tint */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(0,102,255,0.4) 0%, transparent 60%)",
+              }}
+            />
+            {/* Icon (top-left) */}
+            <span className="absolute left-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/60 bg-black/50 text-primary backdrop-blur">
+              <SparkIcon />
+            </span>
+            {/* Overlay headline (bottom) */}
+            <h3 className="absolute inset-x-0 bottom-5 px-5 font-display text-2xl font-bold leading-tight text-white">
+              {service.overlay}
+            </h3>
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function FeaturedCard({ service, visible }) {
-  return (
-    <CardShell visible={visible} active className="overflow-hidden p-3">
-      {/* Banner — inset with rounded corners, echoing the reference's
-          "framed image" look (image floats inside the card padding). */}
-      <div className="relative h-52 w-full overflow-hidden rounded-2xl">
-        <img
-          src={service.banner}
-          alt=""
-          loading="lazy"
-          draggable={false}
-          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-        />
-        {/* Blue tint + legibility gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(0,102,255,0.35) 0%, transparent 60%)",
-          }}
-        />
-        {/* Icon (top-left of banner) */}
-        <span className="absolute left-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/60 bg-black/50 text-primary backdrop-blur">
-          <SparkIcon />
-        </span>
-        {/* Overlay text */}
-        <h3 className="absolute inset-x-0 bottom-3 px-4 font-display text-xl font-bold leading-tight text-white">
-          {service.overlay}
-        </h3>
-      </div>
-
-      {/* Body */}
-      <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
-        <Separator />
-        <p className="mt-4 text-sm leading-relaxed text-muted">
-          {service.desc}
-        </p>
-      </div>
-    </CardShell>
-  );
-}
-
-function StandardCard({ service, visible }) {
-  return (
-    <CardShell visible={visible}>
-      <div className="flex flex-1 flex-col p-6">
-        {/* Title (top) */}
-        <h3 className="font-display text-xl font-bold leading-snug text-white transition-colors duration-300 group-hover:text-primary">
-          {service.title}
-        </h3>
-
-        <Separator className="mt-5" />
-
-        {/* Explanatory copy */}
-        <p className="mt-5 flex-1 text-sm leading-relaxed text-muted">
-          {service.desc}
-        </p>
-
-        {/* Action button (bottom-left) */}
-        <div>
-          <button
-            aria-label={`Saber mais sobre ${service.title}`}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-[0_0_22px_-4px_rgba(0,102,255,0.9)] active:scale-95"
-          >
-            <GridIcon />
-          </button>
-        </div>
-      </div>
-    </CardShell>
   );
 }
 
