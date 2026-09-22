@@ -1,5 +1,5 @@
-import { useRef, useCallback } from "react";
 import SolutionsCarousel from "./SolutionsCarousel.jsx";
+import HeroBackground from "./HeroBackground.jsx";
 
 const stackChips = [
   "Inteligência Artificial",
@@ -9,37 +9,17 @@ const stackChips = [
 ];
 
 export default function Hero() {
-  const spotlightRef = useRef(null);
-
-  // Move the CSS spotlight to follow the mouse
-  const onMouseMove = useCallback((e) => {
-    const el = spotlightRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    el.style.setProperty("--mx", `${x}%`);
-    el.style.setProperty("--my", `${y}%`);
-  }, []);
-
   return (
     <section
       id="top"
-      onMouseMove={onMouseMove}
       className="relative w-full overflow-hidden bg-black pt-28 pb-20 sm:pt-32"
     >
-      {/* ===== Animated backdrops (pure black + blue mesh + mouse spotlight) ===== */}
-      <div className="hero-mesh pointer-events-none absolute inset-0 -z-20" />
-      <div
-        ref={spotlightRef}
-        className="hero-spotlight pointer-events-none absolute inset-0 -z-10"
-      />
-      <div className="bg-grid pointer-events-none absolute inset-0 -z-10" />
-      <div className="animate-float pointer-events-none absolute -right-24 top-24 -z-10 h-72 w-72 rounded-full bg-brand-500/20 blur-[120px]" />
-      <div className="animate-float pointer-events-none absolute -left-24 top-1/2 -z-10 h-72 w-72 rounded-full bg-brand-300/15 blur-[130px]" />
+      {/* ===== Animated aurora-orbs background (pure black + blue glow + parallax) ===== */}
+      <HeroBackground />
+      <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
 
       {/* ===== Main content ===== */}
-      <div className="mx-auto flex max-w-4xl flex-col items-center px-4 text-center sm:px-6">
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-4 text-center sm:px-6">
         {/* Badge */}
         <div className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-brand-300/30 bg-brand-500/10 px-4 py-1.5 text-xs font-medium tracking-wide text-brand-300 backdrop-blur">
           <span className="relative flex h-2 w-2">
@@ -106,7 +86,7 @@ export default function Hero() {
 
       {/* ===== Products carousel ===== */}
       <div
-        className="animate-fade-up relative mx-auto mt-16 max-w-7xl px-4 sm:mt-20 sm:px-6 lg:px-8"
+        className="animate-fade-up relative z-10 mx-auto mt-16 max-w-7xl px-4 sm:mt-20 sm:px-6 lg:px-8"
         style={{ animationDelay: "0.3s" }}
       >
         <SolutionsCarousel />
