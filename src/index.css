@@ -7,6 +7,9 @@
   --color-brand-300: #00bcff;
   --color-brand-700: #0356a3;
 
+  /* Primary accent blue for card borders / glow (per design brief) */
+  --color-primary: #0066ff;
+
   /* Dark surfaces — pure black base per design direction */
   --color-ink: #000000;
   --color-ink-800: #060709;
@@ -211,11 +214,51 @@ button,
   height: 4.5rem;
 }
 
+/* ============================================================
+   HERO CURSOR GLOW — blue gradient that appears on mouse move
+   and follows the cursor, fading out when idle (SENAI palette)
+   ============================================================ */
+.hero-cursor-glow {
+  /* Position (px, relative to the section) + reveal opacity,
+     all written from React. Hidden at rest. */
+  --mx: 50%;
+  --my: 50%;
+  --glow-opacity: 0;
+
+  opacity: var(--glow-opacity);
+  /* Fade in fast on movement, ease out gently when idle */
+  transition: opacity 0.45s ease-out;
+  will-change: opacity;
+  /* Extra softening so no hard ring is visible at the gradient edge */
+  filter: blur(40px);
+
+  background:
+    radial-gradient(
+      560px circle at var(--mx) var(--my),
+      rgba(0, 188, 255, 0.5) 0%,
+      rgba(0, 188, 255, 0.4) 14%,
+      rgba(5, 116, 217, 0.26) 30%,
+      rgba(5, 116, 217, 0.12) 48%,
+      rgba(5, 116, 217, 0.04) 66%,
+      rgba(5, 116, 217, 0) 82%
+    ),
+    radial-gradient(
+      880px circle at var(--mx) var(--my),
+      rgba(30, 144, 232, 0.2) 0%,
+      rgba(30, 144, 232, 0.08) 40%,
+      rgba(3, 86, 163, 0.02) 68%,
+      rgba(3, 86, 163, 0) 85%
+    );
+}
+
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .hero-mesh,
   .animate-float,
   .animate-fade-up {
     animation: none;
+  }
+  .hero-cursor-glow {
+    transition: none;
   }
 }

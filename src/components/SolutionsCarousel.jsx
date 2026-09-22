@@ -1,185 +1,218 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { solutions } from "../data/solutions.js";
 
+/**
+ * Scroll-driven 3D arc ("fisheye") carousel.
+ *
+ * Mechanics:
+ * - A single virtual position `pos` (in card units) is animated every frame
+ *   toward `targetPos` with a lerp, giving smooth momentum / inertia.
+ * - Each card computes its distance from center and maps it to rotateY,
+ *   translateZ, vertical arc offset and scale — producing the concave arc.
+ * - Indices wrap modulo N, so the deck loops infinitely in both directions.
+ * - Idle autoscroll advances `targetPos` slowly; any wheel / drag / touch
+ *   interaction pauses it instantly and resumes after a short delay.
+ */
+
+const CARD_W = 190; // base card width (px) — controls spacing between cards
+const GAP = 26;
+const STEP = CARD_W + GAP;
+
 export default function SolutionsCarousel() {
-  const trackRef = useRef(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
+  const stageRef = useRef(null);
+  const pos = useRef(0); // animated position (card units)
+  const target = useRef(0); // where we're easing toward
+  const raf = useRef(0);
+  const autoplay = useRef(true);
+  const resumeTimer = useRef(0);
+  const drag = useRef({ down: false, startX: 0, startTarget: 0, moved: false });
 
-  // Drag-to-scroll state
-  const drag = useRef({ down: false, startX: 0, startScroll: 0, moved: false });
+  // Force re-render each frame so transforms update (cheap: transforms only)
+  const [, setTick] = useState(0);
 
-  const updateArrows = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    setCanPrev(el.scrollLeft > 8);
-    setCanNext(el.scrollLeft < maxScroll - 8);
+  const N = solutions.length;
+
+  const pauseAutoplay = useCallback(() => {
+    autoplay.current = false;
+    window.clearTimeout(resumeTimer.current);
+    resumeTimer.current = window.setTimeout(() => {
+      autoplay.current = true;
+    }, 2200);
   }, []);
 
+  // ---- Animation loop ----
   useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    updateArrows();
-    el.addEventListener("scroll", updateArrows, { passive: true });
-    window.addEventListener("resize", updateArrows);
-    return () => {
-      el.removeEventListener("scroll", updateArrows);
-      window.removeEventListener("resize", updateArrows);
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    let last = performance.now();
+    const tick = (now) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      // Idle autoscroll
+      if (autoplay.current && !prefersReduced) {
+        target.current += dt * 0.35; // cards per second
+      }
+
+      // Ease pos -> target (inertia / smoothing)
+      pos.current += (target.current - pos.current) * Math.min(dt * 7, 1);
+
+      setTick((t) => (t + 1) % 1000000);
+      raf.current = requestAnimationFrame(tick);
     };
-  }, [updateArrows]);
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, []);
 
-  const scrollByCards = (dir) => {
-    const el = trackRef.current;
+  // ---- Wheel: vertical + horizontal scroll drive the carousel ----
+  useEffect(() => {
+    const el = stageRef.current;
     if (!el) return;
-    const card = el.querySelector("[data-card]");
-    const amount = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    el.scrollBy({ left: dir * amount, behavior: "smooth" });
-  };
+    const onWheel = (e) => {
+      const delta =
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(delta) < 1) return;
+      e.preventDefault();
+      target.current += delta / STEP; // convert px scroll to card units
+      pauseAutoplay();
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [pauseAutoplay]);
 
-  // ---- Pointer drag handlers ----
+  // ---- Drag to scroll (pointer / touch) ----
   const onPointerDown = (e) => {
-    const el = trackRef.current;
-    if (!el) return;
     drag.current = {
       down: true,
       startX: e.clientX,
-      startScroll: el.scrollLeft,
+      startTarget: target.current,
       moved: false,
     };
-    el.setPointerCapture?.(e.pointerId);
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    pauseAutoplay();
   };
-
   const onPointerMove = (e) => {
-    const el = trackRef.current;
-    if (!el || !drag.current.down) return;
+    if (!drag.current.down) return;
     const dx = e.clientX - drag.current.startX;
     if (Math.abs(dx) > 4) drag.current.moved = true;
-    el.scrollLeft = drag.current.startScroll - dx;
+    target.current = drag.current.startTarget - dx / STEP;
+    pauseAutoplay();
   };
-
   const endDrag = (e) => {
-    const el = trackRef.current;
-    if (el) el.releasePointerCapture?.(e.pointerId);
-    // Delay clearing so click handlers can read `moved`
+    e.currentTarget?.releasePointerCapture?.(e.pointerId);
     setTimeout(() => (drag.current.down = false), 0);
   };
 
-  return (
-    <div className="relative w-full">
-      {/* Header row: label + arrows */}
-      <div className="mb-5 flex items-end justify-between gap-4 px-1">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-brand-300">
-            Soluções digitais
-          </p>
-          <h3 className="mt-1 text-white">Produtos que transformam a indústria</h3>
-        </div>
-        <div className="hidden items-center gap-2 sm:flex">
-          <ArrowButton
-            dir="left"
-            disabled={!canPrev}
-            onClick={() => scrollByCards(-1)}
-          />
-          <ArrowButton
-            dir="right"
-            disabled={!canNext}
-            onClick={() => scrollByCards(1)}
-          />
-        </div>
-      </div>
+  // ---- Render helpers ----
+  // Signed shortest distance from center for a given card index, wrapped.
+  const distFor = (i) => {
+    let d = i - pos.current;
+    d = ((d % N) + N) % N; // 0..N
+    if (d > N / 2) d -= N; // shortest path
+    return d;
+  };
 
-      {/* Track */}
+  return (
+    <div className="relative w-full select-none">
+      {/* Ambient blue glow behind the arc */}
       <div
-        ref={trackRef}
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(45% 55% at 50% 42%, rgba(0,102,255,0.22) 0%, rgba(0,102,255,0.08) 40%, transparent 72%)",
+        }}
+      />
+
+      {/* Stage */}
+      <div
+        ref={stageRef}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2 active:cursor-grabbing"
-        style={{ touchAction: "pan-y" }}
+        className="relative mx-auto h-[380px] cursor-grab active:cursor-grabbing sm:h-[440px]"
+        style={{ perspective: "1200px", touchAction: "pan-y" }}
       >
-        {solutions.map((s) => (
-          <article
-            key={s.id}
-            data-card
-            className="group relative w-[80vw] shrink-0 snap-start overflow-hidden rounded-2xl border border-white/10 bg-ink-800 transition-all duration-500 ease-out hover:-translate-y-2 hover:border-brand-300/60 hover:shadow-[0_20px_60px_-20px_rgba(0,188,255,0.55)] sm:w-[380px]"
-            onClickCapture={(e) => {
-              // Prevent click navigation right after a drag
-              if (drag.current.moved) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            }}
-          >
-            {/* Image */}
-            <div className="relative aspect-[16/11] overflow-hidden">
-              <img
-                src={s.src}
-                alt={s.title}
-                draggable={false}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-800 via-ink-800/20 to-transparent" />
-              {/* Blue glow sweep on hover */}
-              <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-gradient-to-tr from-brand-500/25 via-transparent to-brand-300/20" />
-              <span className="absolute left-4 top-4 rounded-full border border-brand-300/40 bg-black/50 px-3 py-1 text-xs font-medium text-brand-300 backdrop-blur">
-                {s.tag}
-              </span>
-            </div>
+        <div
+          className="absolute left-1/2 top-1/2"
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {solutions.map((s, i) => {
+            const d = distFor(i);
+            const abs = Math.abs(d);
+            // Hide cards too far from center (keeps the arc tidy)
+            if (abs > 4.2) return null;
 
-            {/* Body */}
-            <div className="p-5">
-              <h3 className="text-lg text-white">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted">{s.desc}</p>
-              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-300 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                Saiba mais
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
-            </div>
+            const isCenter = abs < 0.5;
+            const x = d * STEP;
+            const rotateY = d * -18; // tilt sides inward
+            const translateZ = -abs * 90; // push sides back
+            const arcY = abs * abs * 12; // concave vertical curve
+            const scale = Math.max(0.72, 1 - abs * 0.08);
+            const opacity = abs > 3.4 ? 0 : 1 - abs * 0.14;
+            const z = 100 - Math.round(abs * 10);
 
-            {/* Animated border highlight */}
-            <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5 transition-all duration-500 group-hover:ring-brand-300/50" />
-          </article>
-        ))}
+            return (
+              <article
+                key={s.id}
+                onClick={() => {
+                  if (drag.current.moved) return;
+                  target.current = i; // clicking centers the card
+                  pauseAutoplay();
+                }}
+                className="group absolute -translate-x-1/2 -translate-y-1/2 will-change-transform"
+                style={{
+                  width: CARD_W,
+                  transform: `translate3d(${x}px, ${arcY}px, ${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                  opacity,
+                  zIndex: z,
+                }}
+              >
+                <div
+                  className={`relative aspect-[3/4] overflow-hidden rounded-[24px] border bg-ink-800 transition-[transform,border-color,box-shadow] duration-300 ease-out group-hover:scale-[1.05] ${
+                    isCenter
+                      ? "border-primary shadow-[0_0_36px_-6px_rgba(0,102,255,0.7)]"
+                      : "border-white/12"
+                  } group-hover:border-primary group-hover:shadow-[0_0_42px_-4px_rgba(0,102,255,0.85)]`}
+                >
+                  <img
+                    src={s.src}
+                    alt={s.title}
+                    draggable={false}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                  {/* Legibility gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                  {/* Blue hover sweep */}
+                  <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ background: "linear-gradient(135deg, rgba(0,102,255,0.28) 0%, transparent 55%)" }} />
+
+                  {/* Caption */}
+                  <div className="absolute inset-x-0 bottom-0 p-4 text-left">
+                    <span className="inline-block rounded-full border border-primary/50 bg-black/50 px-2.5 py-0.5 text-[10px] font-medium text-white/85 backdrop-blur">
+                      {s.tag}
+                    </span>
+                    <h3
+                      className={`mt-2 font-display text-base leading-tight transition-colors duration-300 ${
+                        isCenter ? "text-white" : "text-white/80"
+                      } group-hover:text-primary`}
+                    >
+                      {s.title}
+                    </h3>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Mobile arrows below */}
-      <div className="mt-4 flex items-center justify-center gap-3 sm:hidden">
-        <ArrowButton dir="left" disabled={!canPrev} onClick={() => scrollByCards(-1)} />
-        <ArrowButton dir="right" disabled={!canNext} onClick={() => scrollByCards(1)} />
-      </div>
+      {/* Hint */}
+      <p className="mt-4 text-center text-xs text-muted">
+        Role, arraste ou use a roda do mouse para navegar
+      </p>
     </div>
-  );
-}
-
-function ArrowButton({ dir = "right", onClick, disabled }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={dir === "left" ? "Anterior" : "Próximo"}
-      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-all duration-300 hover:border-brand-300 hover:bg-brand-500/20 hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:scale-100 disabled:hover:border-white/15 disabled:hover:bg-white/5"
-    >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={dir === "left" ? "rotate-180" : ""}
-        aria-hidden
-      >
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <polyline points="12 5 19 12 12 19" />
-      </svg>
-    </button>
   );
 }
