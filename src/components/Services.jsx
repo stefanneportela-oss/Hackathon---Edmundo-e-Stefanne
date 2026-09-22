@@ -153,7 +153,9 @@ export default function Services() {
    ============================================================ */
 
 // Neon-gradient border + ambient glow wrapper. Basis driven by visible count.
-function CardShell({ children, visible, className = "" }) {
+// `active` forces the hover visual permanently (used by the featured card so
+// it always reads as the "hover" state, per the reference).
+function CardShell({ children, visible, active = false, className = "" }) {
   return (
     <div
       className="shrink-0 px-2.5"
@@ -163,7 +165,9 @@ function CardShell({ children, visible, className = "" }) {
         {/* Neon gradient border (masked) */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-3xl p-px opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+          className={`pointer-events-none absolute inset-0 rounded-3xl p-px transition-opacity duration-300 group-hover:opacity-100 ${
+            active ? "opacity-100" : "opacity-70"
+          }`}
           style={{
             background:
               "linear-gradient(150deg, rgba(0,102,255,0.9) 0%, rgba(0,102,255,0.25) 38%, rgba(255,255,255,0.06) 55%, rgba(0,102,255,0.25) 72%, rgba(0,102,255,0.9) 100%)",
@@ -173,10 +177,12 @@ function CardShell({ children, visible, className = "" }) {
             maskComposite: "exclude",
           }}
         />
-        {/* Ambient glow — intensifies on hover */}
+        {/* Ambient glow — intensifies on hover (always on for the active card) */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -inset-1 rounded-[28px] opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"
+          className={`pointer-events-none absolute -inset-1 rounded-[28px] blur-xl transition-opacity duration-300 group-hover:opacity-100 ${
+            active ? "opacity-100" : "opacity-0"
+          }`}
           style={{ background: "rgba(0,102,255,0.18)" }}
         />
         <div
@@ -191,7 +197,7 @@ function CardShell({ children, visible, className = "" }) {
 
 function FeaturedCard({ service, visible }) {
   return (
-    <CardShell visible={visible} className="overflow-hidden p-3">
+    <CardShell visible={visible} active className="overflow-hidden p-3">
       {/* Banner — inset with rounded corners, echoing the reference's
           "framed image" look (image floats inside the card padding). */}
       <div className="relative h-52 w-full overflow-hidden rounded-2xl">
