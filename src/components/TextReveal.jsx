@@ -1,14 +1,12 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * TextReveal — giant, scroll-driven word-by-word text reveal (Framer Motion).
+ * TextReveal — word-by-word text reveal that plays automatically when the
+ * section scrolls into view (no scroll-scrubbing needed).
  *
- * A dramatic transition section placed right before Services. The full
- * sentence starts nearly invisible (#1A1A1A); as the user scrolls through the
- * section, each word lights up individually left → right, synced to scroll
- * progress via useScroll + useTransform. Each word briefly glows in Primary
- * Blue (#0066FF) at the moment it activates, then settles into pure white.
+ * The phrase starts nearly invisible (#1A1A1A). As soon as the section enters
+ * the viewport, each word lights up in sequence (staggered), briefly glowing
+ * in Primary Blue (#0066FF) before settling into pure white.
  *
  * - Fully transparent so the global infinite background shows through.
  * - Respects prefers-reduced-motion (renders the phrase fully lit, static).
@@ -18,92 +16,64 @@ const SENTENCE =
 
 const WORDS = SENTENCE.split(" ");
 
-export default function TextReveal() {
-  const sectionRef = useRef(null);
-  const reduced = useReducedMotion();
+const container = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
+    },
+  },
+};
 
-  // The section is a TALL scroll track (250vh). The text is pinned (sticky) in
-  // the centre of the viewport while the user scrolls through that track, so
-  // the reveal plays out slowly and stays centred — you clearly see each word
-  // light up. Progress runs from when the track's top hits the viewport top
-  // until the whole track has been scrolled past.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  return (
-    <section
-      ref={sectionRef}
-      id="manifesto"
-      aria-label={SENTENCE}
-      className="relative w-full bg-transparent"
-      style={{ height: "250vh" }}
-    >
-      {/* Pinned viewport: text stays centred while the track scrolls */}
-      <div className="sticky top-0 flex h-screen items-center justify-center px-6">
-        <p
-          className="mx-auto max-w-4xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
-          style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
-        >
-          {WORDS.map((word, i) => (
-            <Word
-              key={`${word}-${i}`}
-              word={word}
-              index={i}
-              total={WORDS.length}
-              progress={scrollYProgress}
-              reduced={reduced}
-              last={i === WORDS.length - 1}
-            />
-          ))}
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function Word({ word, index, total, progress, reduced, last }) {
-  // Feathered slice for this word: overlaps neighbours so the reveal reads as
-  // a smooth left-to-right gradient rather than discrete steps. The whole
-  // reveal is packed into the first ~72% of the scroll track, so the phrase is
-  // fully lit and sits centred for a beat before the page scrolls onward.
-  const WINDOW = 0.72;
-  const span = 1.8 / total;
-  const startAt = (index / total) * (1 - span) * WINDOW;
-  const midAt = startAt + (span * WINDOW) / 2;
-  const endAt = startAt + span * WINDOW;
-
-  // Opacity: dim (0.15) → full white.
-  const opacity = useTransform(progress, [startAt, endAt], [0.15, 1]);
-  // Colour: #1A1A1A → white, with a blue tint at the mid (glow) point.
-  const color = useTransform(
-    progress,
-    [startAt, midAt, endAt],
-    ["rgb(26,26,26)", "rgb(120,180,255)", "rgb(255,255,255)"]
-  );
-  // Transient neon glow, peaking mid-reveal.
-  const textShadow = useTransform(
-    progress,
-    [startAt, midAt, endAt],
-    [
+const wordVariants = {
+  hidden: {
+    opacity: 0.15,
+    color: "rgb(26,26,26)",
+    textShadow: "0 0 0px rgba(0,102,255,0)",
+  },
+  visible: {
+    opacity: [0.15, 1, 1],
+    color: ["rgb(26,26,26)", "rgb(120,180,255)", "rgb(255,255,255)"],
+    textShadow: [
       "0 0 0px rgba(0,102,255,0)",
       "0 0 34px rgba(0,102,255,0.85), 0 0 12px rgba(0,102,255,0.6)",
       "0 0 0px rgba(0,102,255,0)",
-    ]
-  );
+    ],
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
 
-  // Reduced motion: render fully lit and static.
-  const style = reduced
-    ? { opacity: 1, color: "#ffffff" }
-    : { opacity, color, textShadow };
+export default function TextReveal() {
+  const reduced = useReducedMotion();
 
   return (
-    <span className="inline-block">
-      <motion.span className="inline-block" style={style}>
-        {word}
-      </motion.span>
-      {!last ? "\u00A0" : ""}
-    </span>
+    <section
+      id="manifesto"
+      aria-label={SENTENCE}
+      className="relative flex min-h-[80vh] w-full items-center justify-center bg-transparent px-6 py-36 sm:py-44 lg:py-52"
+    >
+      <motion.p
+        className="mx-auto max-w-4xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
+        style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
+        variants={reduced ? undefined : container}
+        initial={reduced ? undefined : "hidden"}
+        whileInView={reduced ? undefined : "visible"}
+        viewport={{ once: true, amount: 0.5 }}
+      >
+        {WORDS.map((word, i) => (
+          <span key={`${word}-${i}`} className="inline-block">
+            <motion.span
+              className="inline-block"
+              variants={reduced ? undefined : wordVariants}
+              style={reduced ? { color: "#fff", opacity: 1 } : undefined}
+            >
+              {word}
+            </motion.span>
+            {i < WORDS.length - 1 ? "\u00A0" : ""}
+          </span>
+        ))}
+      </motion.p>
+    </section>
   );
 }
