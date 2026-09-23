@@ -22,12 +22,14 @@ export default function TextReveal() {
   const sectionRef = useRef(null);
   const reduced = useReducedMotion();
 
-  // Drive the reveal so the phrase finishes lighting up exactly when the
-  // section is centred on screen: start when its top enters from the bottom of
-  // the viewport, reach full reveal when its centre meets the viewport centre.
+  // The section is a TALL scroll track (250vh). The text is pinned (sticky) in
+  // the centre of the viewport while the user scrolls through that track, so
+  // the reveal plays out slowly and stays centred — you clearly see each word
+  // light up. Progress runs from when the track's top hits the viewport top
+  // until the whole track has been scrolled past.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "center center"],
+    offset: ["start start", "end end"],
   });
 
   return (
@@ -35,35 +37,42 @@ export default function TextReveal() {
       ref={sectionRef}
       id="manifesto"
       aria-label={SENTENCE}
-      className="relative flex min-h-[90vh] w-full items-center justify-center bg-transparent px-6 py-36 sm:py-44 lg:py-56"
+      className="relative w-full bg-transparent"
+      style={{ height: "250vh" }}
     >
-      <p
-        className="mx-auto max-w-4xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
-        style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
-      >
-        {WORDS.map((word, i) => (
-          <Word
-            key={`${word}-${i}`}
-            word={word}
-            index={i}
-            total={WORDS.length}
-            progress={scrollYProgress}
-            reduced={reduced}
-            last={i === WORDS.length - 1}
-          />
-        ))}
-      </p>
+      {/* Pinned viewport: text stays centred while the track scrolls */}
+      <div className="sticky top-0 flex h-screen items-center justify-center px-6">
+        <p
+          className="mx-auto max-w-4xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
+          style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
+        >
+          {WORDS.map((word, i) => (
+            <Word
+              key={`${word}-${i}`}
+              word={word}
+              index={i}
+              total={WORDS.length}
+              progress={scrollYProgress}
+              reduced={reduced}
+              last={i === WORDS.length - 1}
+            />
+          ))}
+        </p>
+      </div>
     </section>
   );
 }
 
 function Word({ word, index, total, progress, reduced, last }) {
   // Feathered slice for this word: overlaps neighbours so the reveal reads as
-  // a smooth left-to-right gradient rather than discrete steps.
+  // a smooth left-to-right gradient rather than discrete steps. The whole
+  // reveal is packed into the first ~72% of the scroll track, so the phrase is
+  // fully lit and sits centred for a beat before the page scrolls onward.
+  const WINDOW = 0.72;
   const span = 1.8 / total;
-  const startAt = (index / total) * (1 - span);
-  const midAt = startAt + span / 2;
-  const endAt = startAt + span;
+  const startAt = (index / total) * (1 - span) * WINDOW;
+  const midAt = startAt + (span * WINDOW) / 2;
+  const endAt = startAt + span * WINDOW;
 
   // Opacity: dim (0.15) → full white.
   const opacity = useTransform(progress, [startAt, endAt], [0.15, 1]);
