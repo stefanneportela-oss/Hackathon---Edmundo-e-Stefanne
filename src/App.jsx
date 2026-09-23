@@ -6,6 +6,7 @@ import Services from "./components/Services.jsx";
 import Projects from "./components/Projects.jsx";
 import About from "./components/About.jsx";
 import Careers from "./components/Careers.jsx";
+import Contact from "./components/Contact.jsx";
 import MotionToggle from "./components/MotionToggle.jsx";
 import GlobalBackground from "./components/GlobalBackground.jsx";
 
@@ -26,6 +27,7 @@ export default function App() {
           <Projects />
           <About />
           <Careers />
+          <Contact />
         </main>
         <MotionToggle />
       </div>
