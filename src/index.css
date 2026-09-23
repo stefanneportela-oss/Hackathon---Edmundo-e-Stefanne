@@ -581,3 +581,28 @@ html.animations-paused *::after {
     animation: none;
   }
 }
+
+/* ============================================================
+   STICKY STACKING CARDS ("Trabalhe Conosco")
+   Each slot is a tall scroll track; the card inside is position:sticky and
+   pins near the top while the WINDOW scroll moves through the slot's height,
+   so the next card slides over the previous one. No inner overflow/scrollbars.
+   ============================================================ */
+.stack-slot {
+  position: relative;
+  /* Scroll travel between cards. The last slot is shorter so the section
+     ends naturally without a big empty gap. */
+  height: 78vh;
+  min-height: 420px;
+}
+.stack-slot:last-child {
+  height: auto;
+  min-height: 0;
+}
+
+@media (max-width: 640px) {
+  .stack-slot {
+    height: 88vh;
+    min-height: 480px;
+  }
+}
