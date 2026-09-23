@@ -4,30 +4,27 @@ import { careers } from "../data/careers.js";
 /**
  * Careers — "Trabalhe Conosco" sticky stacking cards.
  *
- * The stack is driven entirely by the MAIN WINDOW scroll — there is no inner
- * scrollbar or overflow anywhere. Each card lives in a full-height "slot"; the
- * card is `position: sticky` so it pins near the top while the user scrolls
- * through the slot's height, and the next card slides up and over it. z-index
- * grows with the index, so the LAST card (04/04) ends up on top of the pile.
+ * As the user scrolls, each card scrolls into view and sticks to the top
+ * (position: sticky). The next card slides up and over the previous one,
+ * building an elegant layered stack. Cards that get covered scale down
+ * slightly and dim, reinforcing depth (driven by a scroll listener writing
+ * CSS custom properties — no per-frame React re-render).
  *
  * Design System:
  *  - Section is fully transparent → the global infinite background (bg-grid +
  *    mouse glow) shows through.
  *  - Card surface: matte translucent #0D0D0D/90 + backdrop-blur, rounded-3xl,
- *    subtle translucent border. Cards use overflow: visible (no inner scroll).
+ *    subtle translucent border.
  *  - Hover on the active card: Primary-Blue (#0066FF) gradient border + neon
  *    ambient glow.
  *  - Fully responsive; the sticky stack degrades gracefully on mobile.
  */
-const STICKY_TOP = 100; // px — must match `top` on each sticky card
-
 export default function Careers() {
   const listRef = useRef(null);
   const raf = useRef(0);
 
-  // Depth effect: as a card gets covered by the next one, shrink + dim it
-  // based on how far it has been pushed past its sticky anchor. Reads geometry
-  // straight from the window scroll — no inner scroll container involved.
+  // Depth effect: as a card gets covered by the next sticky card, shrink and
+  // dim it based on how far it has scrolled past its sticky anchor.
   useEffect(() => {
     const list = listRef.current;
     if (!list) return;
@@ -40,15 +37,20 @@ export default function Careers() {
     ).matches;
     if (prefersReduced) return;
 
+    const STICKY_TOP = 120; // must match the `top` used on the card wrapper
+
     const update = () => {
       raf.current = 0;
       cards.forEach((card, i) => {
+        // Last card never gets covered.
         if (i === cards.length - 1) {
           card.style.setProperty("--stack-scale", "1");
           card.style.setProperty("--stack-opacity", "1");
           return;
         }
         const rect = card.getBoundingClientRect();
+        // How far past the sticky anchor this card has been pushed (0..1),
+        // measured over roughly one card height of scroll travel.
         const traveled = STICKY_TOP - rect.top;
         const progress = Math.min(1, Math.max(0, traveled / (rect.height || 1)));
         const scale = 1 - progress * 0.06; // down to 0.94
@@ -72,16 +74,14 @@ export default function Careers() {
     };
   }, []);
 
-  const zStep = ["z-10", "z-20", "z-30", "z-40", "z-50"];
-
   return (
     <section
       id="trabalhe-conosco"
-      className="relative w-full bg-transparent pt-24 sm:pt-28"
+      className="relative w-full bg-transparent py-24 sm:py-28"
     >
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         {/* ===== Header ===== */}
-        <div className="mx-auto mb-14 flex max-w-3xl flex-col items-center gap-4 text-center sm:mb-16">
+        <div className="mx-auto mb-14 flex max-w-3xl flex-col items-center gap-4 text-center sm:mb-20">
           <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
             Trabalhe Conosco
           </span>
@@ -94,27 +94,18 @@ export default function Careers() {
           </p>
         </div>
 
-        {/* ===== Sticky stack track =====
-            The list itself provides the scroll "track": each slot is tall, so
-            the window scroll drives the stacking. No inner overflow anywhere. */}
-        <div ref={listRef} className="relative">
-          {careers.map((c, i) => {
-            const isLast = i === careers.length - 1;
-            return (
-              <div
-                key={c.id}
-                className={`stack-slot ${zStep[i] || "z-50"}`}
-              >
-                <div
-                  data-stack-card
-                  className={`sticky ${isLast ? "mb-12 sm:mb-16" : ""}`}
-                  style={{ top: `${STICKY_TOP}px` }}
-                >
-                  <CareerCard career={c} index={i} total={careers.length} />
-                </div>
-              </div>
-            );
-          })}
+        {/* ===== Sticky stack ===== */}
+        <div ref={listRef} className="flex flex-col gap-8">
+          {careers.map((c, i) => (
+            <div
+              key={c.id}
+              data-stack-card
+              className="sticky"
+              style={{ top: `${120 + i * 16}px`, zIndex: i + 1 }}
+            >
+              <CareerCard career={c} index={i} total={careers.length} />
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -151,8 +142,8 @@ function CareerCard({ career, index, total }) {
         style={{ background: "rgba(0,102,255,0.2)" }}
       />
 
-      {/* Card surface — overflow visible so no inner scrollbox is created */}
-      <article className="relative flex min-h-[300px] flex-col justify-between overflow-visible rounded-3xl border border-white/10 bg-[#0D0D0D]/90 p-7 backdrop-blur-md sm:min-h-[340px] sm:p-10">
+      {/* Card surface */}
+      <article className="relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-[#0D0D0D]/90 p-7 backdrop-blur-md sm:min-h-[340px] sm:p-10">
         {/* Top: index + title + tags */}
         <div>
           <div className="mb-5 flex items-center justify-between">
