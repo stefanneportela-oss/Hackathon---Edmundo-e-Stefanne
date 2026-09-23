@@ -97,23 +97,25 @@ export default function About() {
 
           {/* --- Card 2: horizontal, web portal (center-top) --- */}
           <GlowCard className="md:col-span-4 lg:col-span-5">
-            <div className="flex h-full flex-col p-6">
-              <div className="relative overflow-hidden rounded-2xl bg-black/20">
-                <img
-                  src={MOCK.portal}
-                  alt="Portal web SESI/SENAI"
-                  loading="lazy"
-                  draggable={false}
-                  className="h-44 w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105 sm:h-48"
-                />
+            <div className="flex h-full flex-col">
+              {/* Full-bleed portal screenshot: fills the card width, top corners
+                  rounded, no padding — the text sits clearly below it. */}
+              <img
+                src={MOCK.portal}
+                alt="Portal web SESI/SENAI"
+                loading="lazy"
+                draggable={false}
+                className="w-full rounded-t-3xl object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              />
+              <div className="px-6 pb-6 pt-5">
+                <h3 className="font-display text-lg font-bold text-white">
+                  Desde 2007, inovando para transformar.
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  Mais de 17 mil usuários por dia impactados pelas soluções que
+                  desenvolvemos.
+                </p>
               </div>
-              <h3 className="mt-7 font-display text-lg font-bold text-white">
-                Desde 2007, inovando para transformar.
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                Mais de 17 mil usuários por dia impactados pelas soluções que
-                desenvolvemos.
-              </p>
             </div>
           </GlowCard>
 
