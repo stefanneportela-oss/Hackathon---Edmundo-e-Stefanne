@@ -6,6 +6,7 @@ const navLinks = [
   { label: "Serviços", href: "#servicos" },
   { label: "Projetos", href: "#projetos" },
   { label: "Sobre", href: "#sobre" },
+  { label: "Trabalhe Conosco", href: "#trabalhe-conosco" },
 ];
 
 export default function Header() {
