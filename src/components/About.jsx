@@ -127,25 +127,28 @@ export default function About() {
                 </div>
               </GlowCard>
 
-              {/* Card 3: "20+" metric — image (top) + number + caption */}
+              {/* Card 3: "20+" metric. Figma: top-row image right-aligned
+                  (143x146, rounded 8), gap 16, content bottom-aligned —
+                  "20+" 48px white, "Projetos Ativos" 14px muted. --- */}
               <GlowCard className="sm:w-[240px] sm:shrink-0">
                 <div className="flex h-full flex-col gap-4 p-6">
-                  <div className="overflow-hidden rounded-lg">
-                    <img
-                      src={MOCK.vr}
-                      alt="Ambiente industrial em realidade virtual"
-                      loading="lazy"
-                      draggable={false}
-                      className="h-[146px] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
+                  {/* image aligned to the right, ~143px wide */}
+                  <div className="flex justify-end">
+                    <div className="overflow-hidden rounded-lg">
+                      <img
+                        src={MOCK.vr}
+                        alt="Ambiente industrial em realidade virtual"
+                        loading="lazy"
+                        draggable={false}
+                        className="h-[146px] w-[143px] object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                      />
+                    </div>
                   </div>
-                  <div className="mt-auto">
+                  <div className="mt-auto flex flex-col gap-2">
                     <div className="font-display text-5xl font-bold leading-none text-white">
                       20+
                     </div>
-                    <div className="mt-2 text-base text-white">
-                      Projetos Ativos
-                    </div>
+                    <div className="text-sm text-muted">Projetos Ativos</div>
                   </div>
                 </div>
               </GlowCard>
