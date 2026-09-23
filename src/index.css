@@ -529,3 +529,52 @@ html.animations-paused *::after {
   transition: none !important;
   scroll-behavior: auto !important;
 }
+
+/* ============================================================
+   SOCIAL PROOF — infinite logo marquee
+   Two identical track halves scroll left forever; translating by -50%
+   loops seamlessly. Pauses on hover and freezes with the global
+   `animations-paused` switch (handled by the global rule above).
+   ============================================================ */
+.marquee {
+  /* Soft fade on both edges so logos enter/exit without hard cuts */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 15%,
+    #000 85%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 15%,
+    #000 85%,
+    transparent 100%
+  );
+}
+
+.marquee__track {
+  animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
+/* Instant pause when hovering anywhere on the belt */
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}

@@ -1,5 +1,6 @@
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
+import SocialProof from "./components/SocialProof.jsx";
 import Services from "./components/Services.jsx";
 import Projects from "./components/Projects.jsx";
 import About from "./components/About.jsx";
@@ -17,6 +18,7 @@ export default function App() {
         <Header />
         <main>
           <Hero />
+          <SocialProof />
           <Services />
           <Projects />
           <About />
