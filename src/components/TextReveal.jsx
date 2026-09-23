@@ -59,7 +59,8 @@ export default function TextReveal() {
         variants={reduced ? undefined : container}
         initial={reduced ? undefined : "hidden"}
         whileInView={reduced ? undefined : "visible"}
-        viewport={{ once: true, amount: 0.5 }}
+        // No `once` → the reveal replays every time the section re-enters view.
+        viewport={{ amount: 0.5 }}
       >
         {WORDS.map((word, i) => (
           <span key={`${word}-${i}`} className="inline-block">
