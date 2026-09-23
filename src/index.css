@@ -582,3 +582,22 @@ html.animations-paused *::after {
   }
 }
 
+
+/* ============================================================
+   TEXT REVEAL — floating portrait cards
+   Gentle vertical drift so the framing portraits feel alive.
+   ============================================================ */
+@keyframes tr-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.tr-float {
+  position: relative;
+  animation: tr-float 6s ease-in-out infinite;
+  will-change: transform;
+}
