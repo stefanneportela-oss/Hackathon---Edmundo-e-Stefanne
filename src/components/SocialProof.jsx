@@ -63,15 +63,17 @@ export default function SocialProof() {
     <section
       id="parceiros"
       aria-label="Impulsionando a inovação no Sistema Indústria"
-      className="relative w-full overflow-hidden bg-transparent py-14 sm:py-16"
+      className="relative w-full bg-transparent py-14 sm:py-16"
     >
       {/* Discreet section title (matches Figma) */}
       <p className="mb-10 text-center font-display text-sm font-semibold uppercase tracking-[0.21em] text-[#70707A]">
         Impulsionando a inovação no Sistema Indústria
       </p>
 
-      {/* Marquee belt — hovering anywhere pauses the scroll */}
-      <div className="marquee relative w-full">
+      {/* Marquee belt — only the X axis is clipped, so the hover glow/scale can
+          breathe vertically without being cut off. Extra vertical padding
+          leaves room for the lifted pill. */}
+      <div className="marquee relative w-full overflow-x-hidden overflow-y-visible py-4">
         <div
           className="marquee__track flex w-max items-center"
           style={{ "--marquee-duration": "80s" }}
