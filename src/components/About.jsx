@@ -85,21 +85,14 @@ export default function About() {
           {/* --- Card 1: vertical, phones + CTA (left, spans full height) --- */}
           <GlowCard className="md:col-span-2 md:row-span-2 lg:col-span-4">
             <div className="flex h-full flex-col p-6">
-              {/* Phone mockup */}
-              <div className="relative flex-1 overflow-hidden rounded-2xl">
+              {/* Phone mockup — shown whole (contain), floating on the dark card */}
+              <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-2xl">
                 <img
                   src={MOCK.phones}
                   alt="Aplicativos móveis desenvolvidos pela SENAI Soluções Digitais"
                   loading="lazy"
                   draggable={false}
-                  className="h-full min-h-[220px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                />
-                <div
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(160deg, rgba(0,102,255,0.28) 0%, transparent 55%)",
-                  }}
+                  className="h-full max-h-[320px] w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
                 />
               </div>
 
@@ -130,7 +123,7 @@ export default function About() {
                   alt="Portal web SESI/SENAI"
                   loading="lazy"
                   draggable={false}
-                  className="h-40 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 sm:h-48"
+                  className="h-44 w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105 sm:h-52"
                 />
               </div>
               <h3 className="mt-5 font-display text-lg font-bold text-white">
@@ -152,7 +145,7 @@ export default function About() {
                   alt="Ambiente industrial em realidade virtual"
                   loading="lazy"
                   draggable={false}
-                  className="h-28 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  className="h-32 w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
                 />
               </div>
               <div className="mt-auto pt-6">
@@ -173,13 +166,13 @@ export default function About() {
                 Desenvolvimento de Aplicações Mobile e Web para criar soluções
                 que fazem a diferença.
               </p>
-              <div className="w-full flex-1 overflow-hidden rounded-2xl sm:w-auto">
+              <div className="flex w-full flex-1 items-center justify-center overflow-hidden rounded-2xl sm:w-auto">
                 <img
                   src={MOCK.dashboard}
                   alt="Dashboard de análise de dados"
                   loading="lazy"
                   draggable={false}
-                  className="h-40 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 sm:h-44"
+                  className="h-44 w-full object-contain object-center transition-transform duration-500 ease-out group-hover:scale-105 sm:h-52"
                 />
               </div>
             </div>
