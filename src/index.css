@@ -582,22 +582,3 @@ html.animations-paused *::after {
   }
 }
 
-/* ============================================================
-   TEXT REVEAL — scroll-driven word-by-word highlight
-   Words start dim, briefly glow Primary-Blue as they activate, then settle
-   into pure white. Driven by data-stage written from React (0/1/2).
-   ============================================================ */
-.reveal-word {
-  display: inline-block;
-  /* opacity / color / text-shadow are written inline from React for a smooth,
-     continuous left-to-right gradient. A short transition softens the steps
-     between animation frames. */
-  transition: opacity 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
-  will-change: opacity, color, text-shadow;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal-word {
-    transition: none;
-  }
-}
