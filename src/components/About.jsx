@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import HeroBackground from "./HeroBackground.jsx";
 import phonesImg from "../assets/about/phones.png";
 import portalImg from "../assets/about/portal.png";
 import vrImg from "../assets/about/vr.png";
@@ -59,7 +60,9 @@ export default function About() {
       id="sobre"
       className="relative w-full overflow-hidden bg-black py-24 sm:py-28"
     >
-      <div className="hero-aura pointer-events-none absolute inset-0 z-0 opacity-40" />
+      {/* Same animated background as the Projects section */}
+      <HeroBackground />
+      <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ===== Centered header ===== */}
