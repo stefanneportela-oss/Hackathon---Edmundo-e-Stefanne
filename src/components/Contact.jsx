@@ -1,27 +1,17 @@
 /**
- * Contact — "Entre em contato" section.
+ * Contact — "Entre em contato".
  *
- * Mirrors the Figma "contact-info-section" (#79:540):
- *
- *   ┌─────────────────────┬───────────────────────────────┐
- *   │  Entre em contato    │   ┌── form-card (#0D0D0D) ──┐  │
- *   │  (title 50px)        │   │  ✉  E-mail direto        │  │
- *   │  subtitle (muted)    │   │     solucoes...@senai.br  │  │
- *   │                      │   │  📍 Sede                  │  │
- *   │                      │   │     Tubarão – SC, Brasil  │  │
- *   │                      │   │            [Enviar e-mail]│  │
- *   │                      │   └───────────────────────────┘  │
- *   └─────────────────────┴───────────────────────────────┘
+ * Two-column layout (based on the Figma design node 79:540):
+ *  - Left: heading + supporting text.
+ *  - Right: dark form-card with contact info blocks (e-mail, sede) and a
+ *    primary "Enviar e-mail" CTA button.
  *
  * Design System:
- *  - Section background transparent → global infinite background shows through.
- *  - Left column: title (50px Bahnschrift/display SemiBold, white) + muted subtitle.
- *  - Form card: matte #0D0D0D, 1px border #27272A, rounded-2xl (16px),
- *    soft drop shadow. Info blocks with rounded icon chips.
- *  - CTA "Enviar e-mail": solid white pill with arrow, opens the mail client.
- *  - Fully responsive: stacks to a single column on small screens.
+ *  - Section transparent → the global infinite background shows through.
+ *  - Card surface: matte #0D0D0D, subtle #27272A border, soft drop shadow,
+ *    rounded-2xl.
+ *  - Fully responsive: columns stack on small screens.
  */
-
 const EMAIL = "solucoesdigitais@sc.senai.br";
 
 export default function Contact() {
@@ -30,47 +20,46 @@ export default function Contact() {
       id="contato"
       className="relative w-full bg-transparent py-24 sm:py-28"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
           {/* ===== Left column ===== */}
-          <div className="flex w-full flex-col gap-5 lg:w-[460px] lg:shrink-0">
-            <h2 className="font-display text-[2.25rem] font-semibold leading-tight tracking-tight text-white sm:text-[50px]">
+          <div className="w-full max-w-lg">
+            <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
               Entre em contato
             </h2>
-            <p className="max-w-md text-base leading-relaxed text-muted">
+            <p className="mt-5 max-w-md text-base leading-relaxed text-muted">
               Estamos prontos para impulsionar o seu próximo projeto. Fale com
               nossa equipe.
             </p>
           </div>
 
-          {/* ===== Form card ===== */}
-          <div className="w-full lg:max-w-[680px] lg:flex-1">
-            <div
-              className="flex flex-col gap-12 rounded-2xl border border-[#27272A] bg-[#0D0D0D] p-8 sm:px-10 sm:py-12"
-              style={{ boxShadow: "0px 16px 32px 0px rgba(0,0,0,0.5)" }}
-            >
-              {/* --- Info blocks --- */}
+          {/* ===== Right column: form-card ===== */}
+          <div className="w-full max-w-2xl">
+            <div className="rounded-2xl border border-[#27272A] bg-[#0D0D0D] p-8 shadow-[0_16px_32px_0_rgba(0,0,0,0.5)] sm:p-10">
+              {/* Info blocks */}
               <div className="flex flex-col gap-9">
-                <InfoBlock
+                <ContactBlock
                   icon={<MailIcon />}
                   label="E-mail direto"
                   value={EMAIL}
                 />
-                <InfoBlock
+                <ContactBlock
                   icon={<MapPinIcon />}
                   label="Sede"
                   value="Tubarão – Santa Catarina, Brasil"
                 />
               </div>
 
-              {/* --- Action area --- */}
-              <div className="flex justify-end">
+              {/* CTA */}
+              <div className="mt-12 flex justify-end">
                 <a
                   href={`mailto:${EMAIL}`}
-                  className="group inline-flex items-center gap-3 rounded-full bg-white py-3 pl-6 pr-4 font-display text-sm font-semibold text-black transition-all duration-300 hover:bg-white/90 hover:shadow-[0_0_28px_-6px_rgba(255,255,255,0.6)] active:scale-95"
+                  className="group inline-flex items-center gap-3 rounded-full bg-white py-3 pl-6 pr-4 font-display text-sm font-semibold text-black transition-all duration-300 hover:shadow-[0_0_24px_-4px_rgba(255,255,255,0.6)] active:scale-95"
                 >
                   Enviar e-mail
-                  <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <span className="inline-flex h-6 w-6 items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+                    <ArrowRight />
+                  </span>
                 </a>
               </div>
             </div>
@@ -81,18 +70,17 @@ export default function Contact() {
   );
 }
 
-/* ---- Info block: icon chip + label + value ---- */
-function InfoBlock({ icon, label, value }) {
+function ContactBlock({ icon, label, value }) {
   return (
     <div className="flex items-start gap-4">
-      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center text-white/80">
+      <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center text-primary">
         {icon}
-      </span>
+      </div>
       <div className="flex flex-col gap-1.5">
-        <span className="text-[13px] font-medium tracking-wide text-[#71717A]">
+        <span className="font-display text-[13px] font-medium text-[#71717A]">
           {label}
         </span>
-        <span className="font-display text-[22px] font-semibold leading-7 text-white">
+        <span className="font-display text-[22px] font-semibold leading-7 text-white break-words">
           {value}
         </span>
       </div>
@@ -101,6 +89,7 @@ function InfoBlock({ icon, label, value }) {
 }
 
 /* ---- Icons ---- */
+
 function MailIcon() {
   return (
     <svg
@@ -109,7 +98,7 @@ function MailIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.7"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -128,7 +117,7 @@ function MapPinIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.7"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -139,7 +128,7 @@ function MapPinIcon() {
   );
 }
 
-function ArrowRight({ className = "" }) {
+function ArrowRight() {
   return (
     <svg
       width="16"
@@ -150,7 +139,6 @@ function ArrowRight({ className = "" }) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={className}
       aria-hidden
     >
       <line x1="5" y1="12" x2="19" y2="12" />
