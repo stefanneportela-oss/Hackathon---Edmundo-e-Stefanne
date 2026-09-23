@@ -24,7 +24,9 @@ const SENTENCE =
 
 const WORDS = SENTENCE.split(" ");
 
-const DIM = 0.18; // resting opacity of an un-revealed word
+const DIM = 0.15; // resting opacity of an un-revealed word (nearly invisible)
+// Base RGB of an un-revealed word (#1A1A1A) → interpolated to pure white.
+const DARK = [26, 26, 26];
 
 export default function TextReveal() {
   const sectionRef = useRef(null);
@@ -94,29 +96,39 @@ export default function TextReveal() {
       ref={sectionRef}
       id="manifesto"
       aria-label={SENTENCE}
-      className="relative flex w-full items-center justify-center bg-transparent px-6 py-36 sm:py-44 lg:py-52"
+      className="relative flex min-h-[90vh] w-full items-center justify-center bg-transparent px-6 py-40 sm:py-52 lg:py-64"
     >
-      <p className="mx-auto max-w-5xl text-center font-display text-4xl font-bold leading-[1.2] tracking-tight sm:text-6xl lg:text-7xl">
+      <p
+        className="mx-auto max-w-6xl text-center font-display font-black leading-[1.05] tracking-tight text-5xl"
+        style={{ fontSize: "clamp(3rem, 8vw, 7.5rem)" }}
+      >
         {WORDS.map((word, i) => {
           const amount = reveal[i];
-          // Opacity ramps from DIM → 1. A transient blue glow peaks while the
-          // word is mid-reveal, then fades as it settles into white.
+          // Opacity ramps from DIM → 1 as the word reveals.
           const opacity = DIM + (1 - DIM) * amount;
+          // Transient blue glow that peaks mid-reveal, then settles to white.
           const glow = Math.sin(Math.min(1, amount) * Math.PI); // 0→1→0
+          // Colour interpolates dark(#1A1A1A) → white, with a blue tint at the
+          // glow peak for the cinematic accent.
+          const r = Math.round(DARK[0] + (255 - DARK[0]) * amount);
+          const g = Math.round(DARK[1] + (255 - DARK[1]) * amount);
+          const b = Math.round(
+            DARK[2] + (255 - DARK[2]) * amount + 40 * glow // push toward blue at peak
+          );
           return (
             <span key={`${word}-${i}`} className="inline-block">
               <span
                 className="reveal-word"
                 style={{
                   opacity,
-                  color: `rgb(${Math.round(207 + 48 * (1 - glow))} ${Math.round(
-                    228 + 27 * (1 - glow)
-                  )} 255)`,
+                  color: `rgb(${r} ${g} ${Math.min(255, b)})`,
                   textShadow:
                     glow > 0.02
-                      ? `0 0 ${(18 * glow).toFixed(1)}px rgba(0,102,255,${(
-                          0.75 * glow
-                        ).toFixed(2)})`
+                      ? `0 0 ${(34 * glow).toFixed(1)}px rgba(0,102,255,${(
+                          0.85 * glow
+                        ).toFixed(2)}), 0 0 ${(12 * glow).toFixed(
+                          1
+                        )}px rgba(0,102,255,${(0.6 * glow).toFixed(2)})`
                       : "none",
                 }}
               >
