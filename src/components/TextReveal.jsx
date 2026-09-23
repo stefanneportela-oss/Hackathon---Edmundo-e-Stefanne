@@ -24,11 +24,13 @@ const SENTENCE =
 
 const WORDS = SENTENCE.split(" ");
 
-// stage: 0 = dim, 1 = glowing (transient), 2 = lit white
+const DIM = 0.18; // resting opacity of an un-revealed word
+
 export default function TextReveal() {
   const sectionRef = useRef(null);
   const raf = useRef(0);
-  const [stages, setStages] = useState(() => WORDS.map(() => 0));
+  // Continuous 0..1 reveal amount per word (0 = dim, 1 = fully white).
+  const [reveal, setReveal] = useState(() => WORDS.map(() => 0));
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -38,7 +40,7 @@ export default function TextReveal() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
     if (prefersReduced) {
-      setStages(WORDS.map(() => 2));
+      setReveal(WORDS.map(() => 1));
       return;
     }
 
@@ -47,28 +49,27 @@ export default function TextReveal() {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Progress 0..1 across the middle band of the viewport. The reveal
-      // completes a little before the section is fully scrolled past, so the
-      // last word lights up while the phrase is still comfortably on screen.
+      // Overall scroll progress across the section (0..1).
       const start = vh * 0.85; // begin when the top passes 85% of the viewport
-      const end = vh * 0.35; // finish when the top reaches 35%
+      const end = vh * 0.3; // finish when the top reaches 30%
       const progress = Math.min(
         1,
         Math.max(0, (start - rect.top) / (start - end))
       );
 
-      setStages((prev) => {
+      // Spread the progress across the words. Each word occupies a slice; a
+      // word reveals CONTINUOUSLY as the progress sweeps through its slice, and
+      // the reveal is intentionally wider than one slice so neighbouring words
+      // fade together — giving the soft left-to-right gradient of the reference.
+      const span = 1.8 / WORDS.length; // fade width per word (feathered)
+      setReveal((prev) => {
         let changed = false;
-        const next = prev.map((stage, i) => {
-          // Even spread of thresholds across the words.
-          const threshold = (i + 0.6) / WORDS.length;
-          const glowBand = 0.06; // width of the transient glow window
-          let s;
-          if (progress >= threshold) s = 2; // fully lit
-          else if (progress >= threshold - glowBand) s = 1; // glowing
-          else s = 0; // dim
-          if (s !== stage) changed = true;
-          return s;
+        const next = prev.map((v, i) => {
+          const wordStart = (i / WORDS.length) * (1 - span);
+          const local = (progress - wordStart) / span;
+          const amount = Math.min(1, Math.max(0, local));
+          if (Math.abs(amount - v) > 0.001) changed = true;
+          return amount;
         });
         return changed ? next : prev;
       });
@@ -95,20 +96,36 @@ export default function TextReveal() {
       aria-label={SENTENCE}
       className="relative flex w-full items-center justify-center bg-transparent px-6 py-36 sm:py-44 lg:py-52"
     >
-      <p className="mx-auto max-w-5xl text-center font-display text-4xl font-bold leading-[1.15] tracking-tight sm:text-6xl lg:text-7xl">
-        {WORDS.map((word, i) => (
-          <span key={`${word}-${i}`} className="inline-block">
-            <span
-              className="reveal-word"
-              data-stage={stages[i]}
-              // Non-breaking space appended so words keep their spacing while
-              // each stays an independent inline-block for the glow transform.
-            >
-              {word}
+      <p className="mx-auto max-w-5xl text-center font-display text-4xl font-bold leading-[1.2] tracking-tight sm:text-6xl lg:text-7xl">
+        {WORDS.map((word, i) => {
+          const amount = reveal[i];
+          // Opacity ramps from DIM → 1. A transient blue glow peaks while the
+          // word is mid-reveal, then fades as it settles into white.
+          const opacity = DIM + (1 - DIM) * amount;
+          const glow = Math.sin(Math.min(1, amount) * Math.PI); // 0→1→0
+          return (
+            <span key={`${word}-${i}`} className="inline-block">
+              <span
+                className="reveal-word"
+                style={{
+                  opacity,
+                  color: `rgb(${Math.round(207 + 48 * (1 - glow))} ${Math.round(
+                    228 + 27 * (1 - glow)
+                  )} 255)`,
+                  textShadow:
+                    glow > 0.02
+                      ? `0 0 ${(18 * glow).toFixed(1)}px rgba(0,102,255,${(
+                          0.75 * glow
+                        ).toFixed(2)})`
+                      : "none",
+                }}
+              >
+                {word}
+              </span>
+              {i < WORDS.length - 1 ? "\u00A0" : ""}
             </span>
-            {i < WORDS.length - 1 ? "\u00A0" : ""}
-          </span>
-        ))}
+          );
+        })}
       </p>
     </section>
   );
