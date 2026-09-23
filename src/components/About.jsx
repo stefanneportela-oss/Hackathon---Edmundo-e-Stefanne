@@ -98,19 +98,19 @@ export default function About() {
           {/* --- Card 2: horizontal, web portal (center-top) --- */}
           <GlowCard className="md:col-span-4 lg:col-span-5">
             <div className="flex h-full flex-col p-6">
-              <div className="relative overflow-hidden rounded-2xl">
+              <div className="relative overflow-hidden rounded-2xl bg-black/20">
                 <img
                   src={MOCK.portal}
                   alt="Portal web SESI/SENAI"
                   loading="lazy"
                   draggable={false}
-                  className="h-44 w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105 sm:h-52"
+                  className="h-44 w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105 sm:h-48"
                 />
               </div>
-              <h3 className="mt-5 font-display text-lg font-bold text-white">
+              <h3 className="mt-7 font-display text-lg font-bold text-white">
                 Desde 2007, inovando para transformar.
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
+              <p className="mt-3 text-sm leading-relaxed text-muted">
                 Mais de 17 mil usuários por dia impactados pelas soluções que
                 desenvolvemos.
               </p>
@@ -129,7 +129,7 @@ export default function About() {
                   className="h-32 w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
                 />
               </div>
-              <div className="mt-auto pt-6">
+              <div className="mt-auto pt-7">
                 <div className="font-display text-6xl font-bold leading-none text-white">
                   20+
                 </div>
@@ -140,7 +140,7 @@ export default function About() {
 
           {/* --- Card 4: horizontal, text + dashboard (bottom, center+right) --- */}
           <GlowCard className="md:col-span-6 lg:col-span-8 lg:col-start-5">
-            <div className="flex h-full flex-col items-center gap-6 p-6 sm:flex-row sm:p-8">
+            <div className="flex h-full flex-col items-center gap-8 p-6 sm:flex-row sm:gap-10 sm:p-8">
               <p className="flex-1 font-display text-base leading-relaxed text-white sm:text-lg">
                 <span className="font-bold">Transformamos tecnologia em valor</span>
                 , unindo Inteligência Artificial, Automação, Big Data,
