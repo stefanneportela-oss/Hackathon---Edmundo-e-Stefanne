@@ -34,10 +34,31 @@ const PARTNERS = [
   { name: "CNI", src: cniLogo },
 ];
 
-export default function SocialProof() {
-  // Duplicate the list so the track can loop seamlessly at -50%.
-  const loop = [...PARTNERS, ...PARTNERS];
+/* One group = the 4 partner logos repeated enough times to comfortably
+ * exceed the widest viewport, so the belt is always full (no empty gap before
+ * the loop restarts). The track renders this group TWICE; animating by exactly
+ * -50% swaps copy A for copy B at the identical position → perfectly seamless,
+ * continuous, infinite scroll. */
+const REPEAT = 4;
 
+function LogoGroup({ ariaHidden }) {
+  return (
+    <ul
+      className="flex shrink-0 items-center gap-16 pr-16 sm:gap-24 sm:pr-24 lg:gap-[120px] lg:pr-[120px]"
+      aria-hidden={ariaHidden || undefined}
+    >
+      {Array.from({ length: REPEAT }).flatMap((_, r) =>
+        PARTNERS.map((partner) => (
+          <li key={`${partner.name}-${r}`}>
+            <LogoPill partner={partner} />
+          </li>
+        ))
+      )}
+    </ul>
+  );
+}
+
+export default function SocialProof() {
   return (
     <section
       id="parceiros"
@@ -51,16 +72,14 @@ export default function SocialProof() {
 
       {/* Marquee belt — hovering anywhere pauses the scroll */}
       <div className="marquee relative w-full">
-        <ul
-          className="marquee__track flex w-max items-center gap-16 sm:gap-24 lg:gap-[120px]"
-          style={{ "--marquee-duration": "36s" }}
+        <div
+          className="marquee__track flex w-max items-center"
+          style={{ "--marquee-duration": "40s" }}
         >
-          {loop.map((partner, i) => (
-            <li key={`${partner.name}-${i}`} aria-hidden={i >= PARTNERS.length}>
-              <LogoPill partner={partner} />
-            </li>
-          ))}
-        </ul>
+          {/* Two identical groups → translateX(-50%) loops with no jump */}
+          <LogoGroup />
+          <LogoGroup ariaHidden />
+        </div>
       </div>
     </section>
   );
