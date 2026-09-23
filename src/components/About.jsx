@@ -78,6 +78,7 @@ export default function About() {
                   src={MOCK.phones}
                   alt="Aplicativos móveis desenvolvidos pela SENAI Soluções Digitais"
                   loading="lazy"
+                  decoding="async"
                   draggable={false}
                   className="max-h-[360px] w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
                 />
@@ -112,6 +113,7 @@ export default function About() {
                       src={MOCK.portal}
                       alt="Portal web SESI/SENAI"
                       loading="lazy"
+                      decoding="async"
                       draggable={false}
                       className="h-[153px] w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                     />
@@ -140,6 +142,7 @@ export default function About() {
                         src={MOCK.vr}
                         alt="Ambiente industrial em realidade virtual"
                         loading="lazy"
+                        decoding="async"
                         draggable={false}
                         className="h-[146px] w-[143px] object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
                       />
@@ -171,6 +174,7 @@ export default function About() {
                     src={MOCK.dashboard}
                     alt="Dashboard de análise de dados"
                     loading="lazy"
+                    decoding="async"
                     draggable={false}
                     className="h-[230px] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
                   />
