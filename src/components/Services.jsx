@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { services } from "../data/services.js";
+import HeroBackground from "./HeroBackground.jsx";
 
 /**
  * Services section ("O Que Fazemos" / "What We Do").
@@ -62,16 +63,13 @@ export default function Services() {
       id="servicos"
       className="relative w-full overflow-hidden bg-black py-24 sm:py-28"
     >
-      {/* Ambient blue aura + faint grid, kept subtle so cards stay the focus */}
-      <div className="hero-aura pointer-events-none absolute inset-0 z-0 opacity-50" />
+      {/* Same animated background as the Projects / Sobre sections */}
+      <HeroBackground />
       <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ===== Full-width title (top) ===== */}
-        <h2 className="flex items-center gap-3 text-white">
-          Serviços
-          <ArrowDown className="text-primary" />
-        </h2>
+        <h2 className="text-white">Serviços</h2>
 
         {/* ===== Two-column body: left rail + card track ===== */}
         <div className="mt-10 flex flex-col gap-8 lg:mt-14 lg:flex-row lg:gap-10">
@@ -283,15 +281,6 @@ function ArrowUpRight() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden>
       <line x1="7" y1="17" x2="17" y2="7" />
       <polyline points="7 7 17 7 17 17" />
-    </svg>
-  );
-}
-
-function ArrowDown({ className = "" }) {
-  return (
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
-      <line x1="12" y1="5" x2="12" y2="19" />
-      <polyline points="19 12 12 19 5 12" />
     </svg>
   );
 }
