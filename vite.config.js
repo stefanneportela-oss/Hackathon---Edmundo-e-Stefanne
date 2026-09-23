@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// Served from https://<user>.github.io/Hackathon---Edmundo-e-Stefanne/
+// Base relativo ('./') funciona tanto no Vercel (raiz) quanto no GitHub Pages
+// (subpasta), sem precisar trocar a config por ambiente.
 export default defineConfig({
-  base: '/Hackathon---Edmundo-e-Stefanne/',
+  base: './',
   plugins: [react(), tailwindcss()],
 })
