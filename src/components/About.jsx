@@ -61,28 +61,32 @@ export default function About() {
           </p>
         </div>
 
-        {/* ===== Bento Grid ===== */}
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-6 lg:grid-cols-12">
-          {/* --- Card 1: vertical, phones + CTA (left, spans full height) --- */}
-          <GlowCard className="md:col-span-2 md:row-span-2 lg:col-span-4">
+        {/* ===== Bento Grid — nested structure mirroring Figma =====
+            bento-grid (HORIZONTAL, gap 24):
+              · card-1  (fixed left column, 380/1350 ≈ 28%)
+              · right column (grows, VERTICAL, gap 24):
+                  · right-top-row (HORIZONTAL, gap 24): card-2 (grows) + card-3 (fixed)
+                  · card-4 (HORIZONTAL, gap 24) */}
+        <div className="mt-14 flex flex-col gap-6 lg:flex-row">
+          {/* --- Card 1: left column, phones (top) + text + CTA (bottom) --- */}
+          <GlowCard className="lg:w-[28%] lg:shrink-0">
             <div className="flex h-full flex-col p-6">
-              {/* Phone mockup — shown whole (contain), floating on the dark card */}
-              <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-2xl">
+              {/* Phone mockup — fills the top, whole (contain) */}
+              <div className="flex flex-1 items-center justify-center overflow-hidden">
                 <img
                   src={MOCK.phones}
                   alt="Aplicativos móveis desenvolvidos pela SENAI Soluções Digitais"
                   loading="lazy"
                   draggable={false}
-                  className="h-full max-h-[320px] w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+                  className="max-h-[360px] w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
                 />
               </div>
 
-              <p className="mt-6 text-sm leading-relaxed text-white/70">
+              <p className="mt-6 text-base leading-relaxed text-white">
                 Tecnologia que evolui, pessoas que transformam, soluções que
                 geram resultados.
               </p>
 
-              {/* White solid pill CTA */}
               <div className="mt-6">
                 <a
                   href="#projetos"
@@ -95,71 +99,81 @@ export default function About() {
             </div>
           </GlowCard>
 
-          {/* --- Card 2: horizontal, web portal (center-top) --- */}
-          <GlowCard className="md:col-span-4 lg:col-span-5">
-            <div className="flex h-full flex-col">
-              {/* Full-bleed portal screenshot: fills the card width, top corners
-                  rounded, no padding — the text sits clearly below it. */}
-              <img
-                src={MOCK.portal}
-                alt="Portal web SESI/SENAI"
-                loading="lazy"
-                draggable={false}
-                className="w-full rounded-t-3xl object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-              />
-              <div className="px-6 pb-6 pt-5">
-                <h3 className="font-display text-lg font-bold text-white">
-                  Desde 2007, inovando para transformar.
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  Mais de 17 mil usuários por dia impactados pelas soluções que
-                  desenvolvemos.
-                </p>
-              </div>
-            </div>
-          </GlowCard>
-
-          {/* --- Card 3: square, "20+" metric (right-top) --- */}
-          <GlowCard className="md:col-span-2 lg:col-span-3">
-            <div className="flex h-full flex-col p-6">
-              <div className="relative overflow-hidden rounded-2xl">
-                <img
-                  src={MOCK.vr}
-                  alt="Ambiente industrial em realidade virtual"
-                  loading="lazy"
-                  draggable={false}
-                  className="h-32 w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-                />
-              </div>
-              <div className="mt-auto pt-7">
-                <div className="font-display text-6xl font-bold leading-none text-white">
-                  20+
+          {/* --- Right column --- */}
+          <div className="flex min-w-0 flex-1 flex-col gap-6">
+            {/* Top row: card-2 (grows) + card-3 (fixed) */}
+            <div className="flex flex-col gap-6 sm:flex-row">
+              {/* Card 2: portal — image 153px + title/desc (gap 6px) */}
+              <GlowCard className="min-w-0 flex-1">
+                <div className="flex h-full flex-col gap-5 p-6">
+                  <div className="overflow-hidden rounded-lg">
+                    <img
+                      src={MOCK.portal}
+                      alt="Portal web SESI/SENAI"
+                      loading="lazy"
+                      draggable={false}
+                      className="h-[153px] w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="font-display text-base font-bold text-white">
+                      Desde 2007, inovando para transformar.
+                    </h3>
+                    <p className="text-base leading-snug text-white">
+                      Mais de 17 mil usuários por dia impactados pelas soluções
+                      que desenvolvemos.
+                    </p>
+                  </div>
                 </div>
-                <div className="mt-2 text-sm text-muted">Projetos Ativos</div>
-              </div>
-            </div>
-          </GlowCard>
+              </GlowCard>
 
-          {/* --- Card 4: horizontal, text + dashboard (bottom, center+right) --- */}
-          <GlowCard className="md:col-span-6 lg:col-span-8 lg:col-start-5">
-            <div className="flex h-full flex-col items-center gap-8 p-6 sm:flex-row sm:gap-10 sm:p-8">
-              <p className="flex-1 font-display text-base leading-relaxed text-white sm:text-lg">
-                <span className="font-bold">Transformamos tecnologia em valor</span>
-                , unindo Inteligência Artificial, Automação, Big Data,
-                Desenvolvimento de Aplicações Mobile e Web para criar soluções
-                que fazem a diferença.
-              </p>
-              <div className="flex w-full flex-1 items-center justify-center overflow-hidden rounded-2xl sm:w-auto">
-                <img
-                  src={MOCK.dashboard}
-                  alt="Dashboard de análise de dados"
-                  loading="lazy"
-                  draggable={false}
-                  className="h-44 w-full object-contain object-center transition-transform duration-500 ease-out group-hover:scale-105 sm:h-52"
-                />
-              </div>
+              {/* Card 3: "20+" metric — image (top) + number + caption */}
+              <GlowCard className="sm:w-[240px] sm:shrink-0">
+                <div className="flex h-full flex-col gap-4 p-6">
+                  <div className="overflow-hidden rounded-lg">
+                    <img
+                      src={MOCK.vr}
+                      alt="Ambiente industrial em realidade virtual"
+                      loading="lazy"
+                      draggable={false}
+                      className="h-[146px] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="mt-auto">
+                    <div className="font-display text-5xl font-bold leading-none text-white">
+                      20+
+                    </div>
+                    <div className="mt-2 text-base text-white">
+                      Projetos Ativos
+                    </div>
+                  </div>
+                </div>
+              </GlowCard>
             </div>
-          </GlowCard>
+
+            {/* Card 4: text (grows) + dashboard image (fixed 350×230) */}
+            <GlowCard className="flex-1">
+              <div className="flex h-full flex-col items-center gap-6 p-8 sm:flex-row">
+                <p className="flex-1 font-display text-base leading-relaxed text-white">
+                  <span className="font-bold">
+                    Transformamos tecnologia em valor
+                  </span>
+                  , unindo Inteligência Artificial, Automação, Big Data,
+                  Desenvolvimento de Aplicações Mobile e Web para criar soluções
+                  que fazem a diferença.
+                </p>
+                <div className="w-full shrink-0 overflow-hidden rounded-lg sm:w-[350px]">
+                  <img
+                    src={MOCK.dashboard}
+                    alt="Dashboard de análise de dados"
+                    loading="lazy"
+                    draggable={false}
+                    className="h-[230px] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </div>
+              </div>
+            </GlowCard>
+          </div>
         </div>
       </div>
     </section>
