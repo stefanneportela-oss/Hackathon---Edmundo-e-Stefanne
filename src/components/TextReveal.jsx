@@ -38,8 +38,8 @@ export default function TextReveal() {
       className="relative flex min-h-[90vh] w-full items-center justify-center bg-transparent px-6 py-36 sm:py-44 lg:py-56"
     >
       <p
-        className="mx-auto max-w-5xl text-center font-display font-black leading-[1.08] tracking-tight text-4xl"
-        style={{ fontSize: "clamp(2.25rem, 6vw, 5.5rem)" }}
+        className="mx-auto max-w-4xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
+        style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
       >
         {WORDS.map((word, i) => (
           <Word
