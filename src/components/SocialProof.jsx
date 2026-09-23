@@ -74,7 +74,7 @@ export default function SocialProof() {
       <div className="marquee relative w-full">
         <div
           className="marquee__track flex w-max items-center"
-          style={{ "--marquee-duration": "40s" }}
+          style={{ "--marquee-duration": "80s" }}
         >
           {/* Two identical groups → translateX(-50%) loops with no jump */}
           <LogoGroup />

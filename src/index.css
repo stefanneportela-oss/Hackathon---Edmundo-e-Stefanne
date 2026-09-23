@@ -555,8 +555,11 @@ html.animations-paused *::after {
 }
 
 .marquee__track {
-  animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+  animation: marquee-scroll var(--marquee-duration, 80s) linear infinite;
+  /* Promote to its own GPU layer + smooth sub-pixel motion (no jitter) */
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 /* Instant pause when hovering anywhere on the belt */
