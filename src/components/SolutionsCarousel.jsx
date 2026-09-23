@@ -14,9 +14,9 @@ import { solutions } from "../data/solutions.js";
  *   interaction pauses it instantly and resumes after a short delay.
  */
 
-const CARD_W = 190; // base card width (px) — controls spacing between cards
-const GAP = 26;
-const STEP = CARD_W + GAP;
+const CARD_W = 200; // card width (px)
+const STEP = 186; // wheel/drag sensitivity (px per card-unit)
+const RADIUS = 520; // ring radius (px) — distance from center to each card
 
 export default function SolutionsCarousel() {
   const stageRef = useRef(null);
@@ -29,6 +29,8 @@ export default function SolutionsCarousel() {
 
   // Force re-render each frame so transforms update (cheap: transforms only)
   const [, setTick] = useState(0);
+  // Which card is currently centered — changes trigger the swap animation
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const N = solutions.length;
 
@@ -51,13 +53,19 @@ export default function SolutionsCarousel() {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
 
-      // Idle autoscroll
-      if (autoplay.current && !prefersReduced) {
-        target.current += dt * 0.35; // cards per second
+      // Idle autoscroll (slow, continuous) — halted when motion is paused
+      const motionPaused =
+        document.documentElement.classList.contains("animations-paused");
+      if (autoplay.current && !prefersReduced && !motionPaused) {
+        target.current += dt * 0.09; // cards per second
       }
 
       // Ease pos -> target (inertia / smoothing)
       pos.current += (target.current - pos.current) * Math.min(dt * 7, 1);
+
+      // Which card is centered right now? (wrapped, rounded)
+      const centered = ((Math.round(pos.current) % N) + N) % N;
+      setActiveIndex((prev) => (prev === centered ? prev : centered));
 
       setTick((t) => (t + 1) % 1000000);
       raf.current = requestAnimationFrame(tick);
@@ -133,61 +141,103 @@ export default function SolutionsCarousel() {
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
         className="relative mx-auto h-[380px] cursor-grab active:cursor-grabbing sm:h-[440px]"
-        style={{ perspective: "1200px", touchAction: "pan-y" }}
+        style={{ perspective: "1400px", touchAction: "pan-y" }}
       >
         <div
           className="absolute left-1/2 top-1/2"
-          style={{ transformStyle: "preserve-3d" }}
+          style={{
+            transformStyle: "preserve-3d",
+            transform: `translateZ(-${RADIUS}px)`,
+          }}
         >
           {solutions.map((s, i) => {
-            const d = distFor(i);
+            const d = distFor(i); // signed shortest distance from center
             const abs = Math.abs(d);
-            // Hide cards too far from center (keeps the arc tidy)
-            if (abs > 4.2) return null;
 
             const isCenter = abs < 0.5;
-            const x = d * STEP;
-            const rotateY = d * -18; // tilt sides inward
-            const translateZ = -abs * 90; // push sides back
-            const arcY = abs * abs * 12; // concave vertical curve
-            const scale = Math.max(0.72, 1 - abs * 0.08);
-            const opacity = abs > 3.4 ? 0 : 1 - abs * 0.14;
-            const z = 100 - Math.round(abs * 10);
+
+            // RING CAROUSEL (Framer 3D-curved model): cards sit around a
+            // cylinder. Each is placed at an even angular step, rotated out to
+            // face the viewer, then pushed out by the radius. The whole ring
+            // shares one scroll variable, so spacing is perfectly uniform and
+            // the loop is seamless.
+            const angleStep = 26; // degrees between adjacent cards
+            const angle = d * angleStep; // this card's angle on the ring
+
+            // Depth-based cues (closer to front = bigger / brighter)
+            const rad = (angle * Math.PI) / 180;
+            const frontness = Math.cos(rad); // 1 at center, →0 at the sides
+            const scale = 0.82 + Math.max(0, frontness) * 0.28; // 0.82 → 1.1
+            const opacity = frontness < -0.2 ? 0 : Math.max(0, 0.35 + frontness * 0.65);
+            const z = 100 + Math.round(frontness * 60);
+
+            // Hide the cards on the far/back side of the ring
+            if (abs > 3.6) return null;
 
             return (
               <article
                 key={s.id}
                 onClick={() => {
                   if (drag.current.moved) return;
-                  target.current = i; // clicking centers the card
+                  target.current = i; // clicking rotates this card to front
                   pauseAutoplay();
                 }}
                 className="group absolute -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 style={{
                   width: CARD_W,
-                  transform: `translate3d(${x}px, ${arcY}px, ${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                  transform: `rotateY(${angle}deg) translateZ(${RADIUS}px) scale(${scale})`,
                   opacity,
                   zIndex: z,
                 }}
               >
+                {/* Glass gradient border on the active card (bright, fading) */}
+                {isCenter && (
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 z-20 rounded-[14px] p-px"
+                    style={{
+                      background:
+                        "linear-gradient(150deg, rgba(0,188,255,0.9) 0%, rgba(0,120,255,0.5) 30%, rgba(255,255,255,0.06) 55%, rgba(0,120,255,0.5) 78%, rgba(0,188,255,0.9) 100%)",
+                      WebkitMask:
+                        "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+                      WebkitMaskComposite: "xor",
+                      maskComposite: "exclude",
+                    }}
+                  />
+                )}
+
                 <div
-                  className={`relative aspect-[3/4] overflow-hidden rounded-[24px] border bg-ink-800 transition-[transform,border-color,box-shadow] duration-300 ease-out group-hover:scale-[1.05] ${
-                    isCenter
-                      ? "border-primary shadow-[0_0_36px_-6px_rgba(0,102,255,0.7)]"
-                      : "border-white/12"
-                  } group-hover:border-primary group-hover:shadow-[0_0_42px_-4px_rgba(0,102,255,0.85)]`}
+                  key={isCenter ? `active-${activeIndex}` : undefined}
+                  className={`relative aspect-[3/4] overflow-hidden rounded-[14px] border border-white/12 transition-[transform,background-color] duration-300 ease-out group-hover:scale-[1.05] ${
+                    isCenter ? "bg-[#050b1a] animate-card-swap" : "bg-ink-800"
+                  }`}
                 >
                   <img
                     src={s.src}
                     alt={s.title}
                     draggable={false}
                     loading="lazy"
-                    className="h-full w-full object-cover"
+                    className={`h-full w-full object-cover ${
+                      isCenter ? "animate-card-zoom" : ""
+                    }`}
                   />
                   {/* Legibility gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
                   {/* Blue hover sweep */}
                   <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ background: "linear-gradient(135deg, rgba(0,102,255,0.28) 0%, transparent 55%)" }} />
+
+                  {/* Animated sheen sweep on the active card */}
+                  {isCenter && (
+                    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                      <div
+                        className="animate-card-sheen absolute inset-y-0 -left-1/3 w-1/3"
+                        style={{
+                          background:
+                            "linear-gradient(90deg, transparent, rgba(180,235,255,0.35), transparent)",
+                        }}
+                      />
+                    </div>
+                  )}
 
                   {/* Caption */}
                   <div className="absolute inset-x-0 bottom-0 p-4 text-left">
@@ -208,11 +258,6 @@ export default function SolutionsCarousel() {
           })}
         </div>
       </div>
-
-      {/* Hint */}
-      <p className="mt-4 text-center text-xs text-muted">
-        Role, arraste ou use a roda do mouse para navegar
-      </p>
     </div>
   );
 }
