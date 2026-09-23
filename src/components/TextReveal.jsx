@@ -14,20 +14,43 @@ const SENTENCE =
 
 const WORDS = SENTENCE.split(" ");
 
-// Floating portrait cards. Positions are placed toward the corners/sides so
-// they frame the centred text (matching the reference). `hideOnMobile` trims
-// the busier ones on small screens. Free-to-use Unsplash portraits.
+/* ---------------------------------------------------------------------------
+ * FINAL IMAGES — where to drop yours:
+ *   Put your files in  public/portraits/  named portrait-1..6 (see the
+ *   README.txt there), then flip USE_LOCAL_PORTRAITS to `true`.
+ *   While it's false, the section shows Unsplash placeholders.
+ * ------------------------------------------------------------------------- */
+const USE_LOCAL_PORTRAITS = false;
+const LOCAL_EXT = "jpg"; // change if you upload .png / .webp
+
 const u = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=320&h=380&q=80`;
 
-const PORTRAITS = [
-  { src: u("photo-1494790108377-be9c29b29330"), pos: "left-[3%] top-[6%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1 },
-  { src: u("photo-1500648767791-00dcc994a43e"), pos: "left-[9%] top-[42%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true },
-  { src: u("photo-1544005313-94ddf0286df2"), pos: "right-[3%] top-[4%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18 },
-  { src: u("photo-1519085360753-af0119f7cbe7"), pos: "right-[8%] top-[40%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true },
-  { src: u("photo-1507003211169-0a1dd7228f2d"), pos: "left-[6%] bottom-[6%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true },
-  { src: u("photo-1506794778202-cad84cf45f1d"), pos: "right-[5%] bottom-[7%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48 },
+// Placeholder Unsplash portraits (used until USE_LOCAL_PORTRAITS = true).
+const PLACEHOLDERS = [
+  "photo-1494790108377-be9c29b29330",
+  "photo-1500648767791-00dcc994a43e",
+  "photo-1544005313-94ddf0286df2",
+  "photo-1519085360753-af0119f7cbe7",
+  "photo-1507003211169-0a1dd7228f2d",
+  "photo-1506794778202-cad84cf45f1d",
 ];
+
+const srcFor = (i) =>
+  USE_LOCAL_PORTRAITS
+    ? `/portraits/portrait-${i + 1}.${LOCAL_EXT}`
+    : u(PLACEHOLDERS[i]);
+
+// Floating portrait cards, pulled IN CLOSER to the centred text so they hug the
+// phrase (per request). `hideOnMobile` trims the busier ones on small screens.
+const PORTRAITS = [
+  { pos: "left-[14%] top-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1 },
+  { pos: "left-[19%] top-[46%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true },
+  { pos: "right-[14%] top-[10%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18 },
+  { pos: "right-[18%] top-[44%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true },
+  { pos: "left-[17%] bottom-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true },
+  { pos: "right-[16%] bottom-[13%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48 },
+].map((p, i) => ({ ...p, src: srcFor(i) }));
 
 const container = {
   hidden: {},
