@@ -46,15 +46,21 @@ export default function About() {
       <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* ===== Centered header ===== */}
-        <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
-          <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-display text-xs font-semibold uppercase tracking-[0.18em] text-brand-300 backdrop-blur-md">
+        {/* ===== Centered header (Figma "section-header", VERTICAL gap 16) =====
+            · badge: solid #1A1A1A, radius 20, padding 8/16, text "Quem Somos"
+              12px Semi Bold in cyan (#00D2FF)
+            · title: 50px Bahnschrift SemiBold, white
+            · subtitle: 16px regular, muted (#A1A1AA), max ~720px */}
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+          <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
             Quem Somos
           </span>
 
-          <h2 className="mt-6 text-white">SENAI Soluções Digitais</h2>
+          <h2 className="font-display text-[2.25rem] font-semibold text-white sm:text-[50px]">
+            SENAI Soluções Digitais
+          </h2>
 
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+          <p className="max-w-[720px] text-base leading-relaxed text-muted">
             Somos a vanguarda da inovação tecnológica, dedicados a desenvolver
             softwares e soluções digitais que transformam a realidade da
             indústria e dos negócios.
