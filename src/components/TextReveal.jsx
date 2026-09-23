@@ -22,12 +22,12 @@ export default function TextReveal() {
   const sectionRef = useRef(null);
   const reduced = useReducedMotion();
 
-  // Drive the reveal across a real scroll span: from when the section's top
-  // reaches ~80% of the viewport until its bottom rises to ~40%. This gives
-  // enough travel for the words to light up one after another.
+  // Drive the reveal so the phrase finishes lighting up exactly when the
+  // section is centred on screen: start when its top enters from the bottom of
+  // the viewport, reach full reveal when its centre meets the viewport centre.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 0.8", "end 0.4"],
+    offset: ["start end", "center center"],
   });
 
   return (
