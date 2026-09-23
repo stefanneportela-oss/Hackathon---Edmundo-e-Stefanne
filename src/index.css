@@ -581,3 +581,33 @@ html.animations-paused *::after {
     animation: none;
   }
 }
+
+/* ============================================================
+   TEXT REVEAL — scroll-driven word-by-word highlight
+   Words start dim, briefly glow Primary-Blue as they activate, then settle
+   into pure white. Driven by data-stage written from React (0/1/2).
+   ============================================================ */
+.reveal-word {
+  display: inline-block;
+  color: #333333;
+  text-shadow: 0 0 0 rgba(0, 102, 255, 0);
+  transition: color 0.45s ease, text-shadow 0.45s ease, transform 0.45s ease;
+  will-change: color, text-shadow, transform;
+}
+/* Transient glow as the word activates */
+.reveal-word[data-stage="1"] {
+  color: #cfe4ff;
+  text-shadow: 0 0 18px rgba(0, 102, 255, 0.85), 0 0 6px rgba(0, 102, 255, 0.6);
+  transform: translateY(-1px);
+}
+/* Settled: pure white */
+.reveal-word[data-stage="2"] {
+  color: #ffffff;
+  text-shadow: 0 0 0 rgba(0, 102, 255, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-word {
+    transition: none;
+  }
+}
