@@ -2,24 +2,27 @@ import { Suspense, useMemo, useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
+import iconUrl from "../assets/logos/icon-only.svg";
 
 /**
  * LogoHologram3D — holographic 3D reconstruction of the SENAI Soluções
  * Digitais logo icon, rendered with React Three Fiber / Three.js.
+ *
+ * The geometry is built from the EXACT logo icon SVG path (extracted from the
+ * brand's own Logo-1.svg into icon-only.svg) and extruded with three.js'
+ * SVGLoader, so the shape is a 1:1 match with the official mark — no manual
+ * re-drawing. It is then given a cyber / holographic material.
  *
  * Visual language (per design brief):
  *  - Cyber / holographic material: translucent inner-glow faces + a subtle
  *    technical wireframe in Primary Blue (#0066FF) and electric cyan.
  *  - Neon ambient lighting reflecting on the absolute-black background.
  *  - Continuous soft-axis rotation + vertical bobbing (levitation).
- *  - Exploded-view: the icon's geometric parts drift apart and back in layers.
- *  - Orbiting luminous particle field (point cloud) for a hi-tech projection.
+ *  - Exploded-view: the icon's sub-shapes drift apart and back in layers.
+ *  - Orbiting luminous particle field (point cloud).
  *  - Reactive mouse parallax tilt.
- *  - Responsive: scales down on small screens, respects reduced-motion.
- *
- * The icon is reconstructed as two interlocking angular "elbow" modules (the
- * paralelogram-fold shapes that make up the SENAI SD mark), each extruded into
- * a 3D slab, plus small connective nodes.
+ *  - Responsive + respects reduced-motion.
  */
 
 const PRIMARY = "#0066ff";
@@ -27,130 +30,142 @@ const CYAN = "#00e0ff";
 const CYAN_SOFT = "#7fefff";
 
 /* --------------------------------------------------------------------------
- * Geometry: build one angular "elbow" module of the logo mark.
- * The shape is a folded parallelogram (a chevron-like bracket). We build it
- * as a 2D THREE.Shape then extrude it to give the holographic slab depth.
+ * Load the exact logo icon SVG and turn each of its sub-paths into an
+ * extruded 3D slab. Returns an array of { geometry, center } so each piece
+ * can drift independently in the exploded view.
  * ------------------------------------------------------------------------ */
-function useElbowGeometry(depth = 0.34) {
-  return useMemo(() => {
-    const s = new THREE.Shape();
-    // A stylised bracket / elbow (top bar + descending leg), normalised units.
-    s.moveTo(-0.9, 0.9);
-    s.lineTo(0.9, 0.9);
-    s.lineTo(0.9, 0.5);
-    s.lineTo(-0.4, 0.5);
-    s.lineTo(-0.4, -0.5);
-    s.lineTo(0.9, -0.5);
-    s.lineTo(0.9, -0.9);
-    s.lineTo(-0.9, -0.9);
-    s.closePath();
+function useLogoIconGeometries(depth = 14) {
+  const [pieces, setPieces] = useState([]);
 
-    const geo = new THREE.ExtrudeGeometry(s, {
-      depth,
-      bevelEnabled: true,
-      bevelThickness: 0.05,
-      bevelSize: 0.05,
-      bevelSegments: 2,
-      steps: 1,
+  useEffect(() => {
+    let cancelled = false;
+    new SVGLoader().load(iconUrl, (data) => {
+      if (cancelled) return;
+
+      // Collect every shape from every path in the icon SVG.
+      const shapes = [];
+      data.paths.forEach((path) => {
+        SVGLoader.createShapes(path).forEach((s) => shapes.push(s));
+      });
+
+      // Compute a shared bounding box so we can centre the whole mark and
+      // normalise its scale to ~unit size regardless of the SVG's viewBox.
+      const raw = shapes.map((shape) => {
+        const g = new THREE.ExtrudeGeometry(shape, {
+          depth,
+          bevelEnabled: true,
+          bevelThickness: 2,
+          bevelSize: 1.5,
+          bevelSegments: 2,
+          steps: 1,
+        });
+        // SVG Y grows downward; flip so the icon is upright.
+        g.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
+        g.computeBoundingBox();
+        return g;
+      });
+
+      // Global bounds of all sub-shapes combined.
+      const globalBox = new THREE.Box3();
+      raw.forEach((g) => globalBox.union(g.boundingBox));
+      const globalCenter = new THREE.Vector3();
+      globalBox.getCenter(globalCenter);
+      const size = new THREE.Vector3();
+      globalBox.getSize(size);
+      const scale = 2.6 / Math.max(size.x, size.y); // fit into ~unit space
+
+      const out = raw.map((g) => {
+        // Recentre on the global centre, then scale to unit space.
+        g.translate(-globalCenter.x, -globalCenter.y, -globalCenter.z);
+        g.scale(scale, scale, scale);
+        g.computeBoundingBox();
+        const c = new THREE.Vector3();
+        g.boundingBox.getCenter(c);
+        // Outward drift direction for the exploded view.
+        const dir = c.clone().normalize();
+        return { geometry: g, dir: [dir.x, dir.y, dir.z || 0.3] };
+      });
+
+      setPieces(out);
     });
-    geo.center();
-    return geo;
+    return () => {
+      cancelled = true;
+    };
   }, [depth]);
+
+  return pieces;
 }
 
 /* A single holographic slab: translucent glowing fill + technical wireframe. */
-function HoloPiece({ geometry, color = CYAN, position, rotation, explode = 0, dir }) {
+function HoloPiece({ geometry, color, dir, explode = 0 }) {
   const group = useRef();
 
   useFrame(() => {
     if (!group.current || !dir) return;
-    // Exploded-view offset along the piece's own outward direction.
     group.current.position.set(
-      position[0] + dir[0] * explode,
-      position[1] + dir[1] * explode,
-      position[2] + dir[2] * explode
+      dir[0] * explode,
+      dir[1] * explode,
+      dir[2] * explode
     );
   });
 
   return (
-    <group ref={group} position={position} rotation={rotation}>
+    <group ref={group}>
       {/* Translucent inner-glow body */}
       <mesh geometry={geometry}>
         <meshPhysicalMaterial
           color={color}
           transparent
-          opacity={0.28}
+          opacity={0.32}
           roughness={0.15}
           metalness={0.1}
           transmission={0.6}
-          thickness={0.8}
+          thickness={0.9}
           emissive={color}
-          emissiveIntensity={0.6}
+          emissiveIntensity={0.65}
           depthWrite={false}
           side={THREE.DoubleSide}
         />
       </mesh>
       {/* Technical wireframe overlay */}
       <mesh geometry={geometry}>
-        <meshBasicMaterial color={color} wireframe transparent opacity={0.55} />
+        <meshBasicMaterial color={color} wireframe transparent opacity={0.45} />
       </mesh>
     </group>
   );
 }
 
-/* Small connective node cubes that float between the modules. */
-function Node({ position, color = CYAN_SOFT }) {
-  return (
-    <mesh position={position}>
-      <boxGeometry args={[0.16, 0.16, 0.16]} />
-      <meshBasicMaterial color={color} transparent opacity={0.85} />
-    </mesh>
-  );
-}
-
-/* The assembled logo hologram: two elbow modules + nodes, with rotation,
- * levitation and a breathing exploded-view. */
+/* The assembled logo: exact icon sub-shapes with rotation, levitation and a
+ * breathing exploded-view. */
 function LogoAssembly({ reducedMotion }) {
   const root = useRef();
-  const geo = useElbowGeometry();
+  const pieces = useLogoIconGeometries();
   const [explode, setExplode] = useState(0);
 
   useFrame((state, delta) => {
     if (!root.current) return;
     if (!reducedMotion) {
-      // Continuous soft-axis rotation.
       root.current.rotation.y += delta * 0.35;
-      root.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.4) * 0.12;
+      root.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.4) * 0.1;
     }
-    // Breathing exploded view (0 .. 0.35).
-    const t = reducedMotion ? 0 : (Math.sin(state.clock.elapsedTime * 0.7) * 0.5 + 0.5) * 0.35;
+    const t = reducedMotion
+      ? 0
+      : (Math.sin(state.clock.elapsedTime * 0.7) * 0.5 + 0.5) * 0.15;
     setExplode(t);
   });
 
   return (
     <group ref={root} scale={1.15}>
-      {/* Module A — upper/front elbow */}
-      <HoloPiece
-        geometry={geo}
-        color={CYAN}
-        position={[-0.28, 0.32, 0.18]}
-        rotation={[0, 0, 0]}
-        explode={explode}
-        dir={[-0.6, 0.7, 0.4]}
-      />
-      {/* Module B — lower/back elbow, mirrored to interlock */}
-      <HoloPiece
-        geometry={geo}
-        color={PRIMARY}
-        position={[0.28, -0.32, -0.18]}
-        rotation={[0, Math.PI, Math.PI]}
-        explode={explode}
-        dir={[0.6, -0.7, -0.4]}
-      />
-      {/* Connective floating nodes */}
-      <Node position={[0.0, 0.0, 0.55]} />
-      <Node position={[0.55, 0.55, -0.2]} color={CYAN} />
-      <Node position={[-0.55, -0.55, 0.2]} color={PRIMARY} />
+      {pieces.map((p, i) => (
+        <HoloPiece
+          key={i}
+          geometry={p.geometry}
+          dir={p.dir}
+          explode={explode}
+          // Alternate the two brand blues across the sub-shapes.
+          color={i % 2 === 0 ? CYAN : PRIMARY}
+        />
+      ))}
     </group>
   );
 }
@@ -161,12 +176,11 @@ function ParticleField({ count = 260, reducedMotion }) {
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      // Distribute in a spherical shell around the icon.
-      const r = 2.2 + Math.random() * 1.8;
+      const r = 2.4 + Math.random() * 1.8;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.7;
+      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.75;
       arr[i * 3 + 2] = r * Math.cos(phi);
     }
     return arr;
@@ -200,7 +214,6 @@ function ParallaxRig({ children, reducedMotion }) {
 
   useFrame(() => {
     if (!rig.current || reducedMotion) return;
-    // Smoothly ease the rig toward the pointer position.
     rig.current.rotation.y = THREE.MathUtils.lerp(
       rig.current.rotation.y,
       pointer.x * 0.4,

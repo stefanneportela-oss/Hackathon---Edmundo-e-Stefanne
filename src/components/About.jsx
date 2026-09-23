@@ -1,4 +1,3 @@
-import HeroBackground from "./HeroBackground.jsx";
 import phonesImg from "../assets/about/phones.png";
 import portalImg from "../assets/about/portal.png";
 import vrImg from "../assets/about/vr.png";
@@ -39,12 +38,8 @@ export default function About() {
   return (
     <section
       id="sobre"
-      className="relative w-full overflow-hidden bg-black py-24 sm:py-28"
+      className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
-      {/* Same animated background as the Projects section */}
-      <HeroBackground />
-      <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
-
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ===== Centered header (Figma "section-header", VERTICAL gap 16) =====
             · badge: solid #1A1A1A, radius 20, padding 8/16, text "Quem Somos"

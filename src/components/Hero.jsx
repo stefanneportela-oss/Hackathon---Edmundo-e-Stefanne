@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import HeroBackground from "./HeroBackground.jsx";
 import PrimaryButton from "./ui/PrimaryButton.jsx";
 
 // The 3D hologram pulls in three.js — lazy-load it so it never blocks the
@@ -10,12 +9,8 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[88vh] w-full items-center overflow-hidden bg-black pt-28 pb-20 sm:pt-32"
+      className="relative flex min-h-[88vh] w-full items-center overflow-hidden bg-transparent pt-28 pb-20 sm:pt-32"
     >
-      {/* ===== Background (mouse-follow glow + grid, matches Projects) ===== */}
-      <HeroBackground />
-      <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
-
       {/* ===== Main content — two columns: text (left) + hologram (right) ===== */}
       <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8">
         {/* --- Left: headline + copy (anchored left) --- */}

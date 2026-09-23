@@ -1,6 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { services } from "../data/services.js";
-import HeroBackground from "./HeroBackground.jsx";
 
 /**
  * Services section ("O Que Fazemos" / "What We Do").
@@ -61,12 +60,8 @@ export default function Services() {
   return (
     <section
       id="servicos"
-      className="relative w-full overflow-hidden bg-black py-24 sm:py-28"
+      className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
-      {/* Same animated background as the Projects / Sobre sections */}
-      <HeroBackground />
-      <div className="bg-grid pointer-events-none absolute inset-0 z-0" />
-
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ===== Full-width title (top) ===== */}
         <h2 className="text-white">Serviços</h2>
