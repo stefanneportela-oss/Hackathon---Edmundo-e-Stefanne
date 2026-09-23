@@ -74,23 +74,10 @@ export default function SolutionsCarousel() {
     return () => cancelAnimationFrame(raf.current);
   }, []);
 
-  // ---- Wheel: vertical + horizontal scroll drive the carousel ----
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    const onWheel = (e) => {
-      const delta =
-        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      if (Math.abs(delta) < 1) return;
-      e.preventDefault();
-      target.current += delta / STEP; // convert px scroll to card units
-      pauseAutoplay();
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [pauseAutoplay]);
-
-  // ---- Drag to scroll (pointer / touch) ----
+  // ---- Drag to rotate (pointer / touch) ----
+  // Wheel/scroll control was intentionally removed: the deck is driven only by
+  // the continuous autoplay spin + manual drag. Page scroll now passes through
+  // the carousel normally.
   const onPointerDown = (e) => {
     drag.current = {
       down: true,
