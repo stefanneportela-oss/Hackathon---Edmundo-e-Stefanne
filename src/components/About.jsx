@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import HeroBackground from "./HeroBackground.jsx";
 import phonesImg from "../assets/about/phones.png";
 import portalImg from "../assets/about/portal.png";
@@ -37,24 +36,6 @@ const MOCK = {
 };
 
 export default function About() {
-  const gridRef = useRef(null);
-
-  // Cursor-tracked neon border glow on each card (writes --mx/--my in %).
-  useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    const cards = Array.from(grid.querySelectorAll("[data-glow-card]"));
-    const onMove = (e) => {
-      for (const card of cards) {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
-        card.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
-      }
-    };
-    grid.addEventListener("pointermove", onMove, { passive: true });
-    return () => grid.removeEventListener("pointermove", onMove);
-  }, []);
-
   return (
     <section
       id="sobre"
@@ -81,10 +62,7 @@ export default function About() {
         </div>
 
         {/* ===== Bento Grid ===== */}
-        <div
-          ref={gridRef}
-          className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-6 lg:grid-cols-12"
-        >
+        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-6 lg:grid-cols-12">
           {/* --- Card 1: vertical, phones + CTA (left, spans full height) --- */}
           <GlowCard className="md:col-span-2 md:row-span-2 lg:col-span-4">
             <div className="flex h-full flex-col p-6">
@@ -187,36 +165,22 @@ export default function About() {
 }
 
 /* ============================================================
-   GlowCard — glass surface + neon hover border, glow and lift
+   GlowCard — borderless glass surface with a soft ambient glow on
+   hover (matches the borderless "reveal" feature cards in Projects).
    ============================================================ */
 function GlowCard({ children, className = "" }) {
   return (
     <div
-      data-glow-card
-      style={{ "--mx": "50%", "--my": "50%" }}
       className={`group relative rounded-3xl transition-transform duration-300 ease-out hover:-translate-y-0.5 ${className}`}
     >
-      {/* Ambient neon glow — appears on hover */}
+      {/* Ambient neon glow — appears softly on hover (no border/frame) */}
       <div
         aria-hidden
         className="pointer-events-none absolute -inset-0.5 rounded-[26px] opacity-0 blur-lg transition-opacity duration-300 group-hover:opacity-100"
         style={{ background: "rgba(0,102,255,0.22)" }}
       />
-      {/* Cursor-tracked neon gradient border (masked) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-3xl p-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(200px circle at var(--mx) var(--my), rgba(0,102,255,0.95), rgba(0,102,255,0.25) 45%, transparent 75%)",
-          WebkitMask:
-            "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-          WebkitMaskComposite: "xor",
-          maskComposite: "exclude",
-        }}
-      />
-      {/* Glass surface */}
-      <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl">
+      {/* Glass surface — no border */}
+      <div className="relative h-full overflow-hidden rounded-3xl bg-white/[0.04] backdrop-blur-xl">
         {children}
       </div>
     </div>
