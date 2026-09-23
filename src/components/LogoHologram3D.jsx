@@ -171,7 +171,7 @@ function LogoAssembly({ reducedMotion }) {
 }
 
 /* Orbiting luminous particle field (dust / point cloud). */
-function ParticleField({ count = 260, reducedMotion }) {
+function ParticleField({ count = 140, reducedMotion }) {
   const ref = useRef();
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
@@ -231,6 +231,10 @@ function ParallaxRig({ children, reducedMotion }) {
 
 export default function LogoHologram3D({ className = "" }) {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const wrapRef = useRef(null);
+  // Only run the WebGL render loop while the hologram is on screen — huge CPU/
+  // GPU saving once the user scrolls past the hero.
+  const [onScreen, setOnScreen] = useState(true);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -240,11 +244,26 @@ export default function LogoHologram3D({ className = "" }) {
     return () => mq.removeEventListener?.("change", update);
   }, []);
 
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.isIntersecting),
+      { rootMargin: "120px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className={`relative h-full w-full ${className}`} aria-hidden>
+    <div ref={wrapRef} className={`relative h-full w-full ${className}`} aria-hidden>
       <Canvas
         camera={{ position: [0, 0, 6], fov: 42 }}
-        dpr={[1, 2]}
+        // Cap the pixel ratio: rendering the WebGL scene at full 2x on retina
+        // screens is a big GPU cost for little visual gain here.
+        dpr={[1, 1.5]}
+        // Pause the render loop entirely when scrolled out of view.
+        frameloop={onScreen ? "always" : "never"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
