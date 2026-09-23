@@ -1,4 +1,8 @@
 import { useRef, useEffect } from "react";
+import phonesImg from "../assets/about/phones.png";
+import portalImg from "../assets/about/portal.png";
+import vrImg from "../assets/about/vr.png";
+import dashboardImg from "../assets/about/dashboard.png";
 
 /**
  * About / "Quem Somos" — Bento Grid section.
@@ -23,15 +27,12 @@ import { useRef, useEffect } from "react";
  *  - Bahnschrift typography (inherited globally).
  */
 
-// Unsplash helper for placeholder mockups (swap for real SENAI assets later).
-const img = (id, w = 900, h = 600) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
-
+// Real SENAI mockups exported from the Figma "Imagens para usar" section.
 const MOCK = {
-  phones: img("photo-1512941937669-90a1b58e7e9c", 700, 900),
-  portal: img("photo-1522071820081-009f0129c71c", 1000, 500),
-  vr: img("photo-1593508512255-86ab42a8e620", 600, 500),
-  dashboard: img("photo-1551288049-bebda4e38f71", 800, 600),
+  phones: phonesImg,
+  portal: portalImg,
+  vr: vrImg,
+  dashboard: dashboardImg,
 };
 
 export default function About() {
