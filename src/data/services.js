@@ -3,6 +3,7 @@
 // title, a separator and a short copy. On HOVER a 3D-tech banner image slides
 // in (with an icon + overlay headline), per the reference.
 import mobileBanner from "../assets/services/mobile.png";
+import edhealthBanner from "../assets/services/edhealth.png";
 
 const banner = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=600&q=80`;
@@ -38,7 +39,7 @@ export const services = [
     title: "EdTech & HealthTech",
     desc: "Soluções especializadas para educação e saúde com foco em gestão e cuidado.",
     overlay: "Educação e Saúde Conectadas",
-    banner: banner("photo-1576091160399-112ba8d25d1f"),
+    banner: edhealthBanner,
   },
   {
     id: 5,
