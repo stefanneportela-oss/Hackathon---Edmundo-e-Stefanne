@@ -39,12 +39,12 @@ const TECH = [
 // Floating portrait cards, pulled IN CLOSER to the centred text so they hug the
 // phrase. `hideOnMobile` trims the busier ones on small screens.
 const PORTRAITS = [
-  { pos: "left-[14%] top-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1, src: local(1) },
-  { pos: "left-[19%] top-[46%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true, src: u(TECH[0]) },
-  { pos: "right-[14%] top-[10%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18, src: u(TECH[1]) },
-  { pos: "right-[18%] top-[44%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true, src: u(TECH[2]) },
-  { pos: "left-[17%] bottom-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true, src: u(TECH[3]) },
-  { pos: "right-[16%] bottom-[13%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48, src: local(2) },
+  { pos: "left-[4%] top-[8%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1, src: local(1) },
+  { pos: "left-[6%] top-[44%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true, src: u(TECH[0]) },
+  { pos: "right-[4%] top-[6%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18, src: u(TECH[1]) },
+  { pos: "right-[6%] top-[42%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true, src: u(TECH[2]) },
+  { pos: "left-[5%] bottom-[8%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true, src: u(TECH[3]) },
+  { pos: "right-[4%] bottom-[8%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48, src: local(2) },
 ];
 
 const container = {
@@ -121,7 +121,7 @@ export default function TextReveal() {
 
       {/* ===== Centered reveal text ===== */}
       <motion.p
-        className="relative z-10 mx-auto max-w-4xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
+        className="relative z-10 mx-auto max-w-3xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
         style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
         variants={reduced ? undefined : container}
         initial={reduced ? undefined : "hidden"}
