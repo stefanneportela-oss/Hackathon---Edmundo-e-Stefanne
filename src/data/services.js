@@ -8,6 +8,7 @@ const banner = (id) =>
 export const services = [
   {
     id: 1,
+    icon: "ai",
     title: "Inteligência Artificial",
     desc: "Desenvolvemos modelos preditivos, automação inteligente e soluções de visão computacional.",
     overlay: "Decisões Inteligentes",
@@ -15,6 +16,7 @@ export const services = [
   },
   {
     id: 2,
+    icon: "xr",
     title: "Realidade Estendida",
     desc: "Experiências imersivas com AR, VR e simulações 3D para treinamento e engajamento.",
     overlay: "Experiências Imersivas",
@@ -22,6 +24,7 @@ export const services = [
   },
   {
     id: 3,
+    icon: "mobile",
     title: "Desenvolvimento Mobile",
     desc: "Apps nativos e multiplataforma para iOS e Android com foco em performance.",
     overlay: "Apps de Alta Performance",
@@ -29,6 +32,7 @@ export const services = [
   },
   {
     id: 4,
+    icon: "edhealth",
     title: "EdTech & HealthTech",
     desc: "Soluções especializadas para educação e saúde com foco em gestão e cuidado.",
     overlay: "Educação e Saúde Conectadas",
@@ -36,6 +40,7 @@ export const services = [
   },
   {
     id: 5,
+    icon: "web",
     title: "Desenvolvimento Web",
     desc: "Plataformas web modernas e responsivas com performance e segurança.",
     overlay: "Web do Jeito Certo",
@@ -43,6 +48,7 @@ export const services = [
   },
   {
     id: 6,
+    icon: "data",
     title: "Big Data & Analytics",
     desc: "Análise de grandes volumes de dados para insights estratégicos e dashboards.",
     overlay: "Insights que Guiam Decisões",

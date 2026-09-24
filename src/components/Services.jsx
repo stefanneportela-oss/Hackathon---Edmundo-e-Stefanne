@@ -188,17 +188,17 @@ function ServiceCard({ service, visible }) {
 
             <Separator className="mt-5" />
 
-            <p className="mt-5 flex-1 text-sm leading-relaxed text-muted">
+            <p className="mt-9 flex-1 text-sm leading-relaxed text-muted">
               {service.desc}
             </p>
 
-            {/* Circular action button (bottom-left) */}
+            {/* Circular action button (bottom-left) — themed icon per service */}
             <div>
               <button
                 aria-label={`Saber mais sobre ${service.title}`}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-[0_0_22px_-4px_rgba(0,102,255,0.9)] active:scale-95"
               >
-                <GridIcon />
+                <ServiceIcon name={service.icon} />
               </button>
             </div>
           </div>
@@ -221,9 +221,9 @@ function ServiceCard({ service, visible }) {
                   "linear-gradient(135deg, rgba(0,102,255,0.4) 0%, transparent 60%)",
               }}
             />
-            {/* Icon (top-left) */}
+            {/* Icon (top-left) — themed icon per service */}
             <span className="absolute left-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/60 bg-black/50 text-primary backdrop-blur">
-              <SparkIcon />
+              <ServiceIcon name={service.icon} />
             </span>
             {/* Overlay headline (bottom) */}
             <h3 className="absolute inset-x-0 bottom-5 px-5 font-display text-2xl font-bold leading-tight text-white">
@@ -298,21 +298,66 @@ function ArrowRight() {
   );
 }
 
-function SparkIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" />
-    </svg>
-  );
-}
-
-function GridIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <rect x="3" y="3" width="7" height="7" rx="1.5" />
-      <rect x="14" y="3" width="7" height="7" rx="1.5" />
-      <rect x="3" y="14" width="7" height="7" rx="1.5" />
-      <rect x="14" y="14" width="7" height="7" rx="1.5" />
-    </svg>
-  );
+/**
+ * ServiceIcon — outline icon that matches each service's theme.
+ * `name` comes from the service data (see src/data/services.js).
+ */
+function ServiceIcon({ name }) {
+  const p = {
+    width: 18,
+    height: 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": true,
+  };
+  switch (name) {
+    case "ai": // Inteligência Artificial — brain / neural
+      return (
+        <svg {...p}>
+          <path d="M12 5a3 3 0 0 0-3 3 3 3 0 0 0-3 3 3 3 0 0 0 1 5 3 3 0 0 0 5 1 3 3 0 0 0 5-1 3 3 0 0 0 1-5 3 3 0 0 0-3-3 3 3 0 0 0-3-3z" />
+          <path d="M12 5v13" />
+        </svg>
+      );
+    case "xr": // Realidade Estendida — VR headset
+      return (
+        <svg {...p}>
+          <rect x="2" y="7" width="20" height="10" rx="3" />
+          <path d="M9 17c.5-1.5 1.5-2.5 3-2.5s2.5 1 3 2.5" />
+        </svg>
+      );
+    case "mobile": // Desenvolvimento Mobile — smartphone
+      return (
+        <svg {...p}>
+          <rect x="6" y="2" width="12" height="20" rx="3" />
+          <line x1="11" y1="18" x2="13" y2="18" />
+        </svg>
+      );
+    case "edhealth": // EdTech & HealthTech — graduation cap + pulse
+      return (
+        <svg {...p}>
+          <path d="M22 9 12 5 2 9l10 4 10-4z" />
+          <path d="M6 11v4c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-4" />
+        </svg>
+      );
+    case "web": // Desenvolvimento Web — globe
+      return (
+        <svg {...p}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3c2.5 2.4 4 5.6 4 9s-1.5 6.6-4 9c-2.5-2.4-4-5.6-4-9s1.5-6.6 4-9z" />
+        </svg>
+      );
+    case "data": // Big Data & Analytics — chart / trend
+    default:
+      return (
+        <svg {...p}>
+          <path d="M4 19V5M4 19h16" />
+          <path d="m7 14 3.5-4 3 2.5L20 6" />
+          <path d="M20 6h-3.5M20 6v3.5" />
+        </svg>
+      );
+  }
 }
