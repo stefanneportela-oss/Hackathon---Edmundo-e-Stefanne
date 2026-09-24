@@ -5,6 +5,7 @@ import HeroV2 from "./components/HeroV2.jsx";
 import SocialProof from "./components/SocialProof.jsx";
 import TextReveal from "./components/TextReveal.jsx";
 import Services from "./components/Services.jsx";
+import AwsPartner from "./components/AwsPartner.jsx";
 import Projects from "./components/Projects.jsx";
 import About from "./components/About.jsx";
 import Careers from "./components/Careers.jsx";
@@ -27,6 +28,7 @@ export default function App() {
           <SocialProof />
           <TextReveal />
           <Services />
+          <AwsPartner />
           <Projects />
           <About />
           <Careers />
