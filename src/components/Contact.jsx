@@ -12,6 +12,8 @@
  *    rounded-2xl.
  *  - Fully responsive: columns stack on small screens.
  */
+import SectionReveal from "./SectionReveal.jsx";
+
 const EMAIL = "solucoesdigitais@sc.senai.br";
 
 export default function Contact() {
@@ -20,10 +22,10 @@ export default function Contact() {
       id="contato"
       className="relative w-full bg-transparent py-24 sm:py-28"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <SectionReveal className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" amount={0.5}>
         <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
           {/* ===== Left column ===== */}
-          <div className="w-full max-w-lg">
+          <SectionReveal.Item className="w-full max-w-lg">
             <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
               Entre em contato
             </h2>
@@ -31,10 +33,10 @@ export default function Contact() {
               Estamos prontos para impulsionar o seu próximo projeto. Fale com
               nossa equipe.
             </p>
-          </div>
+          </SectionReveal.Item>
 
           {/* ===== Right column: form-card ===== */}
-          <div className="w-full max-w-2xl">
+          <SectionReveal.Item className="w-full max-w-2xl">
             <div className="rounded-2xl border border-[#27272A] bg-[#0D0D0D] p-8 shadow-[0_16px_32px_0_rgba(0,0,0,0.5)] sm:p-10">
               {/* Info blocks */}
               <div className="flex flex-col gap-9">
@@ -63,9 +65,9 @@ export default function Contact() {
                 </a>
               </div>
             </div>
-          </div>
+          </SectionReveal.Item>
         </div>
-      </div>
+      </SectionReveal>
     </section>
   );
 }

@@ -2,6 +2,7 @@ import phonesImg from "../assets/about/phones.png";
 import portalImg from "../assets/about/portal.png";
 import vrImg from "../assets/about/vr.png";
 import dashboardImg from "../assets/about/dashboard.png";
+import SectionReveal from "./SectionReveal.jsx";
 
 /**
  * About / "Quem Somos" — Bento Grid section.
@@ -40,13 +41,13 @@ export default function About() {
       id="sobre"
       className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <SectionReveal className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.5}>
         {/* ===== Centered header (Figma "section-header", VERTICAL gap 16) =====
             · badge: solid #1A1A1A, radius 20, padding 8/16, text "Quem Somos"
               12px Semi Bold in cyan (#00D2FF)
             · title: 50px Bahnschrift SemiBold, white
             · subtitle: 16px regular, muted (#A1A1AA), max ~720px */}
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+        <SectionReveal.Item className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
           <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
             Quem Somos
           </span>
@@ -60,7 +61,7 @@ export default function About() {
             softwares e soluções digitais que transformam a realidade da
             indústria e dos negócios.
           </p>
-        </div>
+        </SectionReveal.Item>
 
         {/* ===== Bento Grid — nested structure mirroring Figma =====
             bento-grid (HORIZONTAL, gap 24):
@@ -68,7 +69,7 @@ export default function About() {
               · right column (grows, VERTICAL, gap 24):
                   · right-top-row (HORIZONTAL, gap 24): card-2 (grows) + card-3 (fixed)
                   · card-4 (HORIZONTAL, gap 24) */}
-        <div className="mt-14 flex flex-col gap-6 lg:flex-row">
+        <SectionReveal.Item className="mt-14 flex flex-col gap-6 lg:flex-row">
           {/* --- Card 1: left column, phones (top) + text + CTA (bottom) --- */}
           <GlowCard className="lg:w-[28%] lg:shrink-0">
             <div className="flex h-full flex-col p-6">
@@ -182,8 +183,8 @@ export default function About() {
               </div>
             </GlowCard>
           </div>
-        </div>
-      </div>
+        </SectionReveal.Item>
+      </SectionReveal>
     </section>
   );
 }

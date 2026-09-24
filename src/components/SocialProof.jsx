@@ -2,6 +2,7 @@ import senaiLogo from "../assets/logos/parceiros/senai.png";
 import sesiLogo from "../assets/logos/parceiros/sesi.png";
 import ielLogo from "../assets/logos/parceiros/iel.png";
 import cniLogo from "../assets/logos/parceiros/cni.png";
+import SectionReveal from "./SectionReveal.jsx";
 
 /**
  * SocialProof — infinite logo marquee ("prova social").
@@ -60,20 +61,25 @@ function LogoGroup({ ariaHidden }) {
 
 export default function SocialProof() {
   return (
-    <section
+    <SectionReveal
+      as="section"
       id="parceiros"
       aria-label="Impulsionando a inovação no Sistema Indústria"
       className="relative w-full bg-transparent py-14 sm:py-16"
+      amount={0.5}
     >
       {/* Discreet section title (matches Figma) */}
-      <p className="mb-10 text-center font-display text-sm font-semibold uppercase tracking-[0.21em] text-[#70707A]">
+      <SectionReveal.Item
+        as="p"
+        className="mb-10 text-center font-display text-sm font-semibold uppercase tracking-[0.21em] text-[#70707A]"
+      >
         Impulsionando a inovação no Sistema Indústria
-      </p>
+      </SectionReveal.Item>
 
       {/* Marquee belt — only the X axis is clipped, so the hover glow/scale can
           breathe vertically without being cut off. Extra vertical padding
           leaves room for the lifted pill. */}
-      <div className="marquee relative w-full overflow-x-hidden overflow-y-visible py-4">
+      <SectionReveal.Item className="marquee relative w-full overflow-x-hidden overflow-y-visible py-4">
         <div
           className="marquee__track flex w-max items-center"
           style={{ "--marquee-duration": "80s" }}
@@ -82,8 +88,8 @@ export default function SocialProof() {
           <LogoGroup />
           <LogoGroup ariaHidden />
         </div>
-      </div>
-    </section>
+      </SectionReveal.Item>
+    </SectionReveal>
   );
 }
 

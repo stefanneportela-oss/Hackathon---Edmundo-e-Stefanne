@@ -113,7 +113,10 @@ const SectionReveal = forwardRef(function SectionReveal(
  * SectionReveal.Item — a single cascading child. Wrap each element that should
  * appear in sequence (badge, title, subtitle, grid, …).
  */
-function Item({ as = "div", children, className = "", ...rest }) {
+const Item = forwardRef(function Item(
+  { as = "div", children, className = "", ...rest },
+  ref
+) {
   const reducedMotion = useReducedMotion();
   const paused = useAnimationsPaused();
   const disabled = reducedMotion || paused;
@@ -121,7 +124,7 @@ function Item({ as = "div", children, className = "", ...rest }) {
   if (disabled) {
     const StaticTag = as;
     return (
-      <StaticTag className={className} {...rest}>
+      <StaticTag ref={ref} className={className} {...rest}>
         {children}
       </StaticTag>
     );
@@ -130,6 +133,7 @@ function Item({ as = "div", children, className = "", ...rest }) {
   const MotionTag = motion[as] || motion.div;
   return (
     <MotionTag
+      ref={ref}
       className={className}
       variants={itemVariants}
       style={{ willChange: "transform, opacity" }}
@@ -138,7 +142,7 @@ function Item({ as = "div", children, className = "", ...rest }) {
       {children}
     </MotionTag>
   );
-}
+});
 
 SectionReveal.Item = Item;
 

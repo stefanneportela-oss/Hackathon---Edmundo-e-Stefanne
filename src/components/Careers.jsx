@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { careers } from "../data/careers.js";
+import SectionReveal from "./SectionReveal.jsx";
 
 /**
  * Careers — "Trabalhe Conosco" sticky stacking cards.
@@ -79,35 +80,38 @@ export default function Careers() {
       id="trabalhe-conosco"
       className="relative w-full bg-transparent py-24 sm:py-28"
     >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        {/* ===== Header ===== */}
-        <div className="mx-auto mb-14 flex max-w-3xl flex-col items-center gap-4 text-center sm:mb-20">
-          <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
-            Trabalhe Conosco
-          </span>
-          <h2 className="text-white">
-            Construa o futuro <span className="text-gradient">com a gente</span>
-          </h2>
-          <p className="max-w-xl text-base leading-relaxed text-muted">
-            Áreas em que estamos sempre em busca de talentos para transformar a
-            indústria através da tecnologia.
-          </p>
-        </div>
+      <SectionReveal className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" amount={0.3}>
+        {/* ===== Two-column layout: header (left) + cards (right) ===== */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
+          {/* ---- Left column: header (sticky on desktop) ---- */}
+          <SectionReveal.Item className="flex flex-col items-start gap-4 text-left lg:col-span-5 lg:sticky lg:top-28">
+            <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
+              Trabalhe Conosco
+            </span>
+            <h2 className="text-white">
+              Construa o futuro <span className="text-gradient">com a gente</span>
+            </h2>
+            <p className="max-w-xl text-base leading-relaxed text-muted">
+              Áreas em que estamos sempre em busca de talentos para transformar a
+              indústria através da tecnologia.
+            </p>
+          </SectionReveal.Item>
 
-        {/* ===== Sticky stack ===== */}
-        <div ref={listRef} className="flex flex-col gap-8">
-          {careers.map((c, i) => (
-            <div
-              key={c.id}
-              data-stack-card
-              className="sticky"
-              style={{ top: `${120 + i * 16}px`, zIndex: i + 1 }}
-            >
-              <CareerCard career={c} index={i} total={careers.length} />
-            </div>
-          ))}
+          {/* ---- Right column: sticky stack ---- */}
+          <SectionReveal.Item ref={listRef} className="flex flex-col gap-8 lg:col-span-7">
+            {careers.map((c, i) => (
+              <div
+                key={c.id}
+                data-stack-card
+                className="sticky"
+                style={{ top: `${120 + i * 16}px`, zIndex: i + 1 }}
+              >
+                <CareerCard career={c} index={i} total={careers.length} />
+              </div>
+            ))}
+          </SectionReveal.Item>
         </div>
-      </div>
+      </SectionReveal>
     </section>
   );
 }
