@@ -188,7 +188,7 @@ function ServiceCard({ service, visible }) {
 
             <Separator className="mt-5" />
 
-            <p className="mt-9 flex-1 text-sm leading-relaxed text-muted">
+            <p className="mt-14 flex-1 text-sm leading-relaxed text-muted">
               {service.desc}
             </p>
 
