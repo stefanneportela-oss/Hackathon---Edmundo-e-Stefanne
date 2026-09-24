@@ -1,5 +1,7 @@
 import Header from "./components/Header.jsx";
-import Hero from "./components/Hero.jsx";
+// Hero antigo preservado — troque HeroV2 por Hero abaixo para voltar à versão original.
+// import Hero from "./components/Hero.jsx";
+import HeroV2 from "./components/HeroV2.jsx";
 import SocialProof from "./components/SocialProof.jsx";
 import TextReveal from "./components/TextReveal.jsx";
 import Services from "./components/Services.jsx";
@@ -20,7 +22,7 @@ export default function App() {
       <div className="relative z-10">
         <Header />
         <main>
-          <Hero />
+          <HeroV2 />
           <SocialProof />
           <TextReveal />
           <Services />
