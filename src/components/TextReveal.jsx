@@ -20,13 +20,13 @@ const WORDS = SENTENCE.split(" ");
  *   README.txt there), then flip USE_LOCAL_PORTRAITS to `true`.
  *   While it's false, the section shows Unsplash placeholders.
  * ------------------------------------------------------------------------- */
-const USE_LOCAL_PORTRAITS = false;
+const USE_LOCAL_PORTRAITS = true;
 const LOCAL_EXT = "jpg"; // change if you upload .png / .webp
 
 const u = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=320&h=380&q=80`;
 
-// Placeholder Unsplash portraits (used until USE_LOCAL_PORTRAITS = true).
+// Placeholder Unsplash portraits (used only while USE_LOCAL_PORTRAITS = false).
 const PLACEHOLDERS = [
   "photo-1494790108377-be9c29b29330",
   "photo-1500648767791-00dcc994a43e",
@@ -42,14 +42,11 @@ const srcFor = (i) =>
     : u(PLACEHOLDERS[i]);
 
 // Floating portrait cards, pulled IN CLOSER to the centred text so they hug the
-// phrase (per request). `hideOnMobile` trims the busier ones on small screens.
+// phrase. Using the 2 uploaded portraits: one top-left, one bottom-right, to
+// keep the composition balanced around the phrase.
 const PORTRAITS = [
   { pos: "left-[14%] top-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1 },
-  { pos: "left-[19%] top-[46%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true },
-  { pos: "right-[14%] top-[10%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18 },
-  { pos: "right-[18%] top-[44%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true },
-  { pos: "left-[17%] bottom-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true },
-  { pos: "right-[16%] bottom-[13%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48 },
+  { pos: "right-[16%] bottom-[13%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.3 },
 ].map((p, i) => ({ ...p, src: srcFor(i) }));
 
 const container = {
