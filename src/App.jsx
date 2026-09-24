@@ -8,6 +8,7 @@ import Services from "./components/Services.jsx";
 import AwsPartner from "./components/AwsPartner.jsx";
 import Projects from "./components/Projects.jsx";
 import About from "./components/About.jsx";
+import Testimonials from "./components/Testimonials.jsx";
 import Careers from "./components/Careers.jsx";
 import Contact from "./components/Contact.jsx";
 import Footer from "./components/Footer.jsx";
@@ -31,6 +32,7 @@ export default function App() {
           <AwsPartner />
           <Projects />
           <About />
+          <Testimonials />
           <Careers />
           <Contact />
         </main>
