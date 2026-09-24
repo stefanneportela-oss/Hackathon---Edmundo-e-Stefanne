@@ -198,8 +198,8 @@ function FloatingCard({ src }) {
           </a>
         </div>
         {/* Neon badge */}
-        <span className="self-start rounded-full bg-primary px-2 py-1 text-[10px] font-bold text-white shadow-[0_0_16px_-4px_rgba(0,102,255,0.9)]">
-          3D
+        <span className="self-start whitespace-nowrap rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-white shadow-[0_0_16px_-4px_rgba(0,102,255,0.9)]">
+          Mobile
         </span>
       </div>
     </div>
