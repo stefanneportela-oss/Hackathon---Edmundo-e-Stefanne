@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { services } from "../data/services.js";
+import SectionReveal from "./SectionReveal.jsx";
 
 /**
  * Services section ("O Que Fazemos" / "What We Do").
@@ -62,12 +63,16 @@ export default function Services() {
       id="servicos"
       className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Reveal the section once it's roughly centered in the viewport
+          (amount 0.5 = ~half visible), cascading title → body. */}
+      <SectionReveal className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.5}>
         {/* ===== Full-width title (top) ===== */}
-        <h2 className="text-white">Serviços</h2>
+        <SectionReveal.Item as="h2" className="text-white">
+          Serviços
+        </SectionReveal.Item>
 
         {/* ===== Two-column body: left rail + card track ===== */}
-        <div className="mt-10 flex flex-col gap-8 lg:mt-14 lg:flex-row lg:gap-10">
+        <SectionReveal.Item className="mt-10 flex flex-col gap-8 lg:mt-14 lg:flex-row lg:gap-10">
           {/* ---- Left rail ---- */}
           <div className="flex shrink-0 flex-col lg:w-56">
             {/* Badge (top) */}
@@ -131,8 +136,8 @@ export default function Services() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
+        </SectionReveal.Item>
+      </SectionReveal>
     </section>
   );
 }
