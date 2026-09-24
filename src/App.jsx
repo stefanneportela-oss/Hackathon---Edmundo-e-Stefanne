@@ -9,6 +9,7 @@ import Projects from "./components/Projects.jsx";
 import About from "./components/About.jsx";
 import Careers from "./components/Careers.jsx";
 import Contact from "./components/Contact.jsx";
+import Footer from "./components/Footer.jsx";
 import MotionToggle from "./components/MotionToggle.jsx";
 import GlobalBackground from "./components/GlobalBackground.jsx";
 
@@ -31,6 +32,7 @@ export default function App() {
           <Careers />
           <Contact />
         </main>
+        <Footer />
         <MotionToggle />
       </div>
     </div>
