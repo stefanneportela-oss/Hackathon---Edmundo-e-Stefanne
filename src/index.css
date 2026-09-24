@@ -665,3 +665,160 @@ html.animations-paused *::after {
   animation: tr-drift-c 13s ease-in-out infinite;
   will-change: transform;
 }
+
+/* ============================================================
+   AWS PARTNER — futuristic cloud CTA
+   Composition ported from Figma (node 138:461) but recoloured to the
+   SENAI blue/cyan palette. Orbital rings, a breathing central glow,
+   drifting neon dots and a levitating badge.
+   ============================================================ */
+
+/* Slow counter-rotating orbital rings around the badge */
+@keyframes aws-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes aws-orbit-rev {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+.aws-orbit {
+  animation: aws-orbit 32s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+.aws-orbit-rev {
+  animation: aws-orbit-rev 44s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Central radial glow that gently breathes */
+@keyframes aws-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+.aws-glow {
+  animation: aws-glow-pulse 6s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* Levitating AWS badge tile */
+@keyframes aws-levitate {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.aws-levitate {
+  animation: aws-levitate 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Drifting neon dots scattered on the card corners */
+@keyframes aws-dot-a {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(12px, -16px);
+    opacity: 1;
+  }
+}
+@keyframes aws-dot-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-14px, 12px);
+    opacity: 0.9;
+  }
+}
+.aws-dot-a {
+  animation: aws-dot-a 7s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.aws-dot-b {
+  animation: aws-dot-b 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Status dot ping on the "aliança estratégica" badge */
+@keyframes aws-status-ping {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 188, 255, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(0, 188, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 188, 255, 0);
+  }
+}
+.aws-status {
+  animation: aws-status-ping 2.4s ease-out infinite;
+}
+
+/* Gentle vertical drift for the orbiting feature cards */
+@keyframes aws-card-a {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+@keyframes aws-card-b {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(9px);
+  }
+}
+.aws-card-a {
+  animation: aws-card-a 6.5s ease-in-out infinite;
+  will-change: transform;
+}
+.aws-card-b {
+  animation: aws-card-b 7.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aws-orbit,
+  .aws-orbit-rev,
+  .aws-glow,
+  .aws-levitate,
+  .aws-dot-a,
+  .aws-dot-b,
+  .aws-status,
+  .aws-card-a,
+  .aws-card-b {
+    animation: none;
+  }
+}
