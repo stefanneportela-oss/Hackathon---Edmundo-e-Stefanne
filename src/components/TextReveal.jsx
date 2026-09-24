@@ -15,39 +15,37 @@ const SENTENCE =
 const WORDS = SENTENCE.split(" ");
 
 /* ---------------------------------------------------------------------------
- * FINAL IMAGES — where to drop yours:
- *   Put your files in  public/portraits/  named portrait-1..6 (see the
- *   README.txt there), then flip USE_LOCAL_PORTRAITS to `true`.
- *   While it's false, the section shows Unsplash placeholders.
+ * IMAGES that frame the phrase.
+ *   - Positions 1 & 2 use the uploaded local portraits (public/portraits/).
+ *   - Positions 3-6 use tech-themed Unsplash images (coding / dev / tech)
+ *     until more local files are added. To swap a tech image for a local one,
+ *     drop public/portraits/portrait-N.jpg and point that card's `src` to it.
  * ------------------------------------------------------------------------- */
-const USE_LOCAL_PORTRAITS = true;
-const LOCAL_EXT = "jpg"; // change if you upload .png / .webp
+const LOCAL_EXT = "jpg"; // extension of the local portrait files
 
+const local = (n) => `/portraits/portrait-${n}.${LOCAL_EXT}`;
 const u = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=320&h=380&q=80`;
 
-// Placeholder Unsplash portraits (used only while USE_LOCAL_PORTRAITS = false).
-const PLACEHOLDERS = [
-  "photo-1494790108377-be9c29b29330",
-  "photo-1500648767791-00dcc994a43e",
-  "photo-1544005313-94ddf0286df2",
-  "photo-1519085360753-af0119f7cbe7",
-  "photo-1507003211169-0a1dd7228f2d",
-  "photo-1506794778202-cad84cf45f1d",
+// Tech-themed Unsplash images for the remaining cards (code, dev workspace,
+// circuit board, developer at work).
+const TECH = [
+  "photo-1461749280684-dccba630e2f6", // code on screen
+  "photo-1518770660439-4636190af475", // circuit board / hardware
+  "photo-1517180102446-f3ece451e9d8", // laptop with code, dark
+  "photo-1498050108023-c5249f4df085", // developer coding
 ];
 
-const srcFor = (i) =>
-  USE_LOCAL_PORTRAITS
-    ? `/portraits/portrait-${i + 1}.${LOCAL_EXT}`
-    : u(PLACEHOLDERS[i]);
-
 // Floating portrait cards, pulled IN CLOSER to the centred text so they hug the
-// phrase. Using the 2 uploaded portraits: one top-left, one bottom-right, to
-// keep the composition balanced around the phrase.
+// phrase. `hideOnMobile` trims the busier ones on small screens.
 const PORTRAITS = [
-  { pos: "left-[14%] top-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1 },
-  { pos: "right-[16%] bottom-[13%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.3 },
-].map((p, i) => ({ ...p, src: srcFor(i) }));
+  { pos: "left-[14%] top-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1, src: local(1) },
+  { pos: "left-[19%] top-[46%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true, src: u(TECH[0]) },
+  { pos: "right-[14%] top-[10%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18, src: u(TECH[1]) },
+  { pos: "right-[18%] top-[44%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true, src: u(TECH[2]) },
+  { pos: "left-[17%] bottom-[12%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true, src: u(TECH[3]) },
+  { pos: "right-[16%] bottom-[13%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48, src: local(2) },
+];
 
 const container = {
   hidden: {},
