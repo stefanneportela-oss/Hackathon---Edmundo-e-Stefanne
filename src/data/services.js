@@ -2,6 +2,8 @@
 // Every card shares the same anatomy. In the DEFAULT state it shows only the
 // title, a separator and a short copy. On HOVER a 3D-tech banner image slides
 // in (with an icon + overlay headline), per the reference.
+import mobileBanner from "../assets/services/mobile.png";
+
 const banner = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=600&q=80`;
 
@@ -28,7 +30,7 @@ export const services = [
     title: "Desenvolvimento Mobile",
     desc: "Apps nativos e multiplataforma para iOS e Android com foco em performance.",
     overlay: "Apps de Alta Performance",
-    banner: banner("photo-1512941937669-90a1b58e7e9c"),
+    banner: mobileBanner,
   },
   {
     id: 4,

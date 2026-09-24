@@ -182,13 +182,13 @@ function ServiceCard({ service, visible }) {
         <div className="relative flex h-full flex-col overflow-hidden rounded-3xl bg-[#0D0D0D]">
           {/* ---- DEFAULT content ---- */}
           <div className="flex flex-1 flex-col p-6">
-            <h3 className="font-display text-xl font-bold leading-snug text-white transition-colors duration-300 group-hover:text-primary">
+            <h3 className="flex min-h-[3.5rem] items-start font-display text-xl font-bold leading-snug text-white transition-colors duration-300 group-hover:text-primary">
               {service.title}
             </h3>
 
-            <Separator className="mt-5" />
+            <Separator className="my-6" />
 
-            <p className="mt-14 flex-1 text-sm leading-relaxed text-muted">
+            <p className="flex-1 text-sm leading-relaxed text-muted">
               {service.desc}
             </p>
 
