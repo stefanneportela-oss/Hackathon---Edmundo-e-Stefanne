@@ -1,66 +1,45 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
 /**
- * TextReveal — word-by-word text reveal that plays automatically when the
- * section scrolls into view, framed by floating portrait cards (like the
- * reference). Portraits sit around the edges and drift gently; the phrase
- * lights up word by word (dim → blue glow → white).
+ * TextReveal — high-impact statement section.
  *
- * - Fully transparent so the global infinite background shows through.
- * - Respects prefers-reduced-motion (static, fully-lit phrase; no drifting).
+ * A monumental phrase ("Você chega até nós com desafios, nós os transformamos
+ * em oportunidades") with the word "desafios" highlighted with a neon glow,
+ * framed by floating glassmorphism testimonial/solution cards arranged
+ * organically around the sentence. Everything animates on scroll:
+ *  - the phrase sharpens (blur + opacity 20 → 100) as it enters view;
+ *  - the cards rise in a staggered cascade (y 40 → 0, opacity 0 → 1);
+ *  - left/right cards drift at slightly different speeds (subtle parallax).
+ *
+ * Fully transparent so the global infinite background (bg-grid + mouse glow)
+ * shows through. Respects prefers-reduced-motion and the global
+ * `animations-paused` switch (renders static when motion is off).
  */
-const SENTENCE =
-  "Soluções digitais para os desafios de hoje e as oportunidades de amanhã";
 
-const WORDS = SENTENCE.split(" ");
+const EASE = [0.21, 0.47, 0.32, 0.98];
 
-/* ---------------------------------------------------------------------------
- * IMAGES that frame the phrase.
- *   - Positions 1 & 2 use the uploaded local portraits (public/portraits/).
- *   - Positions 3-6 use tech-themed Unsplash images (coding / dev / tech)
- *     until more local files are added. To swap a tech image for a local one,
- *     drop public/portraits/portrait-N.jpg and point that card's `src` to it.
- * ------------------------------------------------------------------------- */
-const LOCAL_EXT = "jpg"; // extension of the local portrait files
-
-const local = (n) => `/portraits/portrait-${n}.${LOCAL_EXT}`;
-const u = (id) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=320&h=380&q=80`;
-
-// Tech-themed Unsplash images for the remaining cards (code, dev workspace,
-// circuit board, developer at work).
-const TECH = [
-  "photo-1461749280684-dccba630e2f6", // code on screen
-  "photo-1518770660439-4636190af475", // circuit board / hardware
-  "photo-1517180102446-f3ece451e9d8", // laptop with code, dark
-  "photo-1498050108023-c5249f4df085", // developer coding
-];
-
-// Floating portrait cards, pulled IN CLOSER to the centred text so they hug the
-// phrase. `hideOnMobile` trims the busier ones on small screens.
-const PORTRAITS = [
-  { pos: "left-[4%] top-[8%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.1, src: local(1) },
-  { pos: "left-[6%] top-[44%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.25, hideOnMobile: true, src: u(TECH[0]) },
-  { pos: "right-[4%] top-[6%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.18, src: u(TECH[1]) },
-  { pos: "right-[6%] top-[42%]", size: "h-24 w-20 sm:h-32 sm:w-28", delay: 0.32, hideOnMobile: true, src: u(TECH[2]) },
-  { pos: "left-[5%] bottom-[8%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.4, hideOnMobile: true, src: u(TECH[3]) },
-  { pos: "right-[4%] bottom-[8%]", size: "h-24 w-20 sm:h-28 sm:w-24", delay: 0.48, src: local(2) },
-];
-
-const container = {
+// Word-by-word reveal (from the previous TextReveal): each word lights up
+// dim → blue glow → white, in sequence.
+const phraseContainer = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
 
 const wordVariants = {
   hidden: {
     opacity: 0.15,
-    color: "rgb(26,26,26)",
+    color: "rgb(40,40,40)",
     textShadow: "0 0 0px rgba(0,102,255,0)",
   },
   visible: {
     opacity: [0.15, 1, 1],
-    color: ["rgb(26,26,26)", "rgb(120,180,255)", "rgb(255,255,255)"],
+    color: ["rgb(40,40,40)", "rgb(120,180,255)", "rgb(255,255,255)"],
     textShadow: [
       "0 0 0px rgba(0,102,255,0)",
       "0 0 34px rgba(0,102,255,0.85), 0 0 12px rgba(0,102,255,0.6)",
@@ -70,78 +49,294 @@ const wordVariants = {
   },
 };
 
-const portraitVariants = {
-  hidden: { opacity: 0, scale: 0.85, y: 20 },
-  visible: (delay) => ({
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut", delay },
-  }),
-};
+/** True when the site-wide "animations-paused" class is on <html>. */
+function useAnimationsPaused() {
+  const [paused, setPaused] = useState(
+    () =>
+      typeof document !== "undefined" &&
+      document.documentElement.classList.contains("animations-paused")
+  );
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => setPaused(root.classList.contains("animations-paused"));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+  return paused;
+}
+
+// Floating testimonial / solution cards, arranged asymmetrically around the
+// phrase. `side` drives the parallax direction; `depth` its intensity.
+const CARDS = [
+  {
+    id: 1,
+    icon: "layers",
+    text: "Precisamos otimizar processos e escalar com segurança.",
+    pos: "left-[8%] top-[26%]",
+    side: "left",
+    depth: 1,
+    delay: 0.1,
+    hideOnMobile: false,
+  },
+  {
+    id: 2,
+    icon: "brain",
+    text: "Buscamos inteligência artificial aplicada ao nosso core business.",
+    pos: "right-[9%] top-[14%]",
+    side: "right",
+    depth: 1.4,
+    delay: 0.2,
+    hideOnMobile: false,
+  },
+  {
+    id: 3,
+    icon: "code",
+    text: "Entregamos ecossistemas digitais de alta performance e código limpo.",
+    pos: "left-[14%] bottom-[12%]",
+    side: "left",
+    depth: 1.7,
+    delay: 0.3,
+    hideOnMobile: true,
+  },
+  {
+    id: 4,
+    icon: "rocket",
+    text: "Estratégia, arquitetura moderna e impacto real no mercado.",
+    pos: "right-[11%] bottom-[18%]",
+    side: "right",
+    depth: 1.2,
+    delay: 0.4,
+    hideOnMobile: false,
+  },
+];
 
 export default function TextReveal() {
   const reduced = useReducedMotion();
+  const paused = useAnimationsPaused();
+  const disabled = reduced || paused;
+
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Parallax: left cards and right cards drift at slightly different speeds.
+  const leftY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const rightY = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
     <section
+      ref={sectionRef}
       id="manifesto"
-      aria-label={SENTENCE}
-      className="relative flex min-h-[80vh] w-full items-center justify-center overflow-hidden bg-transparent px-6 py-36 sm:py-44 lg:py-52"
+      aria-label="Soluções digitais para os desafios de hoje e as oportunidades de amanhã"
+      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-transparent px-6 py-40 sm:py-48"
     >
-      {/* ===== Floating portrait cards (frame the text) ===== */}
-      {PORTRAITS.map((p, i) => (
-        <motion.div
-          key={i}
-          aria-hidden
-          className={`pointer-events-none absolute z-0 ${p.pos} ${p.size} ${
-            p.hideOnMobile ? "hidden lg:block" : ""
-          }`}
-          variants={reduced ? undefined : portraitVariants}
-          custom={p.delay}
-          initial={reduced ? undefined : "hidden"}
-          whileInView={reduced ? undefined : "visible"}
-          viewport={{ amount: 0.4 }}
-        >
-          <div className={reduced ? "" : "tr-float"} style={{ animationDelay: `${i * 0.7}s` }}>
-            <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.8)]">
-              <img
-                src={p.src}
-                alt=""
-                loading="lazy"
-                draggable={false}
-                className="h-full w-full object-cover"
-              />
-              {/* subtle dark tint to sit in the DS */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            </div>
-          </div>
-        </motion.div>
-      ))}
+      {/* ===== Orbiting particle field around the phrase (like the hero) ===== */}
+      <ParticleField disabled={disabled} />
 
-      {/* ===== Centered reveal text ===== */}
-      <motion.p
-        className="relative z-10 mx-auto max-w-3xl text-center font-display font-black leading-[1.1] tracking-tight text-3xl"
-        style={{ fontSize: "clamp(1.75rem, 4.5vw, 4rem)" }}
-        variants={reduced ? undefined : container}
-        initial={reduced ? undefined : "hidden"}
-        whileInView={reduced ? undefined : "visible"}
-        // No `once` → the reveal replays every time the section re-enters view.
-        viewport={{ amount: 0.5 }}
+      {/* ===== Background layer: monumental phrase (word-by-word reveal) ===== */}
+      <motion.h2
+        className="relative z-0 mx-auto max-w-4xl text-center font-display font-black uppercase leading-[1.15] tracking-tight text-white"
+        variants={disabled ? undefined : phraseContainer}
+        initial={disabled ? undefined : "hidden"}
+        whileInView={disabled ? undefined : "visible"}
+        viewport={{ once: false, amount: 0.5 }}
       >
-        {WORDS.map((word, i) => (
-          <span key={`${word}-${i}`} className="inline-block">
-            <motion.span
-              className="inline-block"
-              variants={reduced ? undefined : wordVariants}
-              style={reduced ? { color: "#fff", opacity: 1 } : undefined}
-            >
-              {word}
-            </motion.span>
-            {i < WORDS.length - 1 ? "\u00A0" : ""}
-          </span>
-        ))}
-      </motion.p>
+        <Line words="Soluções digitais para os" disabled={disabled} />
+        {/* Highlighted words with the brand logo gradient (#0574D9 → #00BCFF) */}
+        <motion.span
+          className="my-1 block text-4xl italic text-transparent sm:text-5xl lg:text-6xl"
+          variants={disabled ? undefined : { hidden: { opacity: 0.15 }, visible: { opacity: 1, transition: { duration: 0.7, ease: "easeOut" } } }}
+          style={{
+            backgroundImage: "linear-gradient(135deg, #0574D9 0%, #00BCFF 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            textShadow:
+              "0 0 32px rgba(5,116,217,0.6), 0 0 70px rgba(0,188,255,0.4)",
+          }}
+        >
+          desafios de hoje
+        </motion.span>
+        <Line words="e as oportunidades" disabled={disabled} />
+        <Line words="de amanhã" disabled={disabled} />
+      </motion.h2>
+
+      {/* ===== Foreground layer: floating glass cards ===== */}
+      {CARDS.map((card) => (
+        <FloatingCard
+          key={card.id}
+          card={card}
+          disabled={disabled}
+          parallaxY={card.side === "left" ? leftY : rightY}
+        />
+      ))}
     </section>
+  );
+}
+
+/* ============================================================
+   ParticleField — luminous dots floating around the phrase, echoing the
+   orbiting particles of the hero hologram (lightweight CSS version).
+   ============================================================ */
+const PARTICLES = [
+  { top: "16%", left: "12%", size: 6, delay: 0, color: "#00e0ff" },
+  { top: "24%", left: "82%", size: 5, delay: 0.8, color: "#0066ff" },
+  { top: "40%", left: "6%", size: 4, delay: 1.6, color: "#7fefff" },
+  { top: "52%", left: "90%", size: 7, delay: 0.4, color: "#00e0ff" },
+  { top: "68%", left: "18%", size: 5, delay: 1.2, color: "#0066ff" },
+  { top: "78%", left: "76%", size: 6, delay: 2, color: "#7fefff" },
+  { top: "30%", left: "48%", size: 3, delay: 2.4, color: "#00e0ff" },
+  { top: "62%", left: "40%", size: 4, delay: 0.6, color: "#0066ff" },
+  { top: "12%", left: "58%", size: 4, delay: 1.4, color: "#7fefff" },
+  { top: "84%", left: "52%", size: 5, delay: 1.9, color: "#00e0ff" },
+  { top: "46%", left: "26%", size: 3, delay: 0.2, color: "#0066ff" },
+  { top: "58%", left: "68%", size: 4, delay: 2.6, color: "#7fefff" },
+];
+
+const DRIFTS = ["tr-drift-a", "tr-drift-b", "tr-drift-c"];
+
+function ParticleField({ disabled }) {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+      {PARTICLES.map((p, i) => (
+        <span
+          key={i}
+          className={`absolute rounded-full ${disabled ? "" : DRIFTS[i % DRIFTS.length]}`}
+          style={{
+            top: p.top,
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            boxShadow: `0 0 ${p.size * 2.5}px ${p.size}px ${p.color}`,
+            opacity: 0.75,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ============================================================
+   Line — a phrase line rendered word-by-word for the reveal.
+   ============================================================ */
+function Line({ words, disabled }) {
+  return (
+    <span className="block text-3xl sm:text-4xl lg:text-5xl">
+      {words.split(" ").map((word, i) => (
+        <span key={`${word}-${i}`} className="inline-block">
+          <motion.span
+            className="inline-block"
+            variants={disabled ? undefined : wordVariants}
+            style={disabled ? { color: "#fff" } : undefined}
+          >
+            {word}
+          </motion.span>
+          {"\u00A0"}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/* ============================================================
+   Floating glassmorphism card
+   ============================================================ */
+function FloatingCard({ card, disabled, parallaxY }) {
+  const { pos, text, icon, delay, depth, hideOnMobile } = card;
+
+  return (
+    <motion.div
+      className={`absolute z-10 w-52 sm:w-60 ${pos} ${
+        hideOnMobile ? "hidden lg:block" : ""
+      }`}
+      style={disabled ? undefined : { y: parallaxY }}
+      initial={disabled ? undefined : { opacity: 0, y: 40 }}
+      whileInView={disabled ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.4 }}
+      transition={{ duration: 0.7, ease: EASE, delay }}
+    >
+      <div className="group relative rounded-2xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-blue-500/50 hover:shadow-[0_0_28px_-6px_rgba(0,102,255,0.8)]">
+        {/* Corner neon badge */}
+        <span className="absolute -right-2 -top-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white shadow-[0_0_16px_-4px_rgba(0,102,255,0.9)]">
+          <ArrowUpRight />
+        </span>
+
+        {/* Watermark icon */}
+        <div className="mb-3 text-white/70">
+          <CardIcon name={icon} />
+        </div>
+
+        {/* Quote */}
+        <p className="font-display text-sm leading-relaxed text-white/85">
+          <span className="mr-1 text-lg font-bold text-primary">
+            &ldquo;
+          </span>
+          {text}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ============================================================
+   Icons
+   ============================================================ */
+function CardIcon({ name }) {
+  const p = {
+    width: 26,
+    height: 26,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.6,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": true,
+  };
+  switch (name) {
+    case "layers":
+      return (
+        <svg {...p}>
+          <path d="m12 2 9 5-9 5-9-5 9-5z" />
+          <path d="m3 12 9 5 9-5M3 17l9 5 9-5" />
+        </svg>
+      );
+    case "brain":
+      return (
+        <svg {...p}>
+          <path d="M12 5a3 3 0 0 0-3 3 3 3 0 0 0-3 3 3 3 0 0 0 1 5 3 3 0 0 0 5 1 3 3 0 0 0 5-1 3 3 0 0 0 1-5 3 3 0 0 0-3-3 3 3 0 0 0-3-3z" />
+          <path d="M12 5v13" />
+        </svg>
+      );
+    case "code":
+      return (
+        <svg {...p}>
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+      );
+    case "rocket":
+    default:
+      return (
+        <svg {...p}>
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+          <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+          <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+        </svg>
+      );
+  }
+}
+
+function ArrowUpRight() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <line x1="7" y1="17" x2="17" y2="7" />
+      <polyline points="7 7 17 7 17 17" />
+    </svg>
   );
 }

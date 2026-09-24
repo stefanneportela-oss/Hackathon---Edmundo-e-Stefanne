@@ -601,3 +601,67 @@ html.animations-paused *::after {
   animation: tr-float 6s ease-in-out infinite;
   will-change: transform;
 }
+
+/* Multi-directional drifting for the particle dots around the phrase, echoing
+   the orbiting particles of the hero hologram. Three variants so nearby dots
+   don't move in lockstep. */
+@keyframes tr-drift-a {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(14px, -18px);
+  }
+  50% {
+    transform: translate(24px, 6px);
+  }
+  75% {
+    transform: translate(6px, 20px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes tr-drift-b {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-18px, 12px);
+  }
+  50% {
+    transform: translate(-8px, 26px);
+  }
+  75% {
+    transform: translate(-22px, 8px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes tr-drift-c {
+  0% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(16px, 16px);
+  }
+  66% {
+    transform: translate(-14px, 22px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+.tr-drift-a {
+  animation: tr-drift-a 9s ease-in-out infinite;
+  will-change: transform;
+}
+.tr-drift-b {
+  animation: tr-drift-b 11s ease-in-out infinite;
+  will-change: transform;
+}
+.tr-drift-c {
+  animation: tr-drift-c 13s ease-in-out infinite;
+  will-change: transform;
+}

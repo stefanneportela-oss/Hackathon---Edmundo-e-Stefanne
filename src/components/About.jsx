@@ -1,8 +1,28 @@
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import phonesImg from "../assets/about/phones.png";
 import portalImg from "../assets/about/portal.png";
 import vrImg from "../assets/about/vr.png";
 import dashboardImg from "../assets/about/dashboard.png";
 import SectionReveal from "./SectionReveal.jsx";
+
+/** True when the site-wide "animations-paused" class is on <html>. */
+function useAnimationsPaused() {
+  const [paused, setPaused] = useState(
+    () =>
+      typeof document !== "undefined" &&
+      document.documentElement.classList.contains("animations-paused")
+  );
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => setPaused(root.classList.contains("animations-paused"));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+  return paused;
+}
 
 /**
  * About / "Quem Somos" — Bento Grid section.
@@ -69,9 +89,9 @@ export default function About() {
               · right column (grows, VERTICAL, gap 24):
                   · right-top-row (HORIZONTAL, gap 24): card-2 (grows) + card-3 (fixed)
                   · card-4 (HORIZONTAL, gap 24) */}
-        <SectionReveal.Item className="mt-14 flex flex-col gap-6 lg:flex-row">
+        <div className="mt-14 flex flex-col gap-6 lg:flex-row">
           {/* --- Card 1: left column, phones (top) + text + CTA (bottom) --- */}
-          <GlowCard className="lg:w-[28%] lg:shrink-0">
+          <GlowCard className="lg:w-[28%] lg:shrink-0" revealDelay={0}>
             <div className="flex h-full flex-col p-6">
               {/* Phone mockup — fills the top, whole (contain) */}
               <div className="flex flex-1 items-center justify-center overflow-hidden">
@@ -107,7 +127,7 @@ export default function About() {
             {/* Top row: card-2 (grows) + card-3 (fixed) */}
             <div className="flex flex-col gap-6 sm:flex-row">
               {/* Card 2: portal — image 153px + title/desc (gap 6px) */}
-              <GlowCard className="min-w-0 flex-1">
+              <GlowCard className="min-w-0 flex-1" revealDelay={0.15}>
                 <div className="flex h-full flex-col gap-5 p-6">
                   <div className="overflow-hidden rounded-lg">
                     <img
@@ -134,7 +154,7 @@ export default function About() {
               {/* Card 3: "20+" metric. Figma: top-row image right-aligned
                   (143x146, rounded 8), gap 16, content bottom-aligned —
                   "20+" 48px white, "Projetos Ativos" 14px muted. --- */}
-              <GlowCard className="sm:w-[240px] sm:shrink-0">
+              <GlowCard className="sm:w-[240px] sm:shrink-0" revealDelay={0.3}>
                 <div className="flex h-full flex-col gap-4 p-6">
                   {/* image aligned to the right, ~143px wide */}
                   <div className="flex justify-end">
@@ -160,7 +180,7 @@ export default function About() {
             </div>
 
             {/* Card 4: text (grows) + dashboard image (fixed 350×230) */}
-            <GlowCard className="flex-1">
+            <GlowCard className="flex-1" revealDelay={0.45}>
               <div className="flex h-full flex-col items-center gap-6 p-8 sm:flex-row">
                 <p className="flex-1 font-display text-base leading-relaxed text-white">
                   <span className="font-bold">
@@ -183,7 +203,7 @@ export default function About() {
               </div>
             </GlowCard>
           </div>
-        </SectionReveal.Item>
+        </div>
       </SectionReveal>
     </section>
   );
@@ -193,10 +213,29 @@ export default function About() {
    GlowCard — borderless glass surface with a soft ambient glow on
    hover (matches the borderless "reveal" feature cards in Projects).
    ============================================================ */
-function GlowCard({ children, className = "" }) {
+function GlowCard({ children, className = "", revealDelay = 0 }) {
+  const reduced = useReducedMotion();
+  const paused = useAnimationsPaused();
+  const disabled = reduced || paused;
+
+  const anim = disabled
+    ? {}
+    : {
+        initial: { opacity: 0, y: 40 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: false, amount: 0.3 },
+        transition: {
+          duration: 0.7,
+          ease: [0.21, 0.47, 0.32, 0.98],
+          delay: revealDelay,
+        },
+      };
+
   return (
-    <div
+    <motion.div
       className={`group relative rounded-3xl transition-transform duration-300 ease-out hover:-translate-y-0.5 ${className}`}
+      style={{ willChange: "transform, opacity" }}
+      {...anim}
     >
       {/* Ambient neon glow — appears softly on hover (no border/frame) */}
       <div
@@ -208,7 +247,7 @@ function GlowCard({ children, className = "" }) {
       <div className="relative h-full overflow-hidden rounded-3xl bg-white/[0.04] backdrop-blur-xl">
         {children}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
