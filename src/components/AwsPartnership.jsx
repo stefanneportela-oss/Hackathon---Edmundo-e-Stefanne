@@ -38,6 +38,18 @@ const EASE = [0.21, 0.47, 0.32, 0.98];
  * doesn't exist yet, so we first switch to the home route, then scroll to the
  * target once it has rendered.
  */
+/**
+ * Smooth-scroll to a section within this same AWS page. We prevent the default
+ * hash change because the app's hash router would otherwise interpret an anchor
+ * like "#aws-contato" as a new route and unmount this page.
+ */
+function scrollToSection(e, id) {
+  e.preventDefault();
+  document
+    .getElementById(id)
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function goToHomeSection(e, id) {
   e.preventDefault();
   if (window.location.hash.replace(/^#/, "").startsWith("/")) {
@@ -233,15 +245,16 @@ function Hero({ reduced }) {
           className="flex flex-col items-center gap-4 pt-2 sm:flex-row"
         >
           <a
-            href="#contato"
-            onClick={(e) => goToHomeSection(e, "contato")}
+            href="#aws-contato"
+            onClick={(e) => scrollToSection(e, "aws-contato")}
             className="group inline-flex h-14 items-center gap-2.5 rounded-full bg-gradient-to-r from-brand-500 to-brand-300 px-8 font-display text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(0,188,255,0.3)] transition-all duration-300 hover:shadow-[0_10px_32px_rgba(0,188,255,0.45)] active:scale-95"
           >
-            Falar com um Especialista
+            Fale Conosco
             <ArrowRightIcon />
           </a>
           <a
             href="#aws-solutions"
+            onClick={(e) => scrollToSection(e, "aws-solutions")}
             className="inline-flex h-14 items-center rounded-full border border-white/25 px-8 font-display text-[15px] font-semibold text-white transition-all duration-300 hover:border-brand-300/70 hover:bg-white/[0.06] active:scale-95"
           >
             Ver Soluções
@@ -567,7 +580,10 @@ function BentoCard({ children, className = "", custom }) {
    ============================================================ */
 function FinalCta() {
   return (
-    <section className="relative w-full px-4 py-24 sm:px-6 lg:px-8 lg:py-28">
+    <section
+      id="aws-contato"
+      className="relative w-full scroll-mt-24 px-4 py-24 sm:px-6 lg:px-8 lg:py-28"
+    >
       <SectionReveal
         className="mx-auto flex max-w-7xl flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-16"
         amount={0.2}
@@ -656,7 +672,7 @@ function FinalCta() {
               onClick={(e) => goToHomeSection(e, "contato")}
               className="group inline-flex h-14 w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-brand-500 to-brand-300 font-display text-sm font-bold text-white shadow-[0_8px_16px_rgba(0,188,255,0.25)] transition-all duration-300 hover:shadow-[0_12px_28px_rgba(0,188,255,0.4)] active:scale-95"
             >
-              Falar com um Arquiteto Cloud
+              Fale Conosco
               <ArrowRightIcon />
             </a>
           </div>
