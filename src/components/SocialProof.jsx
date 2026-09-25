@@ -100,13 +100,13 @@ export default function SocialProof() {
  */
 function LogoPill({ partner }) {
   return (
-    <div className="group flex cursor-default items-center justify-center rounded-full border border-transparent px-7 py-4 opacity-55 transition-all duration-300 ease-out hover:scale-[1.08] hover:border-primary/60 hover:bg-white/[0.05] hover:opacity-100 hover:shadow-[0_0_26px_-6px_rgba(0,102,255,0.85)] hover:backdrop-blur-md">
+    <div className="group flex cursor-default items-center justify-center rounded-full border border-transparent px-6 py-3 opacity-55 transition-all duration-300 ease-out hover:scale-[1.08] hover:border-primary/60 hover:bg-white/[0.05] hover:opacity-100 hover:shadow-[0_0_26px_-6px_rgba(0,102,255,0.85)] hover:backdrop-blur-md">
       <img
         src={partner.src}
         alt={`Logo ${partner.name}`}
         loading="lazy"
         draggable={false}
-        className="h-8 w-auto select-none object-contain sm:h-9 lg:h-10"
+        className="h-5 w-auto select-none object-contain sm:h-6 lg:h-7"
       />
     </div>
   );
