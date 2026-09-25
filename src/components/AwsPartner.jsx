@@ -183,14 +183,18 @@ export default function AwsPartner() {
             </motion.div>
           ))}
 
-          {/* ---- Centre stack ------------------------------------------ */}
-          <div className="relative z-20 mx-auto flex min-h-[420px] max-w-2xl flex-col items-center justify-center py-8 text-center lg:min-h-[600px]">
+          {/* ---- Centre stack ------------------------------------------
+              A uniform `gap` between the four blocks (wordmark, title,
+              subtitle, CTA) guarantees generous, predictable spacing that
+              scales up on larger screens — instead of per-item margins that
+              get visually compressed by the large accented type. */}
+          <div className="relative z-20 mx-auto flex min-h-[420px] max-w-2xl flex-col items-center justify-center gap-5 py-8 text-center lg:min-h-[600px]">
             {/* AWS wordmark */}
             <motion.div variants={fadeUp} className="flex flex-col items-center">
               <p className="font-display text-2xl font-extrabold leading-none text-white sm:text-3xl">
                 AWS <span className="text-gradient">Partner</span>
               </p>
-              <p className="mt-1.5 font-display text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
+              <p className="mt-2 font-display text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
                 Partner Network
               </p>
             </motion.div>
@@ -198,7 +202,7 @@ export default function AwsPartner() {
             {/* Title */}
             <motion.h2
               variants={fadeUp}
-              className="mt-8 font-display text-4xl font-extrabold leading-[1.05] text-white sm:text-5xl md:text-6xl"
+              className="pt-2 font-display text-4xl font-extrabold leading-[1.15] text-white sm:text-5xl md:text-6xl"
             >
               Competências
               <br />
@@ -210,7 +214,7 @@ export default function AwsPartner() {
             {/* Subtitle with highlighted keywords */}
             <motion.p
               variants={fadeUp}
-              className="mt-6 max-w-lg font-display text-base font-medium text-muted sm:text-lg"
+              className="max-w-lg font-display text-base font-medium text-muted sm:text-lg"
             >
               Modernização, migração e desenvolvimento{" "}
               <span className="font-semibold text-brand-300">cloud-native</span>{" "}
@@ -224,7 +228,7 @@ export default function AwsPartner() {
             <motion.a
               variants={fadeUp}
               href="/parceria-aws"
-              className="group mt-9 inline-flex h-14 items-center gap-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-brand-300 px-7 font-display text-[15px] font-bold text-[#04101f] shadow-[0_10px_28px_rgba(0,188,255,0.3)] transition-all duration-300 hover:shadow-[0_14px_36px_rgba(0,188,255,0.45)] active:scale-95"
+              className="group inline-flex h-14 items-center gap-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-brand-300 px-7 font-display text-[15px] font-bold text-[#04101f] shadow-[0_10px_28px_rgba(0,188,255,0.3)] transition-all duration-300 hover:shadow-[0_14px_36px_rgba(0,188,255,0.45)] active:scale-95"
             >
               Conheça a parceria AWS
               <ArrowRightIcon />
