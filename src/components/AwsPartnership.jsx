@@ -1,9 +1,14 @@
 import { motion, useReducedMotion } from "framer-motion";
 import SectionReveal from "./SectionReveal.jsx";
-import dashboard from "../assets/about/dashboard.png";
-import portal from "../assets/about/portal.png";
-import phones from "../assets/about/phones.png";
-import vr from "../assets/about/vr.png";
+
+// Themed Unsplash photos (free to use) — one per solution card, matching its
+// AWS topic (cloud migration, cloud-native architecture, DevOps, FinOps).
+const unsplash = (id) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=600&q=80`;
+const cloudMigrationImg = unsplash("photo-1451187580459-43490279c0fa"); // global network / servers
+const cloudNativeImg = unsplash("photo-1526374965328-7f61d4dc18c5"); // code / architecture
+const devopsImg = unsplash("photo-1518770660439-4636190af475"); // circuit / automation
+const finopsImg = unsplash("photo-1460925895917-afdab827c52f"); // analytics / financial charts
 
 /**
  * AwsPartnership — full dedicated page (route: #/parceria-aws).
@@ -94,25 +99,25 @@ const SOLUTIONS = [
   {
     title: "Migração Cloud",
     desc: "Migre suas aplicações e dados para a AWS com segurança e zero downtime.",
-    image: dashboard,
+    image: cloudMigrationImg,
     icon: MigrateIcon,
   },
   {
     title: "Arquitetura Cloud-Native",
     desc: "Projete soluções escaláveis e resilientes usando serviços gerenciados da AWS.",
-    image: portal,
+    image: cloudNativeImg,
     icon: LayersIcon,
   },
   {
     title: "DevOps & Automação",
     desc: "Automatize deploys, monitore performance e acelere entregas com CI/CD na AWS.",
-    image: phones,
+    image: devopsImg,
     icon: PipelineIcon,
   },
   {
     title: "FinOps & Otimização",
     desc: "Reduza custos em até 40% com governança financeira e right-sizing de recursos.",
-    image: vr,
+    image: finopsImg,
     icon: CoinIcon,
   },
 ];
