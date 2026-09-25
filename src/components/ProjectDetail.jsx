@@ -38,6 +38,7 @@ export default function ProjectDetail({ slug }) {
     client,
     year,
     category,
+    tags = [],
     image,
     challenge,
     challengeExtra,
@@ -46,6 +47,11 @@ export default function ProjectDetail({ slug }) {
     stores,
     liveUrl,
   } = project;
+
+  // Shown as "Categoria" — use the project's primary filter area (tags[0]) so
+  // the detail page matches the filter on the Projetos listing. Falls back to
+  // the free-form `category` if a project has no tags.
+  const primaryArea = tags[0] || category;
 
   // Build the numbered editorial sections that actually have content.
   const sections = [
@@ -127,7 +133,7 @@ export default function ProjectDetail({ slug }) {
             </div>
             <div className="flex flex-wrap gap-x-16 gap-y-6 sm:justify-end sm:text-right">
               <Meta label="Ano" value={year} align="sm:items-end" />
-              <Meta label="Categoria" value={category} align="sm:items-end" />
+              <Meta label="Categoria" value={primaryArea} align="sm:items-end" />
             </div>
           </motion.div>
         </motion.div>

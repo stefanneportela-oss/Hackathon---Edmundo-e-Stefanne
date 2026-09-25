@@ -118,7 +118,10 @@ export default function SolutionsCarousel() {
       startTarget: target.current,
       moved: false,
     };
-    e.currentTarget.setPointerCapture?.(e.pointerId);
+    // NOTE: intentionally NOT calling setPointerCapture here — capturing the
+    // pointer on the stage suppresses the `click` event on the card articles,
+    // which broke opening a project. Dragging still works via the move/up
+    // handlers below.
     pauseAutoplay();
   };
   const onPointerMove = (e) => {
@@ -128,8 +131,9 @@ export default function SolutionsCarousel() {
     target.current = drag.current.startTarget - dx / STEP;
     pauseAutoplay();
   };
-  const endDrag = (e) => {
-    e.currentTarget?.releasePointerCapture?.(e.pointerId);
+  const endDrag = () => {
+    // Defer clearing so the card's onClick (which fires right after pointerup)
+    // can still read `moved` to distinguish a tap from a drag.
     setTimeout(() => (drag.current.down = false), 0);
   };
 
@@ -198,10 +202,11 @@ export default function SolutionsCarousel() {
               <article
                 key={s.id}
                 onClick={() => {
+                  // Ignore the click that ends a drag (so dragging the ring
+                  // doesn't accidentally open a project).
                   if (drag.current.moved) return;
-                  // Centered card → open its project page; otherwise rotate it
-                  // to the front first.
-                  if (isCenter && s.slug) {
+                  // Clicking any card opens that project's detail page.
+                  if (s.slug) {
                     window.location.hash = `#/projetos/${s.slug}`;
                     return;
                   }

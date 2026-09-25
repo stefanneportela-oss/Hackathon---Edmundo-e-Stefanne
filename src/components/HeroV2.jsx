@@ -245,7 +245,7 @@ function FloatingCard({ src }) {
             Espaço do Estudante
           </p>
           <a
-            href="#projetos"
+            href="#/projetos/espaco-do-estudante"
             className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-white/70 transition-colors hover:text-white"
           >
             Ver agora
