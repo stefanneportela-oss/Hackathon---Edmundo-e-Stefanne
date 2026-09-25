@@ -139,7 +139,7 @@ export default function TextReveal() {
 
       {/* ===== Background layer: monumental phrase (word-by-word reveal) ===== */}
       <motion.h2
-        className="relative z-0 mx-auto max-w-4xl text-center font-display font-black uppercase leading-[1.15] tracking-tight text-white"
+        className="relative z-0 mx-auto max-w-4xl text-center font-display font-black uppercase leading-[1.3] tracking-tight text-white"
         variants={disabled ? undefined : phraseContainer}
         initial={disabled ? undefined : "hidden"}
         whileInView={disabled ? undefined : "visible"}
@@ -148,7 +148,7 @@ export default function TextReveal() {
         <Line words="Soluções digitais para os" disabled={disabled} />
         {/* Highlighted words with the brand logo gradient (#0574D9 → #00BCFF) */}
         <motion.span
-          className="my-1 block text-4xl italic text-transparent sm:text-5xl lg:text-6xl"
+          className="block text-3xl text-transparent sm:text-4xl lg:text-5xl"
           variants={disabled ? undefined : { hidden: { opacity: 0.15 }, visible: { opacity: 1, transition: { duration: 0.7, ease: "easeOut" } } }}
           style={{
             backgroundImage: "linear-gradient(135deg, #0574D9 0%, #00BCFF 100%)",
@@ -261,21 +261,15 @@ function FloatingCard({ card, disabled, parallaxY }) {
       transition={{ duration: 0.7, ease: EASE, delay }}
     >
       <div className="group relative rounded-2xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-blue-500/50 hover:shadow-[0_0_28px_-6px_rgba(0,102,255,0.8)]">
-        {/* Corner neon badge */}
-        <span className="absolute -right-2 -top-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white shadow-[0_0_16px_-4px_rgba(0,102,255,0.9)]">
-          <ArrowUpRight />
-        </span>
-
-        {/* Watermark icon */}
-        <div className="mb-3 text-white/70">
-          <CardIcon name={icon} />
+        {/* Icon tile */}
+        <div className="mb-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-500/15 text-brand-300 shadow-[inset_0_0_0_1px_rgba(0,188,255,0.25)]">
+            <CardIcon name={icon} />
+          </span>
         </div>
 
-        {/* Quote */}
+        {/* Statement */}
         <p className="font-display text-sm leading-relaxed text-white/85">
-          <span className="mr-1 text-lg font-bold text-primary">
-            &ldquo;
-          </span>
           {text}
         </p>
       </div>
@@ -287,21 +281,36 @@ function FloatingCard({ card, disabled, parallaxY }) {
    Icons
    ============================================================ */
 function CardIcon({ name }) {
+  // Unique gradient id per icon instance so multiple cards render correctly.
+  const gradId = `card-icon-gradient-${name}`;
   const p = {
-    width: 26,
-    height: 26,
+    width: 28,
+    height: 28,
     viewBox: "0 0 24 24",
     fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.6,
+    stroke: `url(#${gradId})`,
+    strokeWidth: 1.8,
     strokeLinecap: "round",
     strokeLinejoin: "round",
     "aria-hidden": true,
+    style: {
+      filter: "drop-shadow(0 0 8px rgba(0,188,255,0.45))",
+    },
   };
+  // Brand logo gradient (#0574D9 → #00BCFF), shared by every icon.
+  const defs = (
+    <defs>
+      <linearGradient id={gradId} x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#0574D9" />
+        <stop offset="1" stopColor="#00BCFF" />
+      </linearGradient>
+    </defs>
+  );
   switch (name) {
     case "layers":
       return (
         <svg {...p}>
+          {defs}
           <path d="m12 2 9 5-9 5-9-5 9-5z" />
           <path d="m3 12 9 5 9-5M3 17l9 5 9-5" />
         </svg>
@@ -309,6 +318,7 @@ function CardIcon({ name }) {
     case "brain":
       return (
         <svg {...p}>
+          {defs}
           <path d="M12 5a3 3 0 0 0-3 3 3 3 0 0 0-3 3 3 3 0 0 0 1 5 3 3 0 0 0 5 1 3 3 0 0 0 5-1 3 3 0 0 0 1-5 3 3 0 0 0-3-3 3 3 0 0 0-3-3z" />
           <path d="M12 5v13" />
         </svg>
@@ -316,6 +326,7 @@ function CardIcon({ name }) {
     case "code":
       return (
         <svg {...p}>
+          {defs}
           <polyline points="16 18 22 12 16 6" />
           <polyline points="8 6 2 12 8 18" />
         </svg>
@@ -324,6 +335,7 @@ function CardIcon({ name }) {
     default:
       return (
         <svg {...p}>
+          {defs}
           <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
           <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
           <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
@@ -332,11 +344,3 @@ function CardIcon({ name }) {
   }
 }
 
-function ArrowUpRight() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <line x1="7" y1="17" x2="17" y2="7" />
-      <polyline points="7 7 17 7 17 17" />
-    </svg>
-  );
-}

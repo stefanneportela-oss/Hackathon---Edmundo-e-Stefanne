@@ -466,7 +466,7 @@ function Benefits({ reduced }) {
                   de economia média obtida em custo de infraestrutura
                 </span>
               </div>
-              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-white/10 bg-brand-500/10 text-brand-300">
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-brand-500/15 text-brand-300 shadow-[inset_0_0_0_1px_rgba(0,188,255,0.25)]">
                 <CoinIcon size={26} />
               </span>
             </div>
@@ -611,7 +611,7 @@ function FinalCta() {
           <div className="flex flex-col gap-8 rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-[0_16px_32px_rgba(0,0,0,0.25)] backdrop-blur-xl sm:p-10">
             {/* Card header */}
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-[#1c1c1e] text-brand-300">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-500/15 text-brand-300 shadow-[inset_0_0_0_1px_rgba(0,188,255,0.25)]">
                 <CloudIcon />
               </span>
               <div className="flex flex-col">

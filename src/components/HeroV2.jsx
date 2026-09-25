@@ -113,14 +113,16 @@ export default function HeroV2() {
             style={{ animationDelay: "0.05s" }}
           >
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-300">
-              # Vanguarda em tecnologia
+              # Transformação digital
             </p>
             {/* leading-tight + pt-2 keeps the text bounding box from clipping
                 the top accents (Õ, Ã); gap-2 spaces the lines evenly. */}
-            <h1 className="flex flex-col gap-2 pt-2 font-display font-black uppercase leading-tight tracking-tight text-white">
-              <span className="text-5xl sm:text-6xl">Soluções</span>
-              <span className="text-5xl sm:text-6xl">além dos</span>
-              <span className="text-5xl text-gradient sm:text-6xl">limites</span>
+            <h1 className="flex flex-col gap-2 pt-2 font-display font-black uppercase tracking-tight text-white" style={{ lineHeight: 1.35 }}>
+              <span className="text-3xl text-gradient sm:text-4xl">Desenvolvimento de</span>
+              <span className="text-3xl sm:text-4xl">
+                <span className="text-gradient">software</span> sob medida
+              </span>
+              <span className="text-3xl sm:text-4xl">para escalar o seu negócio</span>
               {/* Layered watermark word — subtle, muted, below the block */}
               <span className="mt-3 text-3xl font-bold text-white/15 sm:text-4xl">
                 transformação

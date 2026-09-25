@@ -2,6 +2,7 @@ import senaiLogo from "../assets/logos/parceiros/senai.png";
 import sesiLogo from "../assets/logos/parceiros/sesi.png";
 import ielLogo from "../assets/logos/parceiros/iel.png";
 import cniLogo from "../assets/logos/parceiros/cni.png";
+import fiescLogo from "../assets/logos/parceiros/fiesc.svg";
 import SectionReveal from "./SectionReveal.jsx";
 
 /**
@@ -29,6 +30,7 @@ import SectionReveal from "./SectionReveal.jsx";
  */
 
 const PARTNERS = [
+  { name: "FIESC", src: fiescLogo },
   { name: "SENAI", src: senaiLogo },
   { name: "SESI", src: sesiLogo },
   { name: "IEL", src: ielLogo },

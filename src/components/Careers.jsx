@@ -159,7 +159,9 @@ function CareerCard({ career, index, total }) {
             <span className="font-mono text-xs tracking-widest text-white/40">
               {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </span>
-            <CardIcon name={career.icon} />
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-500/15 text-brand-300 shadow-[inset_0_0_0_1px_rgba(0,188,255,0.25)]">
+              <CardIcon name={career.icon} />
+            </span>
           </div>
 
           <h3 className="font-display text-2xl font-bold uppercase leading-tight tracking-tight text-white sm:text-4xl">

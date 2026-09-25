@@ -66,23 +66,14 @@ export default function Services() {
       {/* Reveal the section once it's roughly centered in the viewport
           (amount 0.5 = ~half visible), cascading title → body. */}
       <SectionReveal className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.5}>
-        {/* ===== Full-width title (top) ===== */}
-        <SectionReveal.Item as="h2" className="text-white">
-          Serviços
-        </SectionReveal.Item>
-
         {/* ===== Two-column body: left rail + card track ===== */}
-        <SectionReveal.Item className="mt-10 flex flex-col gap-8 lg:mt-14 lg:flex-row lg:gap-10">
+        <SectionReveal.Item className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           {/* ---- Left rail ---- */}
           <div className="flex shrink-0 flex-col lg:w-56">
-            {/* Badge (top) */}
-            <a
-              href="#sobre"
-              className="group inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 font-display text-sm font-medium text-white/90 backdrop-blur-md transition-all duration-300 hover:border-primary/60 hover:bg-white/10"
-            >
-              Sobre Nós
-              <ArrowUpRight />
-            </a>
+            {/* Section title (top of the rail) */}
+            <h2 className="font-display font-black uppercase tracking-tight text-white">
+              Serviços
+            </h2>
 
             {/* Subtext (pushed to the bottom of the rail on desktop) */}
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted lg:mt-auto lg:pt-10">
@@ -197,11 +188,11 @@ function ServiceCard({ service, visible }) {
               {service.desc}
             </p>
 
-            {/* Circular action button (bottom-left) — themed icon per service */}
+            {/* Action icon tile (bottom-left) — themed icon per service */}
             <div>
               <button
                 aria-label={`Saber mais sobre ${service.title}`}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-[0_0_22px_-4px_rgba(0,102,255,0.9)] active:scale-95"
+                className="grid h-11 w-11 place-items-center rounded-xl bg-brand-500/15 text-brand-300 shadow-[inset_0_0_0_1px_rgba(0,188,255,0.25)] transition-all duration-300 hover:bg-brand-500/25 hover:shadow-[inset_0_0_0_1px_rgba(0,188,255,0.45),0_0_22px_-4px_rgba(0,188,255,0.8)] active:scale-95"
               >
                 <ServiceIcon name={service.icon} />
               </button>
@@ -227,7 +218,7 @@ function ServiceCard({ service, visible }) {
               }}
             />
             {/* Icon (top-left) — themed icon per service */}
-            <span className="absolute left-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/60 bg-black/50 text-primary backdrop-blur">
+            <span className="absolute left-4 top-4 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-500/15 text-brand-300 shadow-[inset_0_0_0_1px_rgba(0,188,255,0.25)] backdrop-blur">
               <ServiceIcon name={service.icon} />
             </span>
             {/* Overlay headline (bottom) */}
@@ -275,15 +266,6 @@ function NavArrow({ dir, disabled, onClick }) {
 }
 
 /* ---- Icons ---- */
-
-function ArrowUpRight() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden>
-      <line x1="7" y1="17" x2="17" y2="7" />
-      <polyline points="7 7 17 7 17 17" />
-    </svg>
-  );
-}
 
 function ArrowLeft() {
   return (
