@@ -85,9 +85,6 @@ export default function Careers() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
           {/* ---- Left column: header (sticky on desktop) ---- */}
           <SectionReveal.Item className="flex flex-col items-start gap-4 text-left lg:col-span-5 lg:sticky lg:top-28">
-            <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
-              Trabalhe Conosco
-            </span>
             <h2 className="text-white">
               Construa o futuro <span className="text-gradient">com a gente</span>
             </h2>

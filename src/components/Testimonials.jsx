@@ -85,10 +85,7 @@ export default function Testimonials() {
           {/* ===== Card ===== */}
           <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0D0D0D]/80 p-8 backdrop-blur-xl sm:p-12">
             {/* Header */}
-            <div className="flex items-center justify-between">
-              <span className="font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Depoimento de Cliente
-              </span>
+            <div className="flex items-center justify-end">
               <div className="flex items-center gap-4">
                 <span className="font-mono text-xs tracking-widest text-white/50">
                   {String(index + 1).padStart(3, "0")} /{" "}

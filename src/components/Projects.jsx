@@ -80,7 +80,7 @@ export default function Projects() {
           revolucionar a indústria.
         </p>
 
-        <PrimaryButton href="#todos-projetos" size="sm" className="mt-8">
+        <PrimaryButton href="#/projetos" size="sm" className="mt-8">
           Ver todos os projetos
         </PrimaryButton>
       </SectionReveal.Item>

@@ -34,10 +34,16 @@ export default function Header() {
   const [active, setActive] = useState(0);
   const isDesktop = useIsDesktop();
 
-  // Highlight the nav item matching the section currently in view
+  // Highlight the nav item matching the section currently in view.
+  // Only section anchors (#servicos) are observed — route links (#/projetos)
+  // are skipped since they aren't elements on the page.
   useEffect(() => {
     const sections = navLinks
-      .map((l) => document.querySelector(l.href))
+      .map((l) =>
+        l.href.startsWith("#/") || !l.href.startsWith("#")
+          ? null
+          : document.querySelector(l.href)
+      )
       .filter(Boolean);
     if (sections.length === 0) return;
 
@@ -63,7 +69,7 @@ export default function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         {/* ===== Logo (left) ===== */}
         <a
-          href="#top"
+          href="#/"
           className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2.5 backdrop-blur-md"
           aria-label="SENAI Soluções Digitais — Início"
         >

@@ -16,7 +16,7 @@ const COLUMNS = [
   {
     title: "Navegação",
     links: [
-      { label: "Início", href: "#top" },
+      { label: "Início", href: "#/" },
       { label: "Serviços", href: "#servicos" },
       { label: "Projetos", href: "#projetos" },
       { label: "Sobre", href: "#sobre" },

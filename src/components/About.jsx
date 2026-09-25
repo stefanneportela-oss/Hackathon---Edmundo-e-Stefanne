@@ -68,10 +68,6 @@ export default function About() {
             · title: 50px Bahnschrift SemiBold, white
             · subtitle: 16px regular, muted (#A1A1AA), max ~720px */}
         <SectionReveal.Item className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
-          <span className="inline-flex items-center rounded-[20px] bg-[#1A1A1A] px-4 py-2 font-display text-xs font-semibold text-[#00D2FF]">
-            Quem Somos
-          </span>
-
           <h2 className="font-display text-[2.25rem] font-semibold text-white sm:text-[50px]">
             SENAI Soluções Digitais
           </h2>
