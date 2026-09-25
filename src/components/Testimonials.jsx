@@ -103,34 +103,36 @@ export default function Testimonials() {
             </div>
 
             {/* Body: two columns */}
-            <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+            <div className="mt-6 grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-6">
               {/* Left: profile */}
-              <div className="flex flex-col gap-6 lg:col-span-4">
-                <img
-                  src={t.avatar}
-                  alt={`Foto de ${t.name}`}
-                  loading="lazy"
-                  draggable={false}
-                  className="h-24 w-24 rounded-full object-cover grayscale"
-                />
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-primary">
-                    {t.name}
-                  </h3>
-                  <p className="mt-1 font-display text-base text-white/60">
-                    ({t.role})
-                  </p>
-                  <p className="mt-3 font-display text-sm text-muted">
-                    {t.handle}
+              <div className="flex flex-col text-left lg:col-span-4 lg:items-center">
+                <div className="flex flex-col items-start gap-6">
+                  <img
+                    src={t.avatar}
+                    alt={`Foto de ${t.name}`}
+                    loading="lazy"
+                    draggable={false}
+                    className="h-24 w-24 rounded-full object-cover grayscale"
+                  />
+                  <div>
+                    <h3 className="font-display text-2xl font-bold text-primary">
+                      {t.name}
+                    </h3>
+                    <p className="mt-1 font-display text-base text-white/60">
+                      ({t.role})
+                    </p>
+                    <p className="mt-3 font-display text-sm text-muted">
+                      {t.handle}
+                    </p>
+                  </div>
+                  <p className="pt-2 font-display text-sm font-semibold uppercase tracking-widest text-white/80">
+                    {t.company}
                   </p>
                 </div>
-                <p className="mt-auto pt-6 font-display text-sm font-semibold uppercase tracking-widest text-white/80">
-                  {t.company}
-                </p>
               </div>
 
               {/* Right: quote + detail */}
-              <div className="lg:col-span-8">
+              <div className="flex flex-col justify-center lg:col-span-8 lg:h-full">
                 <p className="font-display text-2xl font-medium leading-snug text-white sm:text-3xl">
                   {t.quote}
                 </p>

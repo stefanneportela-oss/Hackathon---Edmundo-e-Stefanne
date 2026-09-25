@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import phonesImg from "../assets/about/phones.png";
-import portalImg from "../assets/about/portal.png";
-import vrImg from "../assets/about/vr.png";
-import dashboardImg from "../assets/about/dashboard.png";
+import portalImg from "../assets/services/ecommerce-corte.svg";
+import vrImg from "../assets/about/smart.png";
+import dashboardImg from "../assets/about/itinerarios.png";
 import SectionReveal from "./SectionReveal.jsx";
+import PrimaryButton from "./ui/PrimaryButton.jsx";
 
 /** True when the site-wide "animations-paused" class is on <html>. */
 function useAnimationsPaused() {
@@ -107,13 +108,9 @@ export default function About() {
               </p>
 
               <div className="mt-6">
-                <a
-                  href="#projetos"
-                  className="group/cta inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-display text-sm font-semibold text-black transition-all duration-300 hover:bg-white/90 hover:shadow-[0_0_28px_-6px_rgba(255,255,255,0.6)] active:scale-95"
-                >
+                <PrimaryButton href="#projetos" size="sm">
                   Explore nossos projetos
-                  <ArrowRight className="transition-transform duration-300 group-hover/cta:translate-x-1" />
-                </a>
+                </PrimaryButton>
               </div>
             </div>
           </GlowCard>
@@ -132,7 +129,7 @@ export default function About() {
                       loading="lazy"
                       decoding="async"
                       draggable={false}
-                      className="h-[153px] w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                      className="block h-[150px] w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -244,25 +241,5 @@ function GlowCard({ children, className = "", revealDelay = 0 }) {
         {children}
       </div>
     </motion.div>
-  );
-}
-
-function ArrowRight({ className = "" }) {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden
-    >
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
-    </svg>
   );
 }
