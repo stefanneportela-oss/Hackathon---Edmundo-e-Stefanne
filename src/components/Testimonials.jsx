@@ -82,8 +82,12 @@ export default function Testimonials() {
             className="pointer-events-none absolute -bottom-10 -right-10 h-64 w-64 rounded-full bg-primary/40 opacity-40 blur-3xl"
           />
 
+          {/* Decorative giant quotation mark — sits BEHIND the card, peeking out
+              of the top-left corner. */}
+          <QuoteMark className="pointer-events-none absolute -left-4 -top-8 z-0 text-primary opacity-90 sm:-left-6 sm:-top-10" />
+
           {/* ===== Card ===== */}
-          <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0D0D0D]/80 p-8 backdrop-blur-xl sm:p-12">
+          <article className="relative z-10 overflow-hidden rounded-3xl border border-white/15 bg-white/[0.04] p-6 shadow-[0_8px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl sm:p-8">
             {/* Header */}
             <div className="flex items-center justify-end">
               <div className="flex items-center gap-4">
@@ -99,7 +103,7 @@ export default function Testimonials() {
             </div>
 
             {/* Body: two columns */}
-            <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
               {/* Left: profile */}
               <div className="flex flex-col gap-6 lg:col-span-4">
                 <img
@@ -135,9 +139,6 @@ export default function Testimonials() {
                 </p>
               </div>
             </div>
-
-            {/* Decorative giant quotation mark (bottom-right) */}
-            <QuoteMark className="pointer-events-none absolute -bottom-6 right-6 text-primary opacity-90" />
           </article>
         </SectionReveal.Item>
       </SectionReveal>
