@@ -4,6 +4,7 @@ import { Float, Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import iconUrl from "../assets/logos/icon-only.svg";
+import useAnimationsPaused from "../hooks/useAnimationsPaused.js";
 
 /**
  * LogoHologram3D — holographic 3D reconstruction of the SENAI Soluções
@@ -235,6 +236,10 @@ export default function LogoHologram3D({ className = "" }) {
   // Only run the WebGL render loop while the hologram is on screen — huge CPU/
   // GPU saving once the user scrolls past the hero.
   const [onScreen, setOnScreen] = useState(true);
+  // Site-wide pause switch (MotionToggle). When paused we freeze all motion
+  // AND stop the WebGL render loop so the hologram sits perfectly still.
+  const paused = useAnimationsPaused();
+  const frozen = reducedMotion || paused;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -262,8 +267,9 @@ export default function LogoHologram3D({ className = "" }) {
         // Cap the pixel ratio: rendering the WebGL scene at full 2x on retina
         // screens is a big GPU cost for little visual gain here.
         dpr={[1, 1.5]}
-        // Pause the render loop entirely when scrolled out of view.
-        frameloop={onScreen ? "always" : "never"}
+        // Pause the render loop entirely when scrolled out of view OR when
+        // the site-wide motion switch is paused → the hologram freezes.
+        frameloop={onScreen && !paused ? "always" : "never"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
@@ -274,16 +280,16 @@ export default function LogoHologram3D({ className = "" }) {
         <pointLight position={[0, 0, 3]} intensity={1.1} color={CYAN_SOFT} />
 
         <Suspense fallback={null}>
-          <ParallaxRig reducedMotion={reducedMotion}>
+          <ParallaxRig reducedMotion={frozen}>
             <Float
-              speed={reducedMotion ? 0 : 1.4}
-              rotationIntensity={reducedMotion ? 0 : 0.4}
-              floatIntensity={reducedMotion ? 0 : 1.1}
+              speed={frozen ? 0 : 1.4}
+              rotationIntensity={frozen ? 0 : 0.4}
+              floatIntensity={frozen ? 0 : 1.1}
               floatingRange={[-0.15, 0.15]}
             >
-              <LogoAssembly reducedMotion={reducedMotion} />
+              <LogoAssembly reducedMotion={frozen} />
             </Float>
-            <ParticleField reducedMotion={reducedMotion} />
+            <ParticleField reducedMotion={frozen} />
           </ParallaxRig>
         </Suspense>
       </Canvas>

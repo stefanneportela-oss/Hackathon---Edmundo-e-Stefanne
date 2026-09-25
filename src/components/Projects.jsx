@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import SolutionsCarousel from "./SolutionsCarousel.jsx";
 import PrimaryButton from "./ui/PrimaryButton.jsx";
 import SectionReveal from "./SectionReveal.jsx";
+import useAnimationsPaused from "../hooks/useAnimationsPaused.js";
 
 const features = [
   {
@@ -23,12 +24,19 @@ export default function Projects() {
   const cardRefs = useRef([]);
   const raf = useRef(0);
   const pending = useRef(null);
+  const paused = useAnimationsPaused();
 
   // Reveal each feature card based on how close the cursor is to it,
   // so the gradient "passing under" a card lights it up (like the reference).
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+
+    // Paused → clear any glow and skip cursor tracking entirely.
+    if (paused) {
+      cardRefs.current.forEach((c) => c?.style.setProperty("--reveal", "0"));
+      return;
+    }
 
     const apply = () => {
       raf.current = 0;
@@ -61,7 +69,7 @@ export default function Projects() {
       section.removeEventListener("pointerleave", onLeave);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [paused]);
 
   return (
     <SectionReveal

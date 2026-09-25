@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import useAnimationsPaused from "../hooks/useAnimationsPaused.js";
 
 /**
  * GlobalBackground — one continuous, infinite background for the whole site.
@@ -33,6 +34,9 @@ export default function GlobalBackground() {
   const raf = useRef(0);
   const idleTimer = useRef(0);
   const pending = useRef(null);
+  // Site-wide pause switch (MotionToggle): when paused, the cursor-follow glow
+  // must not appear at all.
+  const paused = useAnimationsPaused();
 
   // Detect a real mouse. `(hover: hover) and (pointer: fine)` is true on
   // laptops/desktops and false on phones/tablets — where we show the aurora.
@@ -55,6 +59,12 @@ export default function GlobalBackground() {
     if (!hasMouse) return;
     const el = glowRef.current;
     if (!el) return;
+
+    // Paused → keep the glow hidden and skip all pointer tracking entirely.
+    if (paused) {
+      el.style.setProperty("--glow-opacity", "0");
+      return;
+    }
 
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -100,7 +110,7 @@ export default function GlobalBackground() {
       if (raf.current) cancelAnimationFrame(raf.current);
       window.clearTimeout(idleTimer.current);
     };
-  }, [hasMouse]);
+  }, [hasMouse, paused]);
 
   return (
     <div

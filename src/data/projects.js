@@ -11,12 +11,36 @@ import phonesImg from "../assets/about/phones.png";
 import vrImg from "../assets/about/vr.png";
 import edhealthImg from "../assets/services/edhealth.png";
 import mobileImg from "../assets/services/mobile.png";
+import ecommerceCursosImg from "../assets/services/ecommerce.jpg";
 
 // Each project also carries the fields used by the dedicated detail page
 // (route #/projetos/:slug), ported from the Figma "Página do produto
 // específico": category, purpose (short intent line), challenge, solution and
 // the technologies list.
 export const projects = [
+  {
+    slug: "ecommerce-cursos",
+    name: "E-commerce de Cursos",
+    icon: "🛒",
+    description:
+      "Marketplace de educação da FIESC: catálogo, matrícula e pagamento 100% online para cursos do SESI e SENAI/SC.",
+    tags: ["Desenvolvimento Web", "Big Data & Analytics"],
+    client: "FIESC",
+    year: "2024",
+    liveUrl: "https://cursos.sesisenai.org.br/",
+    image: ecommerceCursosImg,
+    category: "E-commerce & Educação",
+    purpose:
+      "Vitrine digital que transforma a busca por qualificação em uma jornada de compra fluida: o aluno descobre, compara e se matricula em cursos técnicos, profissionalizantes e EAD do SESI e SENAI/SC em poucos cliques.",
+    caption: "Da descoberta à matrícula, 100% online.",
+    challenge:
+      "A oferta educacional do SESI e SENAI/SC estava dispersa e a matrícula dependia de atendimento presencial ou telefônico, criando atrito, filas e perda de alunos justamente no momento da decisão de compra.",
+    challengeExtra:
+      "Sem uma vitrine unificada, era difícil divulgar promoções, comparar cursos por área e converter o interesse do visitante em matrícula efetiva de forma escalável em todo o estado.",
+    solution:
+      "Desenvolvemos um e-commerce completo que reúne todo o catálogo em um só lugar, com busca por área, filtros, cursos em destaque, campanhas promocionais e checkout com pagamento online. A jornada de matrícula ficou autônoma e disponível 24/7, e o time ganhou dados de comportamento para orientar campanhas — ampliando alcance, conversão e receita.",
+    technologies: ["React", "Node.js", "REST API", "Gateway de Pagamento", "PostgreSQL", "AWS"],
+  },
   {
     slug: "chatbot-sgn",
     name: "Chatbot SGN",

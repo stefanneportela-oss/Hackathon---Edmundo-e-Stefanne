@@ -31,40 +31,40 @@ function useIsDesktop() {
   return desktop;
 }
 
+/** Current hash route (e.g. "#/projetos"), kept in sync with navigation.
+ *  Used to highlight the nav tab only when we're on that item's dedicated
+ *  page — section anchors on the home page never stay "active". */
+function useHashPath() {
+  const [hash, setHash] = useState(() =>
+    typeof window === "undefined" ? "" : window.location.hash
+  );
+  useEffect(() => {
+    const sync = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+  return hash;
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [active, setActive] = useState(0);
   const isDesktop = useIsDesktop();
+  const hash = useHashPath();
 
-  // Highlight the nav item matching the section currently in view.
-  // Only section anchors (#servicos) are observed — route links (#/projetos)
-  // are skipped since they aren't elements on the page.
-  useEffect(() => {
-    const sections = navLinks
-      .map((l) =>
-        l.href.startsWith("#/") || !l.href.startsWith("#")
-          ? null
-          : document.querySelector(l.href)
-      )
-      .filter(Boolean);
-    if (sections.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = navLinks.findIndex(
-              (l) => l.href === `#${entry.target.id}`
-            );
-            if (idx !== -1) setActive(idx);
-          }
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
+  /**
+   * A nav item is active only when it points to its OWN page and we're on it.
+   * Route links start with "#/" (e.g. "#/projetos"); section anchors like
+   * "#servicos" are just scroll targets on the home page and never highlight.
+   *
+   * Matches the exact route or any sub-route (e.g. "#/projetos/chatbot-sgn"
+   * keeps the "Projetos" tab active on a project detail page).
+   */
+  const isLinkActive = (href) => {
+    if (!href.startsWith("#/") || href === "#/") return false;
+    const base = href.slice(1); // "#/projetos" -> "/projetos"
+    const path = hash.slice(1) || "/"; // current "#/projetos/x" -> "/projetos/x"
+    return path === base || path.startsWith(`${base}/`);
+  };
 
   return (
     <header className="fixed inset-x-0 top-4 z-50 px-4 sm:top-6">
@@ -85,13 +85,12 @@ export default function Header() {
         {/* ===== Center pill (glass) — desktop only ===== */}
         {isDesktop && (
           <ul className="flex items-center gap-1 rounded-full border border-white/15 bg-black/30 p-1.5 backdrop-blur-md">
-            {navLinks.map((link, i) => (
+            {navLinks.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  onClick={() => setActive(i)}
                   className={`block rounded-full px-5 py-2 font-display text-sm font-medium transition-all duration-300 ${
-                    active === i
+                    isLinkActive(link.href)
                       ? "bg-white text-black shadow-sm"
                       : "text-white/75 hover:text-white"
                   }`}
@@ -132,16 +131,13 @@ export default function Header() {
       >
         <div className="rounded-3xl border border-white/15 bg-black/50 p-3 backdrop-blur-xl">
           <ul className="flex flex-col gap-1">
-            {navLinks.map((link, i) => (
+            {navLinks.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  onClick={() => {
-                    setActive(i);
-                    setMenuOpen(false);
-                  }}
+                  onClick={() => setMenuOpen(false)}
                   className={`block rounded-full px-4 py-3 font-display text-base font-medium transition-colors ${
-                    active === i
+                    isLinkActive(link.href)
                       ? "bg-white text-black"
                       : "text-white/85 hover:bg-white/10 hover:text-white"
                   }`}

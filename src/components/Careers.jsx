@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { careers } from "../data/careers.js";
 import SectionReveal from "./SectionReveal.jsx";
+import useAnimationsPaused from "../hooks/useAnimationsPaused.js";
 
 /**
  * Careers — "Trabalhe Conosco" sticky stacking cards.
@@ -23,6 +24,7 @@ import SectionReveal from "./SectionReveal.jsx";
 export default function Careers() {
   const listRef = useRef(null);
   const raf = useRef(0);
+  const paused = useAnimationsPaused();
 
   // Depth effect: as a card gets covered by the next sticky card, shrink and
   // dim it based on how far it has scrolled past its sticky anchor.
@@ -33,10 +35,18 @@ export default function Careers() {
     const cards = Array.from(list.querySelectorAll("[data-stack-card]"));
     if (cards.length === 0) return;
 
+    // Paused (or reduced motion) → flatten all depth transforms and don't
+    // react to scroll, so the stack sits still.
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    if (prefersReduced) return;
+    if (prefersReduced || paused) {
+      cards.forEach((card) => {
+        card.style.setProperty("--stack-scale", "1");
+        card.style.setProperty("--stack-opacity", "1");
+      });
+      return;
+    }
 
     const STICKY_TOP = 120; // must match the `top` used on the card wrapper
 
@@ -73,7 +83,7 @@ export default function Careers() {
       window.removeEventListener("resize", onScroll);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [paused]);
 
   return (
     <section
@@ -187,8 +197,10 @@ function CareerCard({ career, index, total }) {
             {career.desc}
           </p>
           <a
-            href="#contato"
-            aria-label={`Candidatar-se para ${career.title}`}
+            href="https://fiesc.pandape.infojobs.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Candidatar-se para ${career.title} no portal de vagas da FIESC`}
             className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary/50 bg-primary/10 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-[0_0_22px_-4px_rgba(0,102,255,0.9)] active:scale-95"
           >
             <ArrowUpRight />

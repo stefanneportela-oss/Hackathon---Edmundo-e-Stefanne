@@ -7,8 +7,6 @@ import SectionReveal from "./SectionReveal.jsx";
  *  - Brand column: logo + short description.
  *  - Link columns: Navegação, Empresa, Redes Sociais.
  *  - Bottom bar: copyright + credits.
- *  - Oversized brand wordmark as a watermark, filled with the brand gradient
- *    (#0574D9 → #00BCFF) fading into the black background.
  *
  * Transparent over the global background; animated in with SectionReveal.
  */
@@ -33,9 +31,9 @@ const COLUMNS = [
   {
     title: "Redes Sociais",
     links: [
-      { label: "LinkedIn", href: "https://www.linkedin.com" },
-      { label: "Instagram", href: "https://www.instagram.com" },
-      { label: "Facebook", href: "https://www.facebook.com" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/company/senai-solu%C3%A7%C3%B5es-digitais/" },
+      { label: "Instagram", href: "https://www.instagram.com/senaisolucoesdigitais.sc/" },
+      { label: "Portal de Vagas", href: "https://fiesc.pandape.infojobs.com.br/" },
     ],
   },
 ];
@@ -98,21 +96,6 @@ export default function Footer() {
           <p>Feito por Edmundo &amp; Stefanne · Hackathon</p>
         </SectionReveal.Item>
       </SectionReveal>
-
-      {/* ===== Oversized watermark wordmark ===== */}
-      <div aria-hidden className="relative w-full select-none overflow-hidden">
-        <p
-          className="translate-y-[18%] text-center font-display text-[22vw] font-black uppercase leading-none tracking-tight text-transparent"
-          style={{
-            backgroundImage:
-              "linear-gradient(180deg, #00BCFF 0%, #0574D9 45%, rgba(5,116,217,0) 92%)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-          }}
-        >
-          SENAI SD
-        </p>
-      </div>
     </footer>
   );
 }

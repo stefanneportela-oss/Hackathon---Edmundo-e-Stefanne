@@ -14,8 +14,9 @@
  * SectionReveal (cascade). Fully responsive: columns and links stack on small
  * screens.
  */
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import SectionReveal from "./SectionReveal.jsx";
+import useAnimationsPaused from "../hooks/useAnimationsPaused.js";
 
 const EMAIL = "solucoesdigitais@sc.senai.br";
 
@@ -23,20 +24,20 @@ const SOCIALS = [
   {
     label: "Conecte-se",
     name: "LinkedIn",
-    href: "https://www.linkedin.com",
+    href: "https://www.linkedin.com/company/senai-solu%C3%A7%C3%B5es-digitais/",
     icon: <LinkedInIcon />,
   },
   {
     label: "Acompanhe",
     name: "Instagram",
-    href: "https://www.instagram.com",
+    href: "https://www.instagram.com/senaisolucoesdigitais.sc/",
     icon: <InstagramIcon />,
   },
   {
-    label: "Siga-nos",
-    name: "Facebook",
-    href: "https://www.facebook.com",
-    icon: <FacebookIcon />,
+    label: "Trabalhe conosco",
+    name: "Portal de Vagas",
+    href: "https://fiesc.pandape.infojobs.com.br/",
+    icon: <JobsIcon />,
   },
 ];
 
@@ -46,11 +47,48 @@ export default function Contact() {
   const raf = useRef(0);
   const pending = useRef(null);
 
+  // "Copiar e-mail" feedback. Uses the async Clipboard API when available and
+  // falls back to a temporary textarea + execCommand for older browsers.
+  const [copied, setCopied] = useState(false);
+  const copyTimer = useRef(0);
+  const paused = useAnimationsPaused();
+
+  const copyEmail = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(EMAIL);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = EMAIL;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setCopied(true);
+      clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // If copying is blocked, silently no-op — the "Falar conosco" mailto
+      // button still works as the primary path.
+    }
+  };
+
+  useEffect(() => () => clearTimeout(copyTimer.current), []);
+
   // Cursor-proximity reveal on the social links — same effect as the Projects
   // feature cards: a soft blue glow lights up the link nearest the cursor.
   useEffect(() => {
     const wrap = linksWrapRef.current;
     if (!wrap) return;
+
+    // Paused → clear glow and skip cursor tracking.
+    if (paused) {
+      linkRefs.current.forEach((c) => c?.style.setProperty("--reveal", "0"));
+      return;
+    }
 
     const apply = () => {
       raf.current = 0;
@@ -83,7 +121,7 @@ export default function Contact() {
       wrap.removeEventListener("pointerleave", onLeave);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [paused]);
 
   return (
     <section
@@ -106,16 +144,17 @@ export default function Contact() {
 
           {/* --- Right: e-mail capsule + location --- */}
           <div className="flex w-full flex-col gap-6 lg:max-w-md">
-            {/* Gradient e-mail capsule */}
-            <a
-              href={`mailto:${EMAIL}`}
-              className="group flex items-center justify-between gap-4 rounded-full border border-white/10 py-2.5 pl-7 pr-2.5 shadow-[0_0_16px_0px_rgba(0,188,255,0.1)] transition-shadow duration-300 hover:shadow-[0_0_24px_0px_rgba(0,188,255,0.18)]"
+            {/* Gradient e-mail capsule: shows the address + a "Copiar" button
+                (for webmail users) and a "Falar conosco" mailto button (opens
+                Outlook / the default mail client on Windows). */}
+            <div
+              className="flex items-center justify-between gap-3 rounded-full border border-white/10 py-2.5 pl-7 pr-2.5 shadow-[0_0_16px_0px_rgba(0,188,255,0.1)] transition-shadow duration-300 hover:shadow-[0_0_24px_0px_rgba(0,188,255,0.18)]"
               style={{
                 background:
                   "linear-gradient(90deg, #0b1a2e 0%, #123556 60%, #185a86 100%)",
               }}
             >
-              <span className="flex flex-col gap-1 overflow-hidden">
+              <span className="flex min-w-0 flex-col gap-1 overflow-hidden">
                 <span className="font-display text-[10px] font-semibold uppercase tracking-wide text-[#C7D9FF]">
                   E-mail direto
                 </span>
@@ -123,10 +162,31 @@ export default function Contact() {
                   {EMAIL}
                 </span>
               </span>
-              <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F7F8FC] text-black transition-transform duration-300 group-hover:scale-105">
-                <ArrowUpRight />
-              </span>
-            </a>
+
+              <div className="flex shrink-0 items-center gap-2">
+                {/* Copiar e-mail */}
+                <button
+                  type="button"
+                  onClick={copyEmail}
+                  aria-label={copied ? "E-mail copiado" : "Copiar e-mail"}
+                  className="inline-flex h-12 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 font-display text-sm font-semibold text-[#F7F8FC] transition-colors duration-300 hover:bg-white/20"
+                >
+                  {copied ? <CheckIcon /> : <CopyIcon />}
+                  <span className="hidden sm:inline">
+                    {copied ? "Copiado!" : "Copiar"}
+                  </span>
+                </button>
+
+                {/* Falar conosco (mailto → abre o Outlook no Windows) */}
+                <a
+                  href={`mailto:${EMAIL}`}
+                  aria-label="Falar conosco por e-mail"
+                  className="group inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F7F8FC] text-black transition-transform duration-300 hover:scale-105"
+                >
+                  <ArrowUpRight />
+                </a>
+              </div>
+            </div>
 
             {/* Location */}
             <div className="flex items-center gap-3 text-muted">
@@ -179,6 +239,23 @@ export default function Contact() {
 
 /* ---- Icons ---- */
 
+function CopyIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
 function ArrowUpRight({ small = false }) {
   const s = small ? 16 : 20;
   return (
@@ -216,10 +293,12 @@ function InstagramIcon() {
   );
 }
 
-function FacebookIcon() {
+function JobsIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="2" y="7" width="20" height="14" rx="2" />
+      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <path d="M2 13h20" />
     </svg>
   );
 }

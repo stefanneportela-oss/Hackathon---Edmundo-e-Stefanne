@@ -39,7 +39,6 @@ export default function ProjectDetail({ slug }) {
     year,
     category,
     image,
-    caption,
     challenge,
     challengeExtra,
     solution,
@@ -159,15 +158,6 @@ export default function ProjectDetail({ slug }) {
                 }}
               />
             </div>
-          </div>
-          {/* Caption footer */}
-          <div className="mt-4 flex items-center justify-between">
-            <span className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-              {caption || description}
-            </span>
-            <span className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">
-              01 — 03
-            </span>
           </div>
         </motion.div>
 
