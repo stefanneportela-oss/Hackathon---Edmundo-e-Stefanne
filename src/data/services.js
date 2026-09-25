@@ -5,8 +5,8 @@
 import eeCelularBanner from "../assets/services/ee-celular.png";
 import orbieBanner from "../assets/services/orbie.svg";
 import vrBanner from "../assets/services/vr.svg";
-import avaBanner from "../assets/services/ava.svg";
-import habilitaBanner from "../assets/services/habilita.svg";
+import ecommerceBanner from "../assets/services/ecommerce.png";
+import habilitaBanner from "../assets/services/habilita13.svg";
 
 const banner = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=600&q=80`;
@@ -50,7 +50,7 @@ export const services = [
     title: "Desenvolvimento Web",
     desc: "Plataformas web modernas e responsivas com performance e segurança.",
     overlay: "Web do Jeito Certo",
-    banner: avaBanner,
+    banner: ecommerceBanner,
   },
   {
     id: 6,

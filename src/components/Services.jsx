@@ -207,7 +207,10 @@ function ServiceCard({ service, visible }) {
               alt=""
               loading="lazy"
               draggable={false}
-              className="h-full w-full scale-105 object-cover transition-transform duration-700 ease-out group-hover:scale-100"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out"
+              style={{
+                transform: `scale(${service.bannerScale ?? 1.05})`,
+              }}
             />
             {/* Legibility + blue tint */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />

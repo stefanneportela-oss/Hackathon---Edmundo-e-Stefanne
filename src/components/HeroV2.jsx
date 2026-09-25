@@ -1,7 +1,8 @@
 import { lazy, Suspense, useState, useEffect } from "react";
 import PrimaryButton from "./ui/PrimaryButton.jsx";
-import thumbMobile from "../assets/services/mobile.png";
-import thumbEdhealth from "../assets/services/edhealth.png";
+import thumbMobile from "../assets/services/orbie.svg";
+import thumbEdhealth from "../assets/services/ava.svg";
+import cardEstudante from "../assets/services/ee-celular.png";
 
 // The 3D hologram pulls in three.js — lazy-load it so it never blocks the
 // hero text from painting, and so mobile can fall back gracefully.
@@ -118,14 +119,12 @@ export default function HeroV2() {
             {/* leading-tight + pt-2 keeps the text bounding box from clipping
                 the top accents (Õ, Ã); gap-2 spaces the lines evenly. */}
             <h1 className="flex flex-col gap-2 pt-2 font-display font-black uppercase tracking-tight text-white" style={{ lineHeight: 1.35 }}>
-              <span className="text-3xl text-gradient sm:text-4xl">Desenvolvimento de</span>
-              <span className="text-3xl sm:text-4xl">
-                <span className="text-gradient">software</span> sob medida
-              </span>
-              <span className="text-3xl sm:text-4xl">para escalar o seu negócio</span>
+              <span className="text-4xl text-gradient sm:text-5xl">Desenvolvimento de software</span>
+              <span className="text-4xl sm:text-5xl">sob medida</span>
+              <span className="text-4xl sm:text-5xl">para seu negócio</span>
               {/* Layered watermark word — subtle, muted, below the block */}
-              <span className="mt-3 text-3xl font-bold text-white/15 sm:text-4xl">
-                transformação
+              <span className="mt-3 text-xl font-bold text-white/15 sm:text-2xl">
+                Inovando desde 2007
               </span>
             </h1>
           </div>
@@ -168,8 +167,8 @@ export default function HeroV2() {
             className="animate-fade-up max-w-xs text-sm leading-relaxed text-muted sm:text-base"
             style={{ animationDelay: "0.12s" }}
           >
-            Soluções digitais de nova geração que redefinem como a indústria vê,
-            sente e interage com o mundo.
+            Soluções digitais de nova geração que redefinem como a indústria e
+            os negócios veem, sentem e interagem com o mundo.
           </p>
 
           {/* Floating "Active Glass" card (bottom-right) */}
@@ -177,7 +176,7 @@ export default function HeroV2() {
             className="animate-fade-up mt-10 hidden w-full max-w-sm lg:mt-0 lg:block"
             style={{ animationDelay: "0.3s" }}
           >
-            <FloatingCard src={thumbEdhealth} />
+            <FloatingCard src={cardEstudante} />
           </div>
         </div>
       </div>

@@ -139,7 +139,7 @@ export default function TextReveal() {
 
       {/* ===== Background layer: monumental phrase (word-by-word reveal) ===== */}
       <motion.h2
-        className="relative z-0 mx-auto max-w-4xl text-center font-display font-black uppercase leading-[1.3] tracking-tight text-white"
+        className="relative z-0 mx-auto flex max-w-4xl flex-col gap-2 text-center font-display font-black uppercase leading-[1.4] tracking-tight text-white"
         variants={disabled ? undefined : phraseContainer}
         initial={disabled ? undefined : "hidden"}
         whileInView={disabled ? undefined : "visible"}
