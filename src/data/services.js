@@ -2,8 +2,11 @@
 // Every card shares the same anatomy. In the DEFAULT state it shows only the
 // title, a separator and a short copy. On HOVER a 3D-tech banner image slides
 // in (with an icon + overlay headline), per the reference.
-import mobileBanner from "../assets/services/mobile.png";
-import edhealthBanner from "../assets/services/edhealth.png";
+import eeCelularBanner from "../assets/services/ee-celular.png";
+import orbieBanner from "../assets/services/orbie.svg";
+import vrBanner from "../assets/services/vr.svg";
+import avaBanner from "../assets/services/ava.svg";
+import habilitaBanner from "../assets/services/habilita.svg";
 
 const banner = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=600&q=80`;
@@ -15,7 +18,7 @@ export const services = [
     title: "Inteligência Artificial",
     desc: "Desenvolvemos modelos preditivos, automação inteligente e soluções de visão computacional.",
     overlay: "Decisões Inteligentes",
-    banner: banner("photo-1620712943543-bcc4688e7485"),
+    banner: habilitaBanner,
   },
   {
     id: 2,
@@ -23,7 +26,7 @@ export const services = [
     title: "Realidade Estendida",
     desc: "Experiências imersivas com AR, VR e simulações 3D para treinamento e engajamento.",
     overlay: "Experiências Imersivas",
-    banner: banner("photo-1592478411213-6153e4ebc07d"),
+    banner: vrBanner,
   },
   {
     id: 3,
@@ -31,7 +34,7 @@ export const services = [
     title: "Desenvolvimento Mobile",
     desc: "Apps nativos e multiplataforma para iOS e Android com foco em performance.",
     overlay: "Apps de Alta Performance",
-    banner: mobileBanner,
+    banner: orbieBanner,
   },
   {
     id: 4,
@@ -39,7 +42,7 @@ export const services = [
     title: "EdTech & HealthTech",
     desc: "Soluções especializadas para educação e saúde com foco em gestão e cuidado.",
     overlay: "Educação e Saúde Conectadas",
-    banner: edhealthBanner,
+    banner: eeCelularBanner,
   },
   {
     id: 5,
@@ -47,7 +50,7 @@ export const services = [
     title: "Desenvolvimento Web",
     desc: "Plataformas web modernas e responsivas com performance e segurança.",
     overlay: "Web do Jeito Certo",
-    banner: banner("photo-1547658719-da2b51169166"),
+    banner: avaBanner,
   },
   {
     id: 6,

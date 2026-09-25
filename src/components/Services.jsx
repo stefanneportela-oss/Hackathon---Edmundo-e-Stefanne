@@ -46,8 +46,9 @@ export default function Services() {
   const [page, setPage] = useState(0);
 
   const total = services.length;
-  const maxPage = Math.max(0, total - visible);
-  const pages = maxPage + 1;
+  // Paginate by full pages: advance a whole block of `visible` cards at a time.
+  const pages = Math.max(1, Math.ceil(total / visible));
+  const maxPage = pages - 1;
 
   useEffect(() => {
     setPage((p) => Math.min(p, maxPage));
@@ -71,7 +72,7 @@ export default function Services() {
           {/* ---- Left rail ---- */}
           <div className="flex shrink-0 flex-col lg:w-56">
             {/* Section title (top of the rail) */}
-            <h2 className="font-display font-black uppercase tracking-tight text-white">
+            <h2 className="font-display font-black tracking-tight text-white">
               Serviços
             </h2>
 
@@ -97,7 +98,7 @@ export default function Services() {
             <div className="overflow-hidden">
               <div
                 className="flex transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                style={{ transform: `translateX(-${page * (100 / visible)}%)` }}
+                style={{ transform: `translateX(-${page * 100}%)` }}
               >
                 {services.map((s) => (
                   <ServiceCard key={s.id} service={s} visible={visible} />
