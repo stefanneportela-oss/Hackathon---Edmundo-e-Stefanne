@@ -16,6 +16,7 @@ import Footer from "./components/Footer.jsx";
 import MotionToggle from "./components/MotionToggle.jsx";
 import GlobalBackground from "./components/GlobalBackground.jsx";
 import Portfolio from "./components/Portfolio.jsx";
+import ProjectDetail from "./components/ProjectDetail.jsx";
 import AwsPartnership from "./components/AwsPartnership.jsx";
 
 /**
@@ -62,7 +63,11 @@ function useHashRoute() {
 
 export default function App() {
   const route = useHashRoute();
-  const isPortfolio = route.startsWith("/projetos");
+  // #/projetos/:slug → single project detail; #/projetos → portfolio listing.
+  const projectSlug = route.startsWith("/projetos/")
+    ? route.slice("/projetos/".length)
+    : null;
+  const isPortfolio = route === "/projetos" || route === "/projetos/";
   const isAwsPartnership = route.startsWith("/parceria-aws");
 
   return (
@@ -73,7 +78,9 @@ export default function App() {
       {/* Foreground content sits above the fixed background */}
       <div className="relative z-10">
         <Header />
-        {isPortfolio ? (
+        {projectSlug ? (
+          <ProjectDetail slug={projectSlug} />
+        ) : isPortfolio ? (
           <Portfolio />
         ) : isAwsPartnership ? (
           <AwsPartnership />

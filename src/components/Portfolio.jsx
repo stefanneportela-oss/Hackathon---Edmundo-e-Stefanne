@@ -131,14 +131,10 @@ export default function Portfolio() {
  * the framed inner-mock look of the reference.
  */
 function ProjectCard({ project }) {
-  const { name, description, tags, liveUrl, image } = project;
+  const { name, description, tags, slug, image } = project;
   const primaryTag = tags[0];
 
-  const CardTag = liveUrl ? "a" : "article";
-  const linkProps = liveUrl
-    ? { href: liveUrl, target: "_blank", rel: "noopener noreferrer" }
-    : {};
-
+  // Card links to the dedicated project detail page (#/projetos/:slug).
   return (
     <div className="group relative h-full">
       {/* Ambient neon glow on hover */}
@@ -147,8 +143,9 @@ function ProjectCard({ project }) {
         className="pointer-events-none absolute -inset-0.5 rounded-[16px] opacity-0 blur-lg transition-opacity duration-300 group-hover:opacity-100"
         style={{ background: "rgba(0,102,255,0.22)" }}
       />
-      <CardTag
-        {...linkProps}
+      <a
+        href={`#/projetos/${slug}`}
+        aria-label={`Ver detalhes do projeto ${name}`}
         className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-[0_8px_24px_rgba(0,188,255,0.05)] backdrop-blur-xl transition-transform duration-300 ease-out group-hover:-translate-y-1"
       >
         {/* ---- Card Text Info (top) ---- */}
@@ -183,7 +180,7 @@ function ProjectCard({ project }) {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
         </div>
-      </CardTag>
+      </a>
     </div>
   );
 }
