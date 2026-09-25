@@ -74,9 +74,9 @@ export default function ProjectDetail({ slug }) {
   return (
     <main className="relative w-full overflow-hidden bg-transparent pt-28 sm:pt-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Back link */}
+        {/* Back link → projects listing page (#/projetos), not a section anchor */}
         <a
-          href="#projetos"
+          href="#/projetos"
           className="inline-flex items-center gap-2 font-display text-sm font-medium text-brand-300 transition-colors hover:text-brand-400"
         >
           <ArrowLeft />
@@ -273,7 +273,7 @@ function NotFound() {
           O projeto que você procura não existe ou foi movido.
         </p>
         <a
-          href="#projetos"
+          href="#/projetos"
           className="mt-8 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-300 transition-colors hover:text-brand-400"
         >
           <ArrowLeft />

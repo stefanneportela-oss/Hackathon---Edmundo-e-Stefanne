@@ -4,8 +4,9 @@ import PrimaryButton from "./ui/PrimaryButton.jsx";
 
 const navLinks = [
   { label: "Serviços", href: "#servicos" },
-  { label: "Projetos", href: "#projetos" },
-  { label: "Parceria AWS", href: "#aws-partner" },
+  // Route links (#/...) → dedicated pages; section anchors (#...) → scroll on home.
+  { label: "Projetos", href: "#/projetos" },
+  { label: "Parceria AWS", href: "#/parceria-aws" },
   { label: "Sobre", href: "#sobre" },
   { label: "Trabalhe Conosco", href: "#trabalhe-conosco" },
 ];

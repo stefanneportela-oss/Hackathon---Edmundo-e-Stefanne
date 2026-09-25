@@ -23,7 +23,7 @@ export const projects = [
     icon: "🚀",
     description:
       "Chatbots personalizados a partir dos documentos do cliente, com interações automatizadas sob medida.",
-    tags: ["Educação", "Chatbot", "IA"],
+    tags: ["Inteligência Artificial"],
     client: "DR SENAI",
     year: "2012 - 2026",
     liveUrl: "https://sgn.sesisenai.org.br",
@@ -46,7 +46,7 @@ export const projects = [
     icon: "🚀",
     description:
       "Gera cards de diagnóstico para resolver gaps de competências dos trabalhadores da indústria.",
-    tags: ["IA", "Gestão"],
+    tags: ["Inteligência Artificial", "Big Data & Analytics"],
     client: "FEPT",
     year: "2024",
     liveUrl: "https://habilita-ia-hml1.hml.sc.senai.br/login",
@@ -69,7 +69,7 @@ export const projects = [
     icon: "🧠",
     description:
       "Plataforma central que integra IA (chatbots, tradução, análise) a qualquer aplicação via uma única API.",
-    tags: ["IA"],
+    tags: ["Inteligência Artificial", "Desenvolvimento Web"],
     client: null,
     year: "2024",
     liveUrl: null,
@@ -92,7 +92,7 @@ export const projects = [
     icon: "🚀",
     description:
       "Análise preditiva que identifica com antecedência os alunos com maior risco de evasão escolar.",
-    tags: ["IA", "Predição", "Educação"],
+    tags: ["Big Data & Analytics", "Inteligência Artificial"],
     client: "DR SESI/SENAI",
     year: "2019",
     liveUrl: null,
@@ -115,7 +115,7 @@ export const projects = [
     icon: "🚀",
     description:
       "IA generativa que auxilia na criação de itens do Sistema de Avaliação da Educação Profissional.",
-    tags: ["Educação", "IA"],
+    tags: ["Inteligência Artificial", "Desenvolvimento Web"],
     client: "DN SENAI",
     year: "2025",
     liveUrl: "https://saep-ia.sc.senai.br/",
@@ -138,7 +138,7 @@ export const projects = [
     icon: "🚀",
     description:
       "Plataforma de Gestão do Negócio que gere toda a educação do SENAI e SESI de Santa Catarina.",
-    tags: ["Educação", "Gestão"],
+    tags: ["Desenvolvimento Web"],
     client: "DR SESI/SENAI",
     year: "2012",
     liveUrl: "https://sgn.sesisenai.org.br",
@@ -162,11 +162,18 @@ export function getProjectBySlug(slug) {
   return projects.find((p) => p.slug === slug) || null;
 }
 
-/** Filter categories built from the real project tags. "Todos" first. */
+/**
+ * Filter categories shown in the "Filtrar por área" sidebar.
+ *
+ * Fixed, curated list (no longer auto-derived from tags) so the areas match
+ * the business taxonomy. Each project's `tags` uses these exact labels, so
+ * `p.tags.includes(area)` in Portfolio.jsx filters correctly.
+ */
 export const categories = [
   { id: "todos", label: "Todos" },
-  ...Array.from(new Set(projects.flatMap((p) => p.tags))).map((tag) => ({
-    id: tag,
-    label: tag,
-  })),
+  { id: "Inteligência Artificial", label: "Inteligência Artificial" },
+  { id: "Realidades Estendidas", label: "Realidades Estendidas" },
+  { id: "Desenvolvimento Web", label: "Desenvolvimento Web" },
+  { id: "Desenvolvimento Mobile", label: "Desenvolvimento Mobile" },
+  { id: "Big Data & Analytics", label: "Big Data & Analytics" },
 ];
