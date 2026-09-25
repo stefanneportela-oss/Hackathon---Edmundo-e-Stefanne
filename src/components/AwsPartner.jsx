@@ -115,7 +115,7 @@ export default function AwsPartner() {
     <section
       id="aws-partner"
       aria-label="Parceria AWS Partner Network"
-      className="relative w-full bg-transparent py-16 sm:py-24"
+      className="relative w-full overflow-hidden bg-transparent py-16 sm:py-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -141,9 +141,9 @@ export default function AwsPartner() {
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2"
           >
-            <div className="aws-orbit h-[360px] w-[360px] rounded-full border border-brand-400/25 sm:h-[440px] sm:w-[440px]" />
-            <div className="aws-orbit-rev absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand-500/15 sm:h-[620px] sm:w-[620px]" />
-            <div className="aws-orbit absolute left-1/2 top-1/2 h-[760px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand-500/[0.08] sm:h-[820px] sm:w-[820px]" />
+            <div className="aws-orbit h-[280px] w-[280px] rounded-full border border-brand-400/25 sm:h-[440px] sm:w-[440px]" />
+            <div className="aws-orbit-rev absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand-500/15 sm:h-[620px] sm:w-[620px]" />
+            <div className="aws-orbit absolute left-1/2 top-1/2 h-[540px] w-[540px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand-500/[0.08] sm:h-[820px] sm:w-[820px]" />
           </div>
 
           {/* Drifting white dots scattered across the block */}

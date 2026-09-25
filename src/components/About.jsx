@@ -61,7 +61,7 @@ export default function About() {
       id="sobre"
       className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
-      <SectionReveal className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.5}>
+      <SectionReveal className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.15}>
         {/* ===== Centered header (Figma "section-header", VERTICAL gap 16) =====
             · badge: solid #1A1A1A, radius 20, padding 8/16, text "Quem Somos"
               12px Semi Bold in cyan (#00D2FF)
@@ -223,7 +223,7 @@ function GlowCard({ children, className = "", revealDelay = 0 }) {
     : {
         initial: { opacity: 0, y: 40 },
         whileInView: { opacity: 1, y: 0 },
-        viewport: { once: false, amount: 0.3 },
+        viewport: { once: true, amount: 0.15 },
         transition: {
           duration: 0.7,
           ease: [0.21, 0.47, 0.32, 0.98],

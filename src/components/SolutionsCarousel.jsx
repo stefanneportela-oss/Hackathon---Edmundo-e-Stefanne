@@ -14,11 +14,41 @@ import { solutions } from "../data/solutions.js";
  *   interaction pauses it instantly and resumes after a short delay.
  */
 
-const CARD_W = 200; // card width (px)
-const STEP = 186; // wheel/drag sensitivity (px per card-unit)
-const RADIUS = 520; // ring radius (px) — distance from center to each card
+// Responsive ring dimensions. Cards, drag sensitivity and ring radius scale
+// down on small screens so the arc fits within the viewport instead of
+// spilling past the edges (previously fixed at the desktop values).
+const DIMS = {
+  mobile: { CARD_W: 150, STEP: 140, RADIUS: 340 }, // < 640px
+  tablet: { CARD_W: 180, STEP: 168, RADIUS: 440 }, // < 1024px
+  desktop: { CARD_W: 200, STEP: 186, RADIUS: 520 }, // ≥ 1024px
+};
+
+/** Returns the ring dimensions matching a viewport width. */
+function dimsFor(w) {
+  return w < 640 ? DIMS.mobile : w < 1024 ? DIMS.tablet : DIMS.desktop;
+}
+
+/** Picks ring dimensions based on the current viewport width.
+ * Initialised synchronously from the real width so the mobile layout is
+ * correct on the very first paint (no desktop-sized flash of oversized cards). */
+function useRingDims() {
+  const [dims, setDims] = useState(() =>
+    typeof window === "undefined" ? DIMS.desktop : dimsFor(window.innerWidth)
+  );
+
+  useEffect(() => {
+    const pick = () => setDims(dimsFor(window.innerWidth));
+    pick();
+    window.addEventListener("resize", pick);
+    return () => window.removeEventListener("resize", pick);
+  }, []);
+
+  return dims;
+}
 
 export default function SolutionsCarousel() {
+  const { CARD_W, STEP, RADIUS } = useRingDims();
+
   const stageRef = useRef(null);
   const pos = useRef(0); // animated position (card units)
   const target = useRef(0); // where we're easing toward
@@ -128,7 +158,7 @@ export default function SolutionsCarousel() {
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
         className="relative mx-auto h-[380px] cursor-grab active:cursor-grabbing sm:h-[440px]"
-        style={{ perspective: "1400px", touchAction: "pan-y" }}
+        style={{ perspective: `${RADIUS * 2.7}px`, touchAction: "pan-y" }}
       >
         <div
           className="absolute left-1/2 top-1/2"

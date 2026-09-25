@@ -78,7 +78,7 @@ const CARDS = [
     side: "left",
     depth: 1,
     delay: 0.1,
-    hideOnMobile: false,
+    hideOnMobile: true,
   },
   {
     id: 2,
@@ -88,7 +88,7 @@ const CARDS = [
     side: "right",
     depth: 1.4,
     delay: 0.2,
-    hideOnMobile: false,
+    hideOnMobile: true,
   },
   {
     id: 3,
@@ -108,7 +108,7 @@ const CARDS = [
     side: "right",
     depth: 1.2,
     delay: 0.4,
-    hideOnMobile: false,
+    hideOnMobile: true,
   },
 ];
 
@@ -132,7 +132,7 @@ export default function TextReveal() {
       ref={sectionRef}
       id="manifesto"
       aria-label="Soluções digitais para os desafios de hoje e as oportunidades de amanhã"
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-transparent px-6 py-40 sm:py-48"
+      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-transparent px-6 py-28 sm:py-40 lg:py-48"
     >
       {/* ===== Orbiting particle field around the phrase (like the hero) ===== */}
       <ParticleField disabled={disabled} />

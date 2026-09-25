@@ -9,9 +9,30 @@ const navLinks = [
   { label: "Trabalhe Conosco", href: "#trabalhe-conosco" },
 ];
 
+/** True on wide screens (≥1024px). Uses matchMedia/innerWidth instead of
+ *  Tailwind's `xl:` classes so the desktop/mobile switch is decided from the
+ *  real viewport width — immune to iOS Safari quirks where a momentary
+ *  horizontal overflow makes CSS min-width media queries misfire. */
+function useIsDesktop() {
+  const [desktop, setDesktop] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(min-width: 1024px)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setDesktop(mq.matches);
+    sync();
+    mq.addEventListener?.("change", sync);
+    return () => mq.removeEventListener?.("change", sync);
+  }, []);
+  return desktop;
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const isDesktop = useIsDesktop();
 
   // Highlight the nav item matching the section currently in view
   useEffect(() => {
@@ -53,46 +74,51 @@ export default function Header() {
           />
         </a>
 
-        {/* ===== Center pill (glass) — desktop ===== */}
-        <ul className="hidden items-center gap-1 rounded-full border border-white/15 bg-black/30 p-1.5 backdrop-blur-md md:flex">
-          {navLinks.map((link, i) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={() => setActive(i)}
-                className={`block rounded-full px-5 py-2 font-display text-sm font-medium transition-all duration-300 ${
-                  active === i
-                    ? "bg-white text-black shadow-sm"
-                    : "text-white/75 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        {/* ===== Center pill (glass) — desktop only ===== */}
+        {isDesktop && (
+          <ul className="flex items-center gap-1 rounded-full border border-white/15 bg-black/30 p-1.5 backdrop-blur-md">
+            {navLinks.map((link, i) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  onClick={() => setActive(i)}
+                  className={`block rounded-full px-5 py-2 font-display text-sm font-medium transition-all duration-300 ${
+                    active === i
+                      ? "bg-white text-black shadow-sm"
+                      : "text-white/75 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
 
         {/* ===== CTA (right) + mobile toggle ===== */}
         <div className="flex shrink-0 items-center gap-3">
-          <PrimaryButton href="#contato" size="sm" className="hidden md:inline-flex">
-            Fale conosco
-          </PrimaryButton>
-
-          {/* Mobile menu toggle (glass) */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={menuOpen}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white backdrop-blur-md transition-colors hover:bg-white/10 md:hidden"
-          >
-            <MenuIcon open={menuOpen} />
-          </button>
+          {isDesktop ? (
+            <PrimaryButton href="#contato" size="sm">
+              Fale conosco
+            </PrimaryButton>
+          ) : (
+            /* Mobile menu toggle (glass) */
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={menuOpen}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white backdrop-blur-md transition-colors hover:bg-white/10"
+            >
+              <MenuIcon open={menuOpen} />
+            </button>
+          )}
         </div>
       </nav>
 
-      {/* ===== Mobile dropdown (glass pill panel) ===== */}
+      {/* ===== Mobile dropdown (glass pill panel) — mobile only ===== */}
+      {!isDesktop && (
       <div
-        className={`mx-auto mt-3 max-w-7xl overflow-hidden transition-[max-height,opacity] duration-300 md:hidden ${
+        className={`mx-auto mt-3 max-w-7xl overflow-hidden transition-[max-height,opacity] duration-300 ${
           menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -129,6 +155,7 @@ export default function Header() {
           </ul>
         </div>
       </div>
+      )}
     </header>
   );
 }

@@ -88,14 +88,14 @@ export default function Contact() {
   return (
     <section
       id="contato"
-      className="relative w-full bg-transparent py-24 sm:py-28"
+      className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
       <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.4}>
         {/* ===== Top row: intro (left) + direct contact (right) ===== */}
         <SectionReveal.Item className="flex flex-col gap-12 lg:flex-row lg:items-end lg:justify-between lg:gap-20">
           {/* --- Left: title + subtitle --- */}
           <div className="max-w-2xl">
-            <h2 className="font-display text-5xl font-semibold leading-[0.98] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h2 className="font-display text-4xl font-semibold leading-[1] tracking-tight text-white sm:text-6xl lg:text-7xl">
               Entre em contato
             </h2>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">

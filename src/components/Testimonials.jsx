@@ -72,7 +72,7 @@ export default function Testimonials() {
     <section
       id="depoimentos"
       aria-label="Depoimentos de clientes"
-      className="relative w-full bg-transparent py-24 sm:py-28"
+      className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
     >
       <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.35}>
         <SectionReveal.Item className="relative">

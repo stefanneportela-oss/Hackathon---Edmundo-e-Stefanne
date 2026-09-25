@@ -38,7 +38,7 @@ export default function MotionToggle() {
       aria-pressed={paused}
       aria-label={paused ? "Retomar animações" : "Pausar animações"}
       title={paused ? "Retomar animações" : "Pausar animações"}
-      className="group fixed bottom-5 right-5 z-[60] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:border-brand-300/60 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 sm:h-13 sm:w-13"
+      className="group fixed bottom-5 right-5 z-[60] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:border-brand-300/60 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 sm:h-14 sm:w-14"
     >
       {paused ? <PlayIcon /> : <PauseIcon />}
       <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md border border-white/10 bg-black/80 px-2.5 py-1 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-200 group-hover:opacity-100">
