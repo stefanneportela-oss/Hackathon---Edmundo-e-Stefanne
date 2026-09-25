@@ -37,8 +37,11 @@ export default function Portfolio() {
     }),
   };
 
+  // overflow-x-clip (not overflow-hidden) prevents horizontal overflow from
+  // decorative elements WITHOUT creating a scroll container on the Y axis,
+  // which would break position: sticky on the sidebar below.
   return (
-    <main className="relative w-full overflow-hidden bg-transparent pt-28 pb-24 sm:pt-32 sm:pb-28">
+    <main className="relative w-full overflow-x-clip bg-transparent pt-28 pb-24 sm:pt-32 sm:pb-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ===== Header ===== */}
         <div className="max-w-3xl">
@@ -60,7 +63,10 @@ export default function Portfolio() {
         {/* ===== Body: sidebar + grid ===== */}
         <div className="mt-12 flex flex-col gap-8 lg:mt-16 lg:flex-row lg:gap-12">
           {/* ---- Sidebar (desktop) / chip row (mobile) ---- */}
-          <aside className="lg:w-56 lg:shrink-0">
+          {/* Sticky on desktop so the area filter follows the page scroll.
+              self-start prevents flex stretch (which would break sticky);
+              top-28 clears the fixed header. */}
+          <aside className="lg:w-56 lg:shrink-0 lg:sticky lg:top-28 lg:self-start">
             <p className="hidden font-display text-[13px] font-semibold uppercase tracking-[0.14em] text-white/50 lg:block">
               Filtrar por área
             </p>
