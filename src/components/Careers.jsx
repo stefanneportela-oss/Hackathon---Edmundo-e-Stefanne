@@ -80,22 +80,30 @@ export default function Careers() {
       id="trabalhe-conosco"
       className="relative w-full bg-transparent py-24 sm:py-28"
     >
-      <SectionReveal className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" amount={0.3}>
+      {/* Plain container (no SectionReveal wrapper): a transformed ancestor
+          creates a containing block that traps `position: sticky`, breaking
+          the stacking effect. The section stays transform-free so the cards
+          stick to the viewport and layer over each other correctly. The header
+          gets its own scoped reveal. */}
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* ===== Two-column layout: header (left) + cards (right) ===== */}
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
           {/* ---- Left column: header (sticky on desktop) ---- */}
-          <SectionReveal.Item className="flex flex-col items-start gap-4 text-left lg:col-span-5 lg:sticky lg:top-28">
-            <h2 className="text-white">
+          <SectionReveal className="flex flex-col items-start gap-4 text-left lg:col-span-5 lg:sticky lg:top-28" amount={0.3}>
+            <SectionReveal.Item as="h2" className="text-white">
               Construa o futuro <span className="text-gradient">com a gente</span>
-            </h2>
-            <p className="max-w-xl text-base leading-relaxed text-muted">
+            </SectionReveal.Item>
+            <SectionReveal.Item
+              as="p"
+              className="max-w-xl text-base leading-relaxed text-muted"
+            >
               Áreas em que estamos sempre em busca de talentos para transformar a
               indústria através da tecnologia.
-            </p>
-          </SectionReveal.Item>
+            </SectionReveal.Item>
+          </SectionReveal>
 
           {/* ---- Right column: sticky stack ---- */}
-          <SectionReveal.Item ref={listRef} className="flex flex-col gap-8 lg:col-span-7">
+          <div ref={listRef} className="flex flex-col gap-8 lg:col-span-7">
             {careers.map((c, i) => (
               <div
                 key={c.id}
@@ -106,9 +114,9 @@ export default function Careers() {
                 <CareerCard career={c} index={i} total={careers.length} />
               </div>
             ))}
-          </SectionReveal.Item>
+          </div>
         </div>
-      </SectionReveal>
+      </div>
     </section>
   );
 }

@@ -35,11 +35,6 @@
 
 html {
   scroll-behavior: smooth;
-  /* Belt-and-suspenders against horizontal overflow: `clip` is more reliable
-     than `hidden` on iOS Safari and doesn't create a scroll container, so
-     decorative elements that bleed past the viewport never push the page
-     sideways. */
-  overflow-x: clip;
 }
 
 html,
@@ -49,13 +44,22 @@ body {
   max-width: 100%;
 }
 
+/* Contain horizontal overflow on the BODY (not <html>): setting overflow-x on
+   <html> forces overflow-y to compute as a scroll container, which breaks
+   `position: sticky` for the whole page (the Careers stacking cards). Scoping
+   it to <body> keeps the scroll on <html>, so sticky keeps working while
+   decorative elements that bleed past the viewport still can't push the page
+   sideways. `clip` is more reliable than `hidden` on iOS Safari. */
+body {
+  overflow-x: clip;
+}
+
 body {
   background-color: #000000;
   color: #ffffff;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
 }
 
 /* ============================================================
