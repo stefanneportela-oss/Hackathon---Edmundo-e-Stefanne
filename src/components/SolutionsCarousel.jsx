@@ -17,10 +17,13 @@ import { solutions } from "../data/solutions.js";
 // Responsive ring dimensions. Cards, drag sensitivity and ring radius scale
 // down on small screens so the arc fits within the viewport instead of
 // spilling past the edges (previously fixed at the desktop values).
+// ANGLE = degrees between adjacent cards on the ring. A wider angle spreads
+// the cards apart; mobile uses a larger angle so the narrow ring doesn't make
+// neighbouring cards overlap/crowd the centered one.
 const DIMS = {
-  mobile: { CARD_W: 150, STEP: 140, RADIUS: 340 }, // < 640px
-  tablet: { CARD_W: 180, STEP: 168, RADIUS: 440 }, // < 1024px
-  desktop: { CARD_W: 200, STEP: 186, RADIUS: 520 }, // ≥ 1024px
+  mobile: { CARD_W: 150, STEP: 140, RADIUS: 340, ANGLE: 30 }, // < 640px
+  tablet: { CARD_W: 180, STEP: 168, RADIUS: 440, ANGLE: 28 }, // < 1024px
+  desktop: { CARD_W: 200, STEP: 186, RADIUS: 520, ANGLE: 26 }, // ≥ 1024px
 };
 
 /** Returns the ring dimensions matching a viewport width. */
@@ -47,7 +50,7 @@ function useRingDims() {
 }
 
 export default function SolutionsCarousel() {
-  const { CARD_W, STEP, RADIUS } = useRingDims();
+  const { CARD_W, STEP, RADIUS, ANGLE } = useRingDims();
 
   const stageRef = useRef(null);
   const pos = useRef(0); // animated position (card units)
@@ -178,7 +181,7 @@ export default function SolutionsCarousel() {
             // face the viewer, then pushed out by the radius. The whole ring
             // shares one scroll variable, so spacing is perfectly uniform and
             // the loop is seamless.
-            const angleStep = 26; // degrees between adjacent cards
+            const angleStep = ANGLE; // degrees between adjacent cards (responsive)
             const angle = d * angleStep; // this card's angle on the ring
 
             // Depth-based cues (closer to front = bigger / brighter)
@@ -196,7 +199,13 @@ export default function SolutionsCarousel() {
                 key={s.id}
                 onClick={() => {
                   if (drag.current.moved) return;
-                  target.current = i; // clicking rotates this card to front
+                  // Centered card → open its project page; otherwise rotate it
+                  // to the front first.
+                  if (isCenter && s.slug) {
+                    window.location.hash = `#/projetos/${s.slug}`;
+                    return;
+                  }
+                  target.current = i;
                   pauseAutoplay();
                 }}
                 className="group absolute -translate-x-1/2 -translate-y-1/2 will-change-transform"

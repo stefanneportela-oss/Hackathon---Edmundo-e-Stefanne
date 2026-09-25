@@ -99,7 +99,8 @@ export default function Careers() {
         {/* ===== Two-column layout: header (left) + cards (right) ===== */}
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
           {/* ---- Left column: header (sticky on desktop) ---- */}
-          <SectionReveal className="flex flex-col items-start gap-4 text-left lg:col-span-5 lg:sticky lg:top-28" amount={0.3}>
+          {/* Mobile: centered header. Desktop (lg): left-aligned. */}
+          <SectionReveal className="flex flex-col items-center gap-4 text-center lg:col-span-5 lg:sticky lg:top-28 lg:items-start lg:text-left" amount={0.3}>
             <SectionReveal.Item as="h2" className="text-white">
               Construa o futuro <span className="text-gradient">com a gente</span>
             </SectionReveal.Item>

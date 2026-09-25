@@ -149,16 +149,18 @@ export default function About() {
                   "20+" 48px white, "Projetos Ativos" 14px muted. --- */}
               <GlowCard className="sm:w-[240px] sm:shrink-0" revealDelay={0.3}>
                 <div className="flex h-full flex-col gap-4 p-6">
-                  {/* image aligned to the right, ~143px wide */}
-                  <div className="flex justify-end">
-                    <div className="overflow-hidden rounded-lg">
+                  {/* Mobile: image fills the card width like the other cards.
+                      sm+ (desktop/tablet): back to the Figma look — a smaller
+                      ~143px image aligned to the right. */}
+                  <div className="flex sm:justify-end">
+                    <div className="w-full overflow-hidden rounded-lg sm:w-auto">
                       <img
                         src={MOCK.vr}
                         alt="Ambiente industrial em realidade virtual"
                         loading="lazy"
                         decoding="async"
                         draggable={false}
-                        className="h-[146px] w-[143px] object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                        className="h-[146px] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105 sm:w-[143px]"
                       />
                     </div>
                   </div>

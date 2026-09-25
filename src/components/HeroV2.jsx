@@ -110,7 +110,7 @@ export default function HeroV2() {
           {/* Tag + title are distinct blocks in a vertical flex; gap-8 forces a
               clean 32px gutter so the Õ accent can never touch the tag above. */}
           <div
-            className="animate-fade-up flex max-w-md flex-col gap-4"
+            className="animate-fade-up mx-auto flex max-w-md flex-col items-center gap-4 text-center lg:mx-0 lg:items-start lg:text-left"
             style={{ animationDelay: "0.05s" }}
           >
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-300">
@@ -161,7 +161,7 @@ export default function HeroV2() {
         )}
 
         {/* --- RIGHT column --- */}
-        <div className="flex flex-col justify-between text-left lg:items-end lg:text-right">
+        <div className="flex flex-col items-center justify-between text-center lg:items-end lg:text-right">
           {/* Short explanatory subtext (top-right) */}
           <p
             className="animate-fade-up max-w-xs text-sm leading-relaxed text-muted sm:text-base"

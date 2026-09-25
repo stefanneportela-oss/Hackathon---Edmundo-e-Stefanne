@@ -131,12 +131,12 @@ export default function Contact() {
       <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" amount={0.4}>
         {/* ===== Top row: intro (left) + direct contact (right) ===== */}
         <SectionReveal.Item className="flex flex-col gap-12 lg:flex-row lg:items-end lg:justify-between lg:gap-20">
-          {/* --- Left: title + subtitle --- */}
-          <div className="max-w-2xl">
+          {/* --- Left: title + subtitle (centered on mobile) --- */}
+          <div className="max-w-2xl text-center lg:text-left">
             <h2 className="font-display text-4xl font-semibold leading-[1] tracking-tight text-white sm:text-6xl lg:text-7xl">
               Entre em contato
             </h2>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">
+            <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg lg:mx-0">
               Estamos prontos para impulsionar o seu próximo projeto. Fale com
               nossa equipe.
             </p>
@@ -188,8 +188,8 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Location */}
-            <div className="flex items-center gap-3 text-muted">
+            {/* Location (centered on mobile, left-aligned on desktop) */}
+            <div className="flex items-center justify-center gap-3 text-muted lg:justify-start">
               <MapPinIcon />
               <span className="text-sm">Tubarão — Santa Catarina, Brasil</span>
             </div>

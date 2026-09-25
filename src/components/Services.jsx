@@ -70,7 +70,9 @@ export default function Services() {
         {/* ===== Two-column body: left rail + card track ===== */}
         <SectionReveal.Item className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           {/* ---- Left rail ---- */}
-          <div className="flex shrink-0 flex-col lg:w-56">
+          {/* Mobile: everything is centered. Desktop (lg): back to the
+              left-aligned rail. */}
+          <div className="flex shrink-0 flex-col items-center text-center lg:w-56 lg:items-start lg:text-left">
             {/* Section title (top of the rail) */}
             <h2 className="font-display font-black tracking-tight text-white">
               Serviços
@@ -82,8 +84,8 @@ export default function Services() {
               que o seu negócio precise.
             </p>
 
-            {/* Arrows (bottom-left) */}
-            <div className="mt-8 flex items-center gap-3">
+            {/* Arrows (centered on mobile, bottom-left on desktop) */}
+            <div className="mt-8 flex items-center justify-center gap-3">
               <NavArrow dir="prev" disabled={page === 0} onClick={() => go(-1)} />
               <NavArrow
                 dir="next"
@@ -106,9 +108,9 @@ export default function Services() {
               </div>
             </div>
 
-            {/* Line pagination (bottom-right of the track) */}
+            {/* Line pagination (centered on mobile, bottom-right on desktop) */}
             <div
-              className="mt-8 flex items-center justify-end gap-2"
+              className="mt-8 flex items-center justify-center gap-2 lg:justify-end"
               role="tablist"
               aria-label="Paginação de serviços"
             >
