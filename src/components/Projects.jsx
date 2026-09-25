@@ -68,7 +68,7 @@ export default function Projects() {
       as="section"
       ref={sectionRef}
       id="projetos"
-      className="relative w-full overflow-hidden bg-transparent py-24 sm:py-28"
+      className="relative w-full overflow-hidden bg-transparent py-16 sm:py-20"
     >
       {/* ===== Header ===== */}
       <SectionReveal.Item className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-4 text-center sm:px-6">
@@ -86,12 +86,12 @@ export default function Projects() {
       </SectionReveal.Item>
 
       {/* ===== Carousel ===== */}
-      <SectionReveal.Item className="relative z-10 mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <SectionReveal.Item className="relative z-10 mx-auto mt-2 max-w-7xl px-4 sm:px-6 lg:px-8">
         <SolutionsCarousel />
       </SectionReveal.Item>
 
       {/* ===== Features row ===== */}
-      <SectionReveal.Item className="relative z-10 mx-auto mt-8 grid max-w-5xl grid-cols-1 gap-10 px-4 text-center sm:grid-cols-3 sm:gap-8 sm:px-6 lg:px-8">
+      <SectionReveal.Item className="relative z-10 mx-auto mt-2 grid max-w-5xl grid-cols-1 gap-10 px-4 text-center sm:grid-cols-3 sm:gap-8 sm:px-6 lg:px-8">
         {features.map((f, i) => (
           <div
             key={f.title}

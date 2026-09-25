@@ -157,7 +157,7 @@ export default function SolutionsCarousel() {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className="relative mx-auto h-[380px] cursor-grab active:cursor-grabbing sm:h-[440px]"
+        className="relative mx-auto h-[320px] cursor-grab active:cursor-grabbing sm:h-[380px]"
         style={{ perspective: `${RADIUS * 2.7}px`, touchAction: "pan-y" }}
       >
         <div
