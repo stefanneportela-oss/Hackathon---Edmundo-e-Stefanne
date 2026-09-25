@@ -6,18 +6,53 @@
 // for real project screenshots when available.
 
 import dashboardImg from "../assets/about/dashboard.png";
-import portalImg from "../assets/about/portal.png";
-import phonesImg from "../assets/about/phones.png";
-import vrImg from "../assets/about/vr.png";
-import edhealthImg from "../assets/services/edhealth.png";
-import mobileImg from "../assets/services/mobile.png";
 import ecommerceCursosImg from "../assets/services/ecommerce.jpg";
+import espacoEstudanteImg from "../assets/services/ee-celular.png";
+import sgnImg from "../assets/services/sgn.svg";
+import saepImg from "../assets/services/saep.svg";
+
+// Themed tech photos (free Unsplash) for projects without a dedicated mockup.
+const unsplash = (id) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=600&q=80`;
+const hubIaImg = unsplash("photo-1620712943543-bcc4688e7485"); // AI / neural network
+const predicaoImg = unsplash("photo-1551288049-bebda4e38f71"); // data / analytics dashboard
 
 // Each project also carries the fields used by the dedicated detail page
 // (route #/projetos/:slug), ported from the Figma "Página do produto
 // específico": category, purpose (short intent line), challenge, solution and
 // the technologies list.
 export const projects = [
+  {
+    slug: "espaco-do-estudante",
+    name: "Espaço do Estudante",
+    icon: "🎓",
+    description:
+      "Aplicativo mobile do SESI e SENAI com mais de 17 mil acessos por dia: reúne notas, frequência, materiais e comunicados numa experiência pensada para o dia a dia do aluno. Nasceu em Santa Catarina e hoje atende alunos em todo o Brasil.",
+    tags: ["Desenvolvimento Mobile"],
+    client: "SESI e SENAI",
+    year: "2024",
+    liveUrl:
+      "https://play.google.com/store/apps/details?id=br.senai.sc.appespacoestudante&hl=pt_BR",
+    // App multiplataforma (Flutter) publicado nas duas lojas.
+    stores: {
+      playStore:
+        "https://play.google.com/store/apps/details?id=br.senai.sc.appespacoestudante&hl=pt_BR",
+      appStore:
+        "https://apps.apple.com/br/app/espa%C3%A7o-do-estudante-sesi-senai/id1474992119",
+    },
+    image: espacoEstudanteImg,
+    category: "Aplicativo Mobile & Educação",
+    purpose:
+      "App oficial que coloca a vida acadêmica na palma da mão do estudante do SESI e SENAI: notas, frequência, horários, materiais e avisos, disponíveis a qualquer hora e em qualquer lugar. Com mais de 17 mil acessos diários, é usado principalmente em Santa Catarina e alcança estudantes em todo o país, disponível para Android e iOS.",
+    caption: "Mais de 17 mil acessos por dia, de Santa Catarina para todo o Brasil.",
+    challenge:
+      "As informações acadêmicas do aluno estavam espalhadas em portais web pouco adaptados ao celular, dificultando acompanhar notas, faltas e comunicados no dia a dia — justamente onde o estudante mais usa o telefone.",
+    challengeExtra:
+      "Sem um canal mobile próprio, avisos importantes se perdiam e o engajamento do aluno com a instituição ficava dependente de acessos esporádicos ao computador. O desafio também era de escala: atender de forma estável uma base que hoje gera mais de 17 mil acessos por dia, concentrada em Santa Catarina mas espalhada por todo o Brasil.",
+    solution:
+      "Desenvolvemos um aplicativo multiplataforma em Flutter, publicado na Google Play e na App Store, que centraliza toda a rotina acadêmica: consulta de notas e frequência, agenda de aulas, acesso a materiais e notificações de comunicados em tempo real. Com uma base de código única para Android e iOS, entregamos uma experiência rápida e intuitiva que hoje sustenta mais de 17 mil acessos diários — nascida em Santa Catarina e escalada para atender estudantes em todo o Brasil, aproximando o SESI e o SENAI do aluno e elevando o engajamento com a instituição.",
+    technologies: ["Flutter", "Dart", "Android", "iOS", "REST API", "Push Notifications"],
+  },
   {
     slug: "ecommerce-cursos",
     name: "E-commerce de Cursos",
@@ -51,7 +86,7 @@ export const projects = [
     client: "DR SENAI",
     year: "2012 - 2026",
     liveUrl: "https://sgn.sesisenai.org.br",
-    image: phonesImg,
+    image: sgnImg,
     category: "Chatbot & IA",
     purpose:
       "Assistente conversacional que responde dúvidas a partir dos documentos oficiais do cliente, automatizando o atendimento com precisão e contexto.",
@@ -97,7 +132,7 @@ export const projects = [
     client: null,
     year: "2024",
     liveUrl: null,
-    image: portalImg,
+    image: hubIaImg,
     category: "Plataforma & API de IA",
     purpose:
       "Camada central que disponibiliza recursos de IA — chatbots, tradução e análise — para qualquer aplicação por meio de uma única API padronizada.",
@@ -120,7 +155,7 @@ export const projects = [
     client: "DR SESI/SENAI",
     year: "2019",
     liveUrl: null,
-    image: dashboardImg,
+    image: predicaoImg,
     category: "Machine Learning & Educação",
     purpose:
       "Modelo preditivo que antecipa quais alunos têm maior risco de evasão, permitindo intervenções pedagógicas no momento certo.",
@@ -143,7 +178,7 @@ export const projects = [
     client: "DN SENAI",
     year: "2025",
     liveUrl: "https://saep-ia.sc.senai.br/",
-    image: edhealthImg,
+    image: saepImg,
     category: "IA Generativa & Avaliação",
     purpose:
       "Assistente de IA generativa que apoia especialistas na elaboração de itens de avaliação alinhados às diretrizes do SAEP.",
@@ -166,7 +201,7 @@ export const projects = [
     client: "DR SESI/SENAI",
     year: "2012",
     liveUrl: "https://sgn.sesisenai.org.br",
-    image: portalImg,
+    image: sgnImg,
     category: "Plataforma de Gestão (SaaS)",
     purpose:
       "Sistema de Gestão do Negócio que centraliza toda a operação educacional do SENAI e SESI de Santa Catarina em uma única plataforma.",

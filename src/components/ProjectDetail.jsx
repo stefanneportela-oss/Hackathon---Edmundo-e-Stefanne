@@ -43,6 +43,8 @@ export default function ProjectDetail({ slug }) {
     challengeExtra,
     solution,
     technologies = [],
+    stores,
+    liveUrl,
   } = project;
 
   // Build the numbered editorial sections that actually have content.
@@ -174,6 +176,51 @@ export default function ProjectDetail({ slug }) {
           <div className="h-px w-full bg-white/10" />
         </div>
 
+        {/* ===== 4. CTA — store buttons or live link ===== */}
+        {(stores || liveUrl) && (
+          <motion.div
+            initial={reduced ? false : { opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="mt-12 flex flex-wrap items-center gap-4"
+          >
+            {stores?.playStore && (
+              <a
+                href={stores.playStore}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-brand-500 to-brand-300 px-7 py-3.5 font-display text-sm font-bold text-[#04101f] shadow-[0_10px_28px_rgba(0,188,255,0.3)] transition-all duration-300 hover:shadow-[0_14px_36px_rgba(0,188,255,0.45)] active:scale-95"
+              >
+                Baixar no Google Play
+                <ExternalLink />
+              </a>
+            )}
+            {stores?.appStore && (
+              <a
+                href={stores.appStore}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2.5 rounded-full border border-white/25 px-7 py-3.5 font-display text-sm font-semibold text-white transition-all duration-300 hover:border-brand-300/70 hover:bg-white/[0.06] active:scale-95"
+              >
+                Baixar na App Store
+                <ExternalLink />
+              </a>
+            )}
+            {!stores && liveUrl && (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-brand-500 to-brand-300 px-7 py-3.5 font-display text-sm font-bold text-[#04101f] shadow-[0_10px_28px_rgba(0,188,255,0.3)] transition-all duration-300 hover:shadow-[0_14px_36px_rgba(0,188,255,0.45)] active:scale-95"
+              >
+                Visitar Projeto
+                <ExternalLink />
+              </a>
+            )}
+          </motion.div>
+        )}
+
         <div className="pb-16 sm:pb-24" />
       </div>
     </main>
@@ -281,6 +328,16 @@ function ArrowLeft() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <line x1="19" y1="12" x2="5" y2="12" />
       <polyline points="12 19 5 12 12 5" />
+    </svg>
+  );
+}
+
+function ExternalLink() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden>
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
     </svg>
   );
 }
