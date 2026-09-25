@@ -73,7 +73,7 @@ const CARDS = [
   {
     id: 1,
     icon: "layers",
-    text: "Precisamos otimizar processos e escalar com segurança.",
+    text: "Otimizamos processos e escalamos com segurança.",
     pos: "left-[8%] top-[26%]",
     side: "left",
     depth: 1,
