@@ -16,6 +16,7 @@ import Footer from "./components/Footer.jsx";
 import MotionToggle from "./components/MotionToggle.jsx";
 import GlobalBackground from "./components/GlobalBackground.jsx";
 import Portfolio from "./components/Portfolio.jsx";
+import AwsPartnership from "./components/AwsPartnership.jsx";
 
 /**
  * Lightweight hash-based router.
@@ -62,6 +63,7 @@ function useHashRoute() {
 export default function App() {
   const route = useHashRoute();
   const isPortfolio = route.startsWith("/projetos");
+  const isAwsPartnership = route.startsWith("/parceria-aws");
 
   return (
     <div className="relative min-h-screen w-full bg-black text-white">
@@ -73,6 +75,8 @@ export default function App() {
         <Header />
         {isPortfolio ? (
           <Portfolio />
+        ) : isAwsPartnership ? (
+          <AwsPartnership />
         ) : (
           <main>
             <HeroV2 />

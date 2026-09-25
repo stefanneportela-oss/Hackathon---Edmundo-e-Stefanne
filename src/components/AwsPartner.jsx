@@ -227,7 +227,7 @@ export default function AwsPartner() {
             {/* CTA — dedicated AWS partnership page (coming soon) */}
             <motion.a
               variants={fadeUp}
-              href="/parceria-aws"
+              href="#/parceria-aws"
               className="group inline-flex h-14 items-center gap-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-brand-300 px-7 font-display text-[15px] font-bold text-[#04101f] shadow-[0_10px_28px_rgba(0,188,255,0.3)] transition-all duration-300 hover:shadow-[0_14px_36px_rgba(0,188,255,0.45)] active:scale-95"
             >
               Conheça a parceria AWS
